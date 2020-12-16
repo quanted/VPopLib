@@ -939,7 +939,7 @@ void CEvent::SetForageInc(double TThresh, double TMax, double TAve)
 CWeatherEvents::CWeatherEvents()
 {
 	m_Filename = "";
-	HasBeenInitialized = false;
+	m_HasBeenInitialized = false;
 }
 
 CWeatherEvents::~CWeatherEvents()
@@ -951,11 +951,11 @@ CWeatherEvents::~CWeatherEvents()
 ////////////////////////////////////////////////////////////////////
 // CWeatherEvents Member Functions
 ////////////////////////////////////////////////////////////////////
-CString CWeatherEvents::GetFileName()
-{
-	return m_Filename;
-
-}
+//CString CWeatherEvents::GetFileName()
+//{
+//	return m_Filename;
+//
+//}
 
 void CWeatherEvents::ClearAllEvents()
 {
@@ -966,7 +966,7 @@ void CWeatherEvents::ClearAllEvents()
 		delete temp;
 	}
 	if (!m_EventList.IsEmpty()) m_EventList.RemoveAll();
-	HasBeenInitialized = false;
+	m_HasBeenInitialized = false;
 }
 
 bool CWeatherEvents::AddEvent(CEvent* theEvent)

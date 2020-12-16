@@ -30,6 +30,7 @@
 
 
 class CColony;  // Forward declaration
+class CVarroaPopSession;
 
 /////////////////////////////////////////////////////////////////////////////
 // List classes for all bee life stages
@@ -279,7 +280,7 @@ struct SupplementalFeedingResource
 #define DE_SUPERCEDURE 5
 #define DE_PESTICIDE 6
 
-class CColony //: public CCmdTarget
+class libvpop_EXPORT CColony //: public CCmdTarget
 {
 	DECLARE_DYNCREATE(CColony)
 
@@ -302,6 +303,7 @@ protected:
 	int m_MitesDyingToday;
 	bool m_PollenFeedingDay;  // Specifies this is a day when man-made feed is available.
 	bool m_NectarFeedingDay;  // Specifies this is a day when man-made feed is available.
+	CVarroaPopSession* m_pSession; //Links back to the session if it is present
 
 
 	
@@ -389,6 +391,7 @@ public:
 
 // Operations
 public:
+	void SetSession(CVarroaPopSession* pSession) { m_pSession = pSession; }
 	int m_MitesDyingThisPeriod;
 	int GetMitesDyingThisPeriod();
 	void SetStartSamplePeriod();

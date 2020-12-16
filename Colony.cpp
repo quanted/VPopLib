@@ -10,6 +10,7 @@
 #include "cstring.h"
 #include "cstring.format.h"
 #include "coledatetime.h"
+#include "session.h"
 #include <math.h>
 
 #ifdef _DEBUG

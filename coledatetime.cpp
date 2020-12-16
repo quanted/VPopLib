@@ -149,7 +149,7 @@ bool COleDateTime::ParseDateTime(const CString& dateTimeStr, DWORD dwFlags)
 {
     std::istringstream stream(dateTimeStr.ToString());
     std::tm dt = {0};
-
+    
     dt.tm_isdst = -1; // needs to be set to unspecified otherwise random value is set
 
     // Handles the 3 supported formats if the dwFlags is not specified

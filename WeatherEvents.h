@@ -29,6 +29,7 @@ private:
 	double m_Temp;		//  Average Temperature in degC
 	double m_MaxTemp;	//  Maximum Temperature in degC
 	double m_MinTemp;	//  Minumum Temperature in degC
+	double m_Windspeed;	//  Windspeed in m/s
 	double m_Rainfall;	//  Rainfall in inches
 	bool m_ForageDay;
 	double m_ForageInc;	//  Increment of a Forage Day
@@ -45,6 +46,7 @@ public:
 	double GetMaxTemp();
 	double GetMinTemp();
 	double GetRainfall() {return m_Rainfall;}
+	double GetWindspeed() { return m_Windspeed; }
 	bool IsForageDay();
 	bool IsWinterDay();
 	int GetLineNum() {return m_LineNum;}
@@ -54,6 +56,7 @@ public:
 	void SetMaxTemp(double maxTemp) {m_MaxTemp = maxTemp;}
 	void SetMinTemp(double minTemp) {m_MinTemp = minTemp;}
 	void SetRainfall(double rainfall) {m_Rainfall = rainfall;}
+	void SetWindspeed(double windspeed) { m_Windspeed = windspeed; }
 	void SetForage(bool Forage) {m_ForageDay = Forage;}
 	void SetForageInc(double forageInc) {m_ForageInc = forageInc;};
 	void SetForageInc(double TThresh, double TMax, double TAve);
@@ -131,7 +134,7 @@ private:
 	CString m_Filename;
 	POSITION pos;
 	CTypedPtrList<CPtrList, CEvent*> m_EventList;
-	bool HasBeenInitialized;
+	bool m_HasBeenInitialized;
 
 
 
@@ -148,7 +151,7 @@ public:
 	int GetCurrentLineNumber();
 	int GetTotalEvents();
 	void SetFileName(CString fname) {m_Filename = fname;}
-	CString GetFileName();
+	//CString GetFileName();
 	int CheckInterval();
 	int CheckSanity();
 	//bool LoadWeatherFile(CString FileName);
@@ -156,13 +159,13 @@ public:
 	//bool LoadEPAWeatherFileWEA(CString FileName);
 
 	//! Enable to load grid binary files directly check WeatherGridData.h to see supported formats
-	template<typename GridDataType>
+	//template<typename GridDataType>
 //	bool LoadWeatherGridDataBinaryFile(CString FileName);
 
 	//void ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events);  //TODO:  Will have to implement this differently in the library
 
 	//void Serialize(CArchive& ar);
-	bool IsInitialized() {return HasBeenInitialized;}
+	bool IsInitialized() {return m_HasBeenInitialized;}
 	//  Access
 	void GoToFirstEvent();
 	CEvent* GetNextEvent();
@@ -171,8 +174,8 @@ public:
 
 	// Operators
 protected:
-	double GetLatitudeFromFile(CString WeatherFileName);
-	double GetLatitudeFromFileName(CString WeatherFileName);
+	//double GetLatitudeFromFile(CString WeatherFileName);
+	//double GetLatitudeFromFileName(CString WeatherFileName);
 };
 
 //  Free Functions
