@@ -54,19 +54,3 @@ BEGIN_MESSAGE_MAP(CBee, CCmdTarget)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CBee message handlers
-
-//void CBee::Serialize(CArchive& ar) 
-//{
-//	if (ar.IsStoring())
-//	{	// storing code
-//		ar << number;
-//		ar << age;
-//	}
-//	else
-//	{	// loading code
-//		ar >> number;
-//		ar >> age;
-//	}
-//}

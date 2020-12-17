@@ -390,6 +390,9 @@ public:
 
 
 // Operations
+protected:
+	void SetDefaultInitConditions();
+
 public:
 	void SetSession(CVarroaPopSession* pSession) { m_pSession = pSession; }
 	int m_MitesDyingThisPeriod;
@@ -407,8 +410,8 @@ public:
 	void Clear();
 	CString GetName() {return name;}
 	void SetName(CString stg) {name = stg;}
-	CColony operator = (CColony col); // Assignment operator
-	CColony(CColony& col);             // Copy Constructor
+	//CColony operator = (CColony col); // Assignment operator
+	//CColony(CColony& col);             // Copy Constructor
 	void InitializeColony();
 	void InitializeBees();
 	void InitializeMites();
@@ -458,7 +461,7 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CColony)
-	public:
+public:
 	//virtual void Serialize(CArchive& ar, int FileFormatVersion = 0);
 	//}}AFX_VIRTUAL
 
@@ -486,7 +489,7 @@ public:
 	int ApplyPesticideToBees(CBeelist* pList, int from, int to, double CurrentDose, double MaxDose, double LD50, double Slope);
 	int QuantityPesticideToKill(CBeelist* pList, double CurrentDose, double MaxDose, double LD50, double Slope);
 
-	public:
+public:
 	CNutrientContaminationTable m_NutrientCT;
 	bool m_NutrientContEnabled;
 	int m_DeadWorkerLarvaePesticide;

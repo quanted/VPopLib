@@ -306,13 +306,11 @@ void CVarroaPopSession::InitializeSimulation()
 		CMatrix array are set to (Number of series + 1, Number of days being plotted)
 	*/
 
-	//m_SimResults.SetDimensions(GetNumSeries() + 1, GetSimDays());
-
+	
 	m_ResultsText.RemoveAll();
 	m_ResultsHeader.RemoveAll();
 	m_ResultsFileHeader.RemoveAll();
 	m_IncImmigratingMites = 0;
-	//UpdateResults(1);  // Get Results of initial conditions
 
 	theColony.InitializeColony();
 	theColony.SetMiticideTreatment(m_MiteTreatments, m_VTEnable);

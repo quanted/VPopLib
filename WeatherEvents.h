@@ -166,6 +166,7 @@ public:
 
 	//void Serialize(CArchive& ar);
 	bool IsInitialized() {return m_HasBeenInitialized;}
+	void SetInitialized(bool val) { m_HasBeenInitialized = val; }
 	//  Access
 	void GoToFirstEvent();
 	CEvent* GetNextEvent();

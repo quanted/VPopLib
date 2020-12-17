@@ -60,7 +60,28 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 }
 
 
+std::string  CString2StdString(CString cstr)
+{
+	std::string retstg((LPCTSTR)cstr);
+	return retstg;
+}
 
+CString StdString2CString(std::string sstr)
+{
+	CString cstr(sstr.c_str());
+	return cstr;
+}
+
+vector<string> CStringList2StringVector(CStringList& CSList)
+{
+	vector<string> StringVector;
+
+	for (POSITION pos = CSList.GetHeadPosition(); pos != NULL;)
+	{
+		StringVector.push_back(CString2StdString(CSList.GetNext(pos)));
+	}
+	return StringVector;
+}
 
 
 
@@ -89,13 +110,15 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 		return true;
 	}
 	
-	bool vplib::SetICVariables(CString Name, CString Value)
+	bool vplib::SetICVariables(std::string Name, std::string Value)
 	{
 		bool RetVal = false;
 		CString info;
+		CString CSName(Name.c_str());
+		CString CSValue(Value.c_str());
 		if (theSession.UpdateColonyParameters(Name, Value))
 		{
-			info.Format("Setting Variables.   Name = %s  Value = %s", Name, Value);
+			info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
 			theSession.AddToInfoList(info);
 			RetVal = true;
 		}
@@ -109,43 +132,45 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 		return RetVal;
 	}
 	
-	bool vplib::SetICVariables(CStringList NVPairs)
+	bool vplib::SetICVariables(vector<string>& NVPairs)
 	{
-		CString NVPair;
-		CString Name; 
-		CString Value;
-		for (POSITION pos = NVPairs.GetHeadPosition(); pos != NULL;)
+		std::string stgName;
+		std::string stgValue;
+		for (size_t i = 0; i < NVPairs.size(); i++)
 		{
-			NVPair = NVPairs.GetNext(pos);
-			int eqpos = NVPair.Find('=');
-			if (eqpos > 0)  // An equals sign must be present with at least one character preceding it
+			size_t eqpos = NVPairs[i].find("=");
+			if (eqpos > 0)      // An equals sign must be present with at least one character preceding it
 			{
-				Name = NVPair.Left(eqpos);
-				Value = NVPair.Right(NVPair.GetLength() - eqpos - 1);
-				vplib::SetICVariables(Name, Value);
+				stgName = NVPairs[i].substr(0, eqpos);
+				stgValue = NVPairs[i].substr(eqpos + 1, NVPairs[i].npos - (eqpos + 1));
+				vplib::SetICVariables(stgName, stgValue);
 			}
 		}
 		return true;
 	}
 
-	bool vplib::SetWeather(CString WeatherEventString)
+	bool vplib::SetWeather(std::string WeatherEventString)
 	{
+		CString WECString = StdString2CString(WeatherEventString);
 		CWeatherEvents* pWeatherEvents = theSession.GetWeather();
 		CEvent* pEvent = new (CEvent);
-		WeatherStringToEvent(WeatherEventString, pEvent);  // Consider adding a format ID in the parameter list to allow processing of different weather file formats
+		WeatherStringToEvent(WECString, pEvent);  // Consider adding a format ID in the parameter list to allow processing of different weather file formats
 		pWeatherEvents->AddEvent(pEvent);
 		return true;
 	}
 
-	bool vplib::SetWeather(CStringList WeatherEventStringList)
+	bool vplib::SetWeather(vector<string>& WeatherEventStringList)
 	{
-		int numDates = 0;
-		POSITION pos;
-		pos = WeatherEventStringList.GetHeadPosition();
-		for (pos = WeatherEventStringList.GetHeadPosition(); pos != NULL;)
+		for (size_t i = 0; i < WeatherEventStringList.size(); i++)
 		{
-			vplib::SetWeather(WeatherEventStringList.GetNext(pos));
+			vplib::SetWeather(WeatherEventStringList[i]);
+			theSession.AddToInfoList("Adding weather Event: " + WeatherEventStringList[i]);
 		}
+		// For inital testing, assume weather is fully loaded after this string vector is loaded
+		theSession.SetSimStart(theSession.GetWeather()->GetBeginningTime());
+		theSession.SetSimEnd(theSession.GetWeather()->GetEndingTime());
+		theSession.GetWeather()->SetInitialized(true);  // Will have to work on this to capture the full scope of weather processing and error checking
+
 		return true;
 	}
 
@@ -156,22 +181,22 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 		return true;
 	}
 
-	bool vplib::GetErrorList(CStringList& ErrList)
+	bool vplib::GetErrorList(vector<string>& ErrList)
 	{
-		ErrList.RemoveAll();
+		ErrList.clear();
 		for (POSITION pos = theSession.GetErrorList()->GetHeadPosition(); pos != NULL;)
 		{
-			ErrList.AddTail(theSession.GetErrorList()->GetNext(pos));
+			ErrList.push_back(CString2StdString(theSession.GetErrorList()->GetNext(pos)));
 		}
 		return true;
 	}
 
-	bool vplib::GetInfoList(CStringList& InfoList)
+	bool vplib::GetInfoList(vector<string>& InfoList)
 	{
-		InfoList.RemoveAll();
+		InfoList.clear();
 		for (POSITION pos = theSession.GetInfoList()->GetHeadPosition(); pos != NULL;)
 		{
-			InfoList.AddTail(theSession.GetInfoList()->GetNext(pos));
+			InfoList.push_back(CString2StdString(theSession.GetInfoList()->GetNext(pos)));
 		}
 
 		return true;
@@ -179,22 +204,20 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 
 	bool vplib::RunSimulation()
 	{
+
+		theSession.InitializeSimulation();
+		theSession.Simulate();
 		return true;
 	}
 
-	bool vplib::GetResults(CStringList* ResultList)
+	bool vplib::GetResults(vector<string>& ResultList)
 	{
 		bool ResVal = false;
 		if (!theSession.m_ResultsText.IsEmpty())
 		{
-			ResultList = &theSession.m_ResultsText;
+			ResultList = CStringList2StringVector(theSession.m_ResultsText);
 			ResVal = true;
 		}
 		return ResVal;
 	}
 
-
-//static int MyMessageBox(LPCTSTR lpszText, UINT nType, UINT nIDHelp)
-//{
-//	return -1;
-//}

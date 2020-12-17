@@ -4,13 +4,13 @@
 #define STDAFX_CUSTOM_H
 #include "libvpop_export.h"
 #ifdef WIN32
-#ifdef libvpop_EXPORT // 
-#   define LIBEXPORT   __declspec(dllexport)
-#else // outside DLL
-#   define LIBEXPORT   __declspec(dllimport)
-#endif  // XYZLIBRARY_EXPORT
+	#ifdef libvpop_EXPORT // 
+	#   define LIBEXPORT   __declspec(dllexport)
+	#else // outside DLL
+	#   define LIBEXPORT   __declspec(dllimport)
+	#endif  // libvpop_EXPORT
 #else
-#define LIBEXPORT
+	#define LIBEXPORT
 #endif
 #define NO_LIBEXPORT
 

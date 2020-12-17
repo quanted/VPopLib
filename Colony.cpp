@@ -873,33 +873,6 @@ int CAdultlist::MoveToEnd(int QuantityToMove, int MinAge)
 }
 
 
-//void CAdultlist::Serialize(CArchive &ar)
-//{
-//	int count,i;
-//	POSITION pos;
-//	if (ar.IsStoring())
-//	{	// storing code
-//		count = GetCount();
-//		ar << count;
-//		pos = GetHeadPosition();
-//		CAdult* pAdult;
-//		while (pos != NULL)
-//		{
-//			pAdult = (CAdult*)GetNext(pos);
-//			pAdult->Serialize(ar);
-//		}
-//	}
-//	else
-//	{	// loading code
-//		ar >> count;
-//		for (i=0; i<count; i++)
-//		{
-//			CAdult* temp = new CAdult;
-//			temp->Serialize(ar);
-//			pos = AddTail(temp);
-//		}
-//	}
-//}
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -929,33 +902,7 @@ void CBroodlist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
-//void CBroodlist::Serialize(CArchive &ar)
-//{
-//	int count,i;
-//	POSITION pos;
-//	if (ar.IsStoring())
-//	{	// storing code
-//		count = GetCount();
-//		ar << count;
-//		pos = GetHeadPosition();
-//		CBrood* pBrood;
-//		while (pos != NULL)
-//		{
-//			pBrood = (CBrood*)GetNext(pos);
-//			pBrood->Serialize(ar);
-//		}
-//	}
-//	else
-//	{	// loading code
-//		ar >> count;
-//		for (i=0; i<count; i++)
-//		{
-//			CBrood* temp = new CBrood;
-//			temp->Serialize(ar);
-//			pos = AddTail(temp);
-//		}
-//	}
-//}
+
 
 int CBroodlist::GetMiteCount()
 {
@@ -1048,33 +995,6 @@ void CLarvalist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
-//void CLarvalist::Serialize(CArchive &ar)
-//{
-//	int count,i;
-//	POSITION pos;
-//	if (ar.IsStoring())
-//	{	// storing code
-//		count = GetCount();
-//		ar << count;
-//		pos = GetHeadPosition();
-//		CLarva* pLarva;
-//		while (pos != NULL)
-//		{
-//			pLarva = (CLarva*)GetNext(pos);
-//			pLarva->Serialize(ar);
-//		}
-//	}
-//	else
-//	{	// loading code
-//		ar >> count;
-//		for (i=0; i<count; i++)
-//		{
-//			CLarva* temp = new CLarva;
-//			temp->Serialize(ar);
-//			pos = AddTail(temp);
-//		}
-//	}
-//}
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1100,36 +1020,6 @@ void CEgglist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
-
-//void CEgglist::Serialize(CArchive &ar)
-//{
-//	int count,i;
-//	POSITION pos;
-//	if (ar.IsStoring())
-//	{	// storing code
-//		count = GetCount();
-//		ar << count;
-//		pos = GetHeadPosition();
-//		CEgg* pEgg;
-//		while (pos != NULL)
-//		{
-//			pEgg = (CEgg*)GetNext(pos);
-//			pEgg->Serialize(ar);
-//		}
-//	}
-//	else
-//	{	// loading code
-//		ar >> count;
-//		for (i=0; i<count; i++)
-//		{
-//			CEgg* temp = new CEgg;
-//			temp->Serialize(ar);
-//			pos = AddTail(temp);
-//		}
-//	}
-//}
-//
-//
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1199,70 +1089,6 @@ CColony::~CColony()
 	}
 }
 
-// TODO: Julien: Assignment and Copy Constructor implementations seem weird.
-// Unless there is something under the hood that I don't understand, when we are assigning or copying
-// a Colony we and creating the new ones by adding the same objects to the new Colony and not copy of objects.
-// I don't know if it is intended thus the assignment and copy are Shallow copies instead of Deep copies.
-
-CColony CColony::operator = (CColony col)
-{
-	CColony temp;
-	temp.HasBeenInitialized = col.HasBeenInitialized;
-	temp.m_InitCond = col.m_InitCond;
-	temp.name = col.name;
-	temp.queen=col.queen;
-
-	POSITION pos = col.Dadl.GetHeadPosition();
-	while (pos!=NULL) temp.Dadl.AddTail(col.Dadl.GetNext(pos));
-
-	pos = col.foragers.GetHeadPosition();
-	while (pos!=NULL) temp.foragers.AddTail(col.foragers.GetNext(pos));
-
-	pos = col.Wlarv.GetHeadPosition();
-	while (pos!=NULL) temp.Wlarv.AddTail(col.Wlarv.GetNext(pos));
-
-	pos = col.Dlarv.GetHeadPosition();
-	while (pos!=NULL) temp.Dlarv.AddTail(col.Dlarv.GetNext(pos));
-
-	pos = col.Wadl.GetHeadPosition();
-	while (pos!=NULL) temp.Wadl.AddTail(col.Wadl.GetNext(pos));
-
-	return temp;
-}
-
-CColony:: CColony(CColony& col)  // Copy Constructor
-{
-	HasBeenInitialized = col.HasBeenInitialized;
-	m_InitCond = col.m_InitCond;
-	name = col.name;
-	queen=col.queen;
-
-	POSITION pos = col.Wadl.GetHeadPosition();
-	while (pos!=NULL) Wadl.AddTail(col.Wadl.GetNext(pos));
-
-	pos = col.Dadl.GetHeadPosition();
-	while (pos!=NULL) Dadl.AddTail(col.Dadl.GetNext(pos));
-
-	pos = col.foragers.GetHeadPosition();
-	while (pos!=NULL) foragers.AddTail(col.foragers.GetNext(pos));
-
-	pos = col.Wlarv.GetHeadPosition();
-	while (pos!=NULL) Wlarv.AddTail(col.Wlarv.GetNext(pos));
-
-	pos = col.Dlarv.GetHeadPosition();
-	while (pos!=NULL) Dlarv.AddTail(col.Dlarv.GetNext(pos));
-
-	pos = col.Weggs.GetHeadPosition();
-	while (pos!=NULL) Weggs.AddTail(col.Weggs.GetNext(pos));
-
-	pos = col.Dlarv.GetHeadPosition();
-	while (pos!=NULL) Deggs.AddTail(col.Deggs.GetNext(pos));
-
-
-
-
-}
-
 
 
 
@@ -1319,6 +1145,9 @@ void CColony::InitializeColony()
 	//m_NutrientCT.RemoveAll();
 	if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
 
+	SetDefaultInitConditions();
+	SetInitialized(true);
+
 }
 
 void CColony::AddEventNotification(CString DateStg, CString Msg)
@@ -1328,421 +1157,6 @@ void CColony::AddEventNotification(CString DateStg, CString Msg)
 }
 
 
-
-//void CColony::Serialize(CArchive& ar, int FileFormatVersion) 
-//{
-//	if (ar.IsStoring())
-//	{	// storing code
-//		//  First store the Colony initial condition data
-//		ar << name;
-//		ar << m_InitCond.m_droneAdultInfestField;
-//		ar << m_InitCond.m_droneBroodInfestField;
-//		ar << m_InitCond.m_droneMiteOffspringField;
-//		ar << m_InitCond.m_droneMiteSurvivorshipField;
-//		ar << m_InitCond.m_workerAdultInfestField;
-//		ar << m_InitCond.m_workerBroodInfestField;
-//		ar << m_InitCond.m_workerMiteOffspring;
-//		ar << m_InitCond.m_workerMiteSurvivorship;
-//		ar << m_InitCond.m_droneAdultsField;
-//		ar << m_InitCond.m_droneBroodField;
-//		ar << m_InitCond.m_droneEggsField;
-//		ar << m_InitCond.m_droneLarvaeField;
-//		ar << m_InitCond.m_workerAdultsField;
-//		ar << m_InitCond.m_workerBroodField;
-//		ar << m_InitCond.m_workerEggsField;
-//		ar << m_InitCond.m_workerLarvaeField;
-//		ar << m_InitCond.m_totalEggsField;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << (int)m_InitCond.m_QueenSperm; // FIX - THIS NEEDS TO CONVERT TO DOUBLE
-//		}
-//		ar << m_InitCond.m_ForagerLifespan;
-//		ar << m_InitCond.m_SimStart;
-//		ar << m_InitCond.m_SimEnd;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << (int)m_InitCond.m_MaxEggs;
-//		}
-//		if (FileFormatVersion >= 15) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << m_InitCond.m_QueenStrength;
-//		}
-//		if (FileFormatVersion >= 16) // Added Supplemental Feeding variables
-//		{
-//			ar << m_SuppPollen.m_StartingAmount;
-//			ar << m_SuppPollen.m_BeginDate;
-//			ar << m_SuppPollen.m_EndDate;
-//			ar << (m_SuppPollenEnabled ? 1:0);
-//			ar << m_SuppNectar.m_StartingAmount;
-//			ar << m_SuppNectar.m_BeginDate;
-//			ar << m_SuppNectar.m_EndDate;
-//			ar << (m_SuppNectarEnabled ? 1:0);
-//			ar << m_ColonyPolInitAmount;
-//			ar << m_ColonyNecInitAmount;
-//		}
-//		if (FileFormatVersion >= 17) // Added Proportion of Actual Foragers and some spares
-//		{
-//			ar << foragers.GetPropActualForagers();
-//			ar << m_ColonyPolMaxAmount;  // Added 3.2.8.8 - decremented rannge for dTemp below
-//			ar << m_ColonyNecMaxAmount;   //
-//
-//			// Store some integers, some doubles, and dates as place holders
-//			// As we need to store/retrieve new actual variables, reduce these placeholders appropriately
-//			int iTemp = 0;
-//			double dTemp = 0.0;
-//			COleDateTime dateTemp = COleDateTime(2001,9,11,0,0,0);
-//			int i = 0;
-//			for (i=0;i<8;i++) ar << iTemp;
-//			for (i=0;i<8;i++) ar << dTemp;
-//			for (i=0;i<10;i++) ar << dateTemp;
-//		}
-//
-//		if (FileFormatVersion >= 19)
-//		{
-//			ar << (m_NoResourceKillsColony ? 1 : 0);
-//			ar << (m_SuppPollenAnnual ? 1 : 0);
-//			ar << (m_SuppNectarAnnual ? 1 : 0);
-//		}
-//
-//	}
-//	else
-//	{	// loading code
-//		int TEMP;  //FIX
-//		ar >> name;
-//		ar >> m_InitCond.m_droneAdultInfestField;
-//		ar >> m_InitCond.m_droneBroodInfestField;
-//		ar >> m_InitCond.m_droneMiteOffspringField;
-//		ar >> m_InitCond.m_droneMiteSurvivorshipField;
-//		ar >> m_InitCond.m_workerAdultInfestField;
-//		ar >> m_InitCond.m_workerBroodInfestField;
-//		ar >> m_InitCond.m_workerMiteOffspring;
-//		ar >> m_InitCond.m_workerMiteSurvivorship;
-//		ar >> m_InitCond.m_droneAdultsField;
-//		ar >> m_InitCond.m_droneBroodField;
-//		ar >> m_InitCond.m_droneEggsField;
-//		ar >> m_InitCond.m_droneLarvaeField;
-//		ar >> m_InitCond.m_workerAdultsField;
-//		ar >> m_InitCond.m_workerBroodField;
-//		ar >> m_InitCond.m_workerEggsField;
-//		ar >> m_InitCond.m_workerLarvaeField;
-//		ar >> m_InitCond.m_totalEggsField;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar >> TEMP;
-//			m_InitCond.m_QueenSperm = TEMP;
-//		}
-//		ar >> m_InitCond.m_ForagerLifespan;
-//		ar >> m_InitCond.m_SimStart;
-//		ar >> m_InitCond.m_SimEnd;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//		ar >> TEMP;
-//		m_InitCond.m_MaxEggs = TEMP;
-//		}
-//		if (FileFormatVersion >= 15)
-//		{
-//			ar >> m_InitCond.m_QueenStrength;
-//			queen.SetStrength(m_InitCond.m_QueenStrength);
-//		}
-//		if (FileFormatVersion >= 16) // Added Supplemental Feeding variables
-//		{
-//			int bval;
-//			ar >> m_SuppPollen.m_StartingAmount;
-//			ar >> m_SuppPollen.m_BeginDate;
-//			ar >> m_SuppPollen.m_EndDate;
-//			ar >> bval;
-//			m_SuppPollenEnabled = (bval == 1);
-//			ar >> m_SuppNectar.m_StartingAmount;
-//			ar >> m_SuppNectar.m_BeginDate;
-//			ar >> m_SuppNectar.m_EndDate;
-//			ar >> bval;
-//			m_SuppNectarEnabled = (bval == 1);
-//			ar >> m_ColonyPolInitAmount;
-//			ar >> m_ColonyNecInitAmount;
-//		}
-//
-//		if (FileFormatVersion >= 17) // Added Proportion of Actual Foragers and some spares
-//		{
-//			double paf;
-//			ar >> paf;
-//			foragers.SetPropActualForagers(paf);
-//			ar >> m_ColonyPolMaxAmount;  // Added in 3.2.8.8  Decremented range in dTemp below
-//			ar >> m_ColonyNecMaxAmount;  //
-//
-//			// Load some integers, some doubles, and dates as place holders
-//			// As we need to store/retrieve new actual variables, reduce these placeholders appropriately
-//			int iTemp = 0;
-//			double dTemp = 0.0;
-//			COleDateTime dateTemp = COleDateTime(2001,9,11,0,0,0);
-//			int i = 0;
-//			for (i=0;i<8;i++) ar >> iTemp;
-//			for (i=0;i<8;i++) ar >> dTemp;
-//			for (i=0;i<10;i++) ar >> dateTemp;
-//		}
-//
-//		if (FileFormatVersion >= 19)
-//		{
-//			int bval;
-//			ar >> bval;
-//			m_NoResourceKillsColony = (bval == 1);
-//			
-//			// Added in version 3.2.8.4
-//			ar >> bval;
-//			m_SuppPollenAnnual = (bval == 1);
-//			ar >> bval;
-//			m_SuppNectarAnnual = (bval == 1);
-//		}
-//
-//
-//		Clear();
-//
-//
-//	}
-//
-//	// Now serialize the lists
-//
-//	Wadl.Serialize(ar);
-//	Dadl.Serialize(ar);
-//	foragers.Serialize(ar);
-//	Wlarv.Serialize(ar);
-//	Dlarv.Serialize(ar);
-//	Weggs.Serialize(ar);
-//	Deggs.Serialize(ar);
-//	queen.Serialize(ar);
-//	
-//	if (FileFormatVersion >= 6)
-//	{
-//		m_InitCond.m_EggTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_LarvaeTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_BroodTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_AdultTransitionDRV.Serialize(ar, FileFormatVersion);	
-//		m_InitCond.m_ForagerLifespanDRV.Serialize(ar, FileFormatVersion);	
-//	}	
-//
-//	if (FileFormatVersion >= 12)
-//	{
-//		m_InitCond.m_AdultLifespanDRV.Serialize(ar, FileFormatVersion);	
-//	}	
-//
-//	if (FileFormatVersion >= 8)
-//	{
-//		m_EPAData.Serialize(ar, FileFormatVersion);
-//	}
-//
-//	if (FileFormatVersion >= 14)
-//	{
-//		m_NutrientCT.Serialize(ar);
-//	}
-//
-//	SetInitialized(true);
-//}
-
-//void CColony::Serialize(CArchive& ar, int FileFormatVersion)
-//{
-//	if (ar.IsStoring())
-//	{	// storing code
-//		//  First store the Colony initial condition data
-//		ar << name;
-//		ar << m_InitCond.m_droneAdultInfestField;
-//		ar << m_InitCond.m_droneBroodInfestField;
-//		ar << m_InitCond.m_droneMiteOffspringField;
-//		ar << m_InitCond.m_droneMiteSurvivorshipField;
-//		ar << m_InitCond.m_workerAdultInfestField;
-//		ar << m_InitCond.m_workerBroodInfestField;
-//		ar << m_InitCond.m_workerMiteOffspring;
-//		ar << m_InitCond.m_workerMiteSurvivorship;
-//		ar << m_InitCond.m_droneAdultsField;
-//		ar << m_InitCond.m_droneBroodField;
-//		ar << m_InitCond.m_droneEggsField;
-//		ar << m_InitCond.m_droneLarvaeField;
-//		ar << m_InitCond.m_workerAdultsField;
-//		ar << m_InitCond.m_workerBroodField;
-//		ar << m_InitCond.m_workerEggsField;
-//		ar << m_InitCond.m_workerLarvaeField;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << (int)m_InitCond.m_QueenSperm; // FIX - THIS NEEDS TO CONVERT TO DOUBLE
-//		}
-//		ar << m_InitCond.m_ForagerLifespan;
-//		ar << m_InitCond.m_SimStart;
-//		ar << m_InitCond.m_SimEnd;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << (int)m_InitCond.m_MaxEggs;
-//		}
-//		if (FileFormatVersion >= 15) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar << m_InitCond.m_QueenStrength;
-//		}
-//		if (FileFormatVersion >= 16) // Added Supplemental Feeding variables
-//		{
-//			ar << m_SuppPollen.m_StartingAmount;
-//			ar << m_SuppPollen.m_BeginDate;
-//			ar << m_SuppPollen.m_EndDate;
-//			ar << (m_SuppPollenEnabled ? 1 : 0);
-//			ar << m_SuppNectar.m_StartingAmount;
-//			ar << m_SuppNectar.m_BeginDate;
-//			ar << m_SuppNectar.m_EndDate;
-//			ar << (m_SuppNectarEnabled ? 1 : 0);
-//			ar << m_ColonyPolInitAmount;
-//			ar << m_ColonyNecInitAmount;
-//		}
-//		if (FileFormatVersion >= 17) // Added Proportion of Actual Foragers and some spares
-//		{
-//			ar << foragers.GetPropActualForagers();
-//			ar << m_ColonyPolMaxAmount;  // Added 3.2.8.8 - decremented rannge for dTemp below
-//			ar << m_ColonyNecMaxAmount;   //
-//
-//			// Store some integers, some doubles, and dates as place holders
-//			// As we need to store/retrieve new actual variables, reduce these placeholders appropriately
-//			int iTemp = 0;
-//			double dTemp = 0.0;
-//			COleDateTime dateTemp = COleDateTime(2001, 9, 11, 0, 0, 0);
-//			int i = 0;
-//			for (i = 0;i < 8;i++) ar << iTemp;
-//			for (i = 0;i < 8;i++) ar << dTemp;
-//			for (i = 0;i < 10;i++) ar << dateTemp;
-//		}
-//
-//		if (FileFormatVersion >= 19)
-//		{
-//			ar << (m_NoResourceKillsColony ? 1 : 0);
-//			ar << (m_SuppPollenAnnual ? 1 : 0);
-//			ar << (m_SuppNectarAnnual ? 1 : 0);
-//		}
-//
-//	}
-//	else
-//	{	// loading code
-//		int TEMP;  //FIX
-//		ar >> name;
-//		ar >> m_InitCond.m_droneAdultInfestField;
-//		ar >> m_InitCond.m_droneBroodInfestField;
-//		ar >> m_InitCond.m_droneMiteOffspringField;
-//		ar >> m_InitCond.m_droneMiteSurvivorshipField;
-//		ar >> m_InitCond.m_workerAdultInfestField;
-//		ar >> m_InitCond.m_workerBroodInfestField;
-//		ar >> m_InitCond.m_workerMiteOffspring;
-//		ar >> m_InitCond.m_workerMiteSurvivorship;
-//		ar >> m_InitCond.m_droneAdultsField;
-//		ar >> m_InitCond.m_droneBroodField;
-//		ar >> m_InitCond.m_droneEggsField;
-//		ar >> m_InitCond.m_droneLarvaeField;
-//		ar >> m_InitCond.m_workerAdultsField;
-//		ar >> m_InitCond.m_workerBroodField;
-//		ar >> m_InitCond.m_workerEggsField;
-//		ar >> m_InitCond.m_workerLarvaeField;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar >> TEMP;
-//			m_InitCond.m_QueenSperm = TEMP;
-//		}
-//		ar >> m_InitCond.m_ForagerLifespan;
-//		ar >> m_InitCond.m_SimStart;
-//		ar >> m_InitCond.m_SimEnd;
-//		if (FileFormatVersion <= 14) // Eliminated internal queen variables - now just double QueenStrength
-//		{
-//			ar >> TEMP;
-//			m_InitCond.m_MaxEggs = TEMP;
-//		}
-//		if (FileFormatVersion >= 15)
-//		{
-//			ar >> m_InitCond.m_QueenStrength;
-//			queen.SetStrength(m_InitCond.m_QueenStrength);
-//		}
-//		if (FileFormatVersion >= 16) // Added Supplemental Feeding variables
-//		{
-//			int bval;
-//			ar >> m_SuppPollen.m_StartingAmount;
-//			ar >> m_SuppPollen.m_BeginDate;
-//			ar >> m_SuppPollen.m_EndDate;
-//			ar >> bval;
-//			m_SuppPollenEnabled = (bval == 1);
-//			ar >> m_SuppNectar.m_StartingAmount;
-//			ar >> m_SuppNectar.m_BeginDate;
-//			ar >> m_SuppNectar.m_EndDate;
-//			ar >> bval;
-//			m_SuppNectarEnabled = (bval == 1);
-//			ar >> m_ColonyPolInitAmount;
-//			ar >> m_ColonyNecInitAmount;
-//		}
-//
-//		if (FileFormatVersion >= 17) // Added Proportion of Actual Foragers and some spares
-//		{
-//			double paf;
-//			ar >> paf;
-//			foragers.SetPropActualForagers(paf);
-//			ar >> m_ColonyPolMaxAmount;  // Added in 3.2.8.8  Decremented range in dTemp below
-//			ar >> m_ColonyNecMaxAmount;  //
-//
-//			// Load some integers, some doubles, and dates as place holders
-//			// As we need to store/retrieve new actual variables, reduce these placeholders appropriately
-//			int iTemp = 0;
-//			double dTemp = 0.0;
-//			COleDateTime dateTemp = COleDateTime(2001, 9, 11, 0, 0, 0);
-//			int i = 0;
-//			for (i = 0;i < 8;i++) ar >> iTemp;
-//			for (i = 0;i < 8;i++) ar >> dTemp;
-//			for (i = 0;i < 10;i++) ar >> dateTemp;
-//		}
-//
-//		if (FileFormatVersion >= 19)
-//		{
-//			int bval;
-//			ar >> bval;
-//			m_NoResourceKillsColony = (bval == 1);
-//
-//			// Added in version 3.2.8.4
-//			ar >> bval;
-//			m_SuppPollenAnnual = (bval == 1);
-//			ar >> bval;
-//			m_SuppNectarAnnual = (bval == 1);
-//		}
-//
-//
-//		Clear();
-//
-//
-//	}
-//
-//	// Now serialize the lists
-//
-//	Wadl.Serialize(ar);
-//	Dadl.Serialize(ar);
-//	foragers.Serialize(ar);
-//	Wlarv.Serialize(ar);
-//	Dlarv.Serialize(ar);
-//	Weggs.Serialize(ar);
-//	Deggs.Serialize(ar);
-//	queen.Serialize(ar);
-//
-//	if (FileFormatVersion >= 6)
-//	{
-//		m_InitCond.m_EggTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_LarvaeTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_BroodTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_AdultTransitionDRV.Serialize(ar, FileFormatVersion);
-//		m_InitCond.m_ForagerLifespanDRV.Serialize(ar, FileFormatVersion);
-//	}
-//
-//	if (FileFormatVersion >= 12)
-//	{
-//		m_InitCond.m_AdultLifespanDRV.Serialize(ar, FileFormatVersion);
-//	}
-//
-//	if (FileFormatVersion >= 8)
-//	{
-//		m_EPAData.Serialize(ar, FileFormatVersion);
-//	}
-//
-//	if (FileFormatVersion >= 14)
-//	{
-//		m_NutrientCT.Serialize(ar);
-//	}
-//
-//	SetInitialized(true);
-//}
-//
 
 COleDateTime* CColony::GetDayNumDate(int DayNum)
 {
@@ -1871,6 +1285,38 @@ void CColony::Clear()
 	m_MiteTreatmentInfo.ClearAll();
 	m_RQQueenStrengthArray.RemoveAll();
 	queen.SetStrength(m_InitCond.m_QueenStrength);  // Reset this in case requeening happened, reset to original initial condition
+}
+
+void CColony::SetDefaultInitConditions()
+{
+	// This function sets the ICs to values that will allow the model to run without error.
+
+	m_InitCond.m_droneAdultInfestField = 0;
+	m_InitCond.m_droneBroodInfestField = 0;
+	m_InitCond.m_droneMiteOffspringField = 2.7;
+	m_InitCond.m_droneMiteSurvivorshipField = 100;
+	m_InitCond.m_workerAdultInfestField = 0;
+	m_InitCond.m_workerBroodInfestField = 0;
+	m_InitCond.m_workerMiteOffspring = 1.5;
+	m_InitCond.m_workerMiteSurvivorship = 100;
+	m_InitCond.m_droneAdultsField = 0;
+	m_InitCond.m_droneBroodField = 0;
+	m_InitCond.m_droneEggsField = 0;
+	m_InitCond.m_droneLarvaeField = 0;
+	m_InitCond.m_workerAdultsField = 5000;
+	m_InitCond.m_workerBroodField = 5000;
+	m_InitCond.m_workerEggsField = 5000;
+	m_InitCond.m_workerLarvaeField = 5000;
+	m_InitCond.m_totalEggsField = 0;
+
+	//  From Simulation Initial Conditions
+	m_InitCond.m_QueenStrength = 4;
+	m_InitCond.m_ForagerLifespan = 12;
+	COleDateTime today = COleDateTime::GetCurrentTime();
+	CString m_SimStart = today.Format("%m/%d/%Y");
+	COleDateTime later = today += COleDateTimeSpan(30, 0, 0, 0);
+	CString	m_SimEnd = later.Format("%m/%d/%Y");
+
 }
 
 void CColony::InitializeBees()
@@ -2177,34 +1623,34 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	// At the begining of cold storage no eggs become larvae
 	if (coldStorage.IsStarting())
 	{
-		Weggs.GetCaboose()->SetNumber(0);
-		Deggs.GetCaboose()->SetNumber(0);
+		if (Weggs.GetCaboose() != NULL) Weggs.GetCaboose()->SetNumber(0);
+		if (Deggs.GetCaboose() != NULL) Deggs.GetCaboose()->SetNumber(0);
 	}
 
 	// Update stats for new larvae
-	m_InOutEvent.m_WEggsToLarv = Weggs.GetCaboose()->GetNumber();
-	m_InOutEvent.m_DEggsToLarv = Deggs.GetCaboose()->GetNumber();
+	if (Weggs.GetCaboose() != NULL) m_InOutEvent.m_WEggsToLarv = Weggs.GetCaboose()->GetNumber();
+	if (Deggs.GetCaboose() != NULL) m_InOutEvent.m_DEggsToLarv = Deggs.GetCaboose()->GetNumber();
 
-	Dlarv.Update((CEgg*)Deggs.GetCaboose());
-	Wlarv.Update((CEgg*)Weggs.GetCaboose());
+	if (Deggs.GetCaboose() != NULL) Dlarv.Update((CEgg*)Deggs.GetCaboose());
+	if (Weggs.GetCaboose() != NULL) Wlarv.Update((CEgg*)Weggs.GetCaboose());
 
 	// At the begining of cold storage no larvae become brood
 	if (coldStorage.IsStarting())
 	{
-		Wlarv.GetCaboose()->SetNumber(0);
-		Dlarv.GetCaboose()->SetNumber(0);
+		if (Wlarv.GetCaboose() != NULL) Wlarv.GetCaboose()->SetNumber(0);
+		if (Dlarv.GetCaboose() != NULL) Dlarv.GetCaboose()->SetNumber(0);
 	}
 
 	// Update stats for new brood
-	m_InOutEvent.m_WLarvToBrood = Wlarv.GetCaboose()->GetNumber();
-	m_InOutEvent.m_DLarvToBrood = Dlarv.GetCaboose()->GetNumber();
+	if (Wlarv.GetCaboose() != NULL) m_InOutEvent.m_WLarvToBrood = Wlarv.GetCaboose()->GetNumber();
+	if (Dlarv.GetCaboose() != NULL) m_InOutEvent.m_DLarvToBrood = Dlarv.GetCaboose()->GetNumber();
 
-	CapDrn.Update((CLarva*)Dlarv.GetCaboose());
-	CapWkr.Update((CLarva*)Wlarv.GetCaboose());
+	if (Dlarv.GetCaboose() != NULL) CapDrn.Update((CLarva*)Dlarv.GetCaboose());
+	if (Wlarv.GetCaboose() != NULL) CapWkr.Update((CLarva*)Wlarv.GetCaboose());
 
 	// Update stats for new Adults
-	m_InOutEvent.m_WBroodToAdult = CapWkr.GetCaboose()->GetNumber();
-	m_InOutEvent.m_DBroodToAdult = CapDrn.GetCaboose()->GetNumber();
+	if (CapWkr.GetCaboose() != NULL) m_InOutEvent.m_WBroodToAdult = CapWkr.GetCaboose()->GetNumber();
+	if (CapDrn.GetCaboose() != NULL) m_InOutEvent.m_DBroodToAdult = CapDrn.GetCaboose()->GetNumber();
 
 	int NumberOfNonAdults = Wlarv.GetQuantity() + Dlarv.GetQuantity() + CapDrn.GetQuantity() + CapWkr.GetQuantity();
 
@@ -2239,24 +1685,24 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());
-			Dadl.Update((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
+			if (CapDrn.GetCaboose() != NULL) Dadl.Update((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
 			//TRACE("HB Before Update:%s\n",Wadl.Status());
-			Wadl.Update((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
+			if (CapWkr.GetCaboose() != NULL) Wadl.Update((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
 			//TRACE(" HB After Update:%s\n",Wadl.Status());
 			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose()->number);
 
 			// Update stats for adults becoming foragers
-			m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose()->GetNumber();
+			if (Wadl.GetCaboose() != NULL) m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose()->GetNumber();
 
-			foragers.Update((CAdult*)Wadl.GetCaboose(), this, pEvent);
+			if (Wadl.GetCaboose() != NULL) foragers.Update((CAdult*)Wadl.GetCaboose(), this, pEvent);
 		}
 		else
 		{
 			if (NumberOfNonAdults > 0 && GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs())
 			{
 				// Let's make sure brood are becoming adults
-				Dadl.Add((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
-				Wadl.Add((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
+				if (CapDrn.GetCaboose() != NULL) Dadl.Add((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
+				if (CapWkr.GetCaboose() != NULL) Wadl.Add((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
 			}
 
 			// Update stats for new Foragers
@@ -2266,7 +1712,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		}
 
 		// Update stats for dead Foragers
-		m_InOutEvent.m_DeadForagers = foragers.GetCaboose() ? foragers.GetCaboose()->GetNumber() : 0;
+		if (foragers.GetCaboose() != NULL) m_InOutEvent.m_DeadForagers = foragers.GetCaboose() ? foragers.GetCaboose()->GetNumber() : 0;
 
 		//TRACE("Updated Foragers:%s\n",foragers.Status());
 	}
