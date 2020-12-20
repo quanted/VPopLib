@@ -54,6 +54,7 @@ void WeatherStringToEvent(CString theString, CEvent* pEvent)
 	pEvent->SetRainfall(atof(theToken));
 	theToken = theString.Tokenize(" ,", StrPos);	//Daylight hours
 	pEvent->SetDaylightHours(atof(theToken));
+	pEvent->UpdateForageDayState();
 
 
 	// Need to Set Forage Day and ForageInc too
@@ -100,6 +101,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		theSession.ClearErrorList();
 		theSession.ClearInfoList();
 		theSession.AddToInfoList("Colony Initialized");
+		theSession.SetLatitude(30.0);
 		return true;
 	}
 
@@ -155,6 +157,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		CWeatherEvents* pWeatherEvents = theSession.GetWeather();
 		CEvent* pEvent = new (CEvent);
 		WeatherStringToEvent(WECString, pEvent);  // Consider adding a format ID in the parameter list to allow processing of different weather file formats
+		pEvent->SetDaylightHours(pWeatherEvents->CalcDaylightFromLatitude(30.0, pEvent->GetTime().GetDayOfYear()));
 		pWeatherEvents->AddEvent(pEvent);
 		return true;
 	}

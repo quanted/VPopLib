@@ -53,7 +53,7 @@ public:
 
 	// Egg laying options
 	
-	// This option affect Egg laying. When bellow threshold no egg will be laid.
+	// This option affect Egg laying. When below threshold no egg will be laid.
 	Option<double> DaylightHoursThreshold = 9.5;
 
 	// Adult aging options
@@ -68,10 +68,10 @@ public:
 	// If true:
 	//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
 	//    Windspeed <= 8.94 m/s                AND
-	//    Rainfall <= .197 inches
+	//    Rainfall <= .197 inches (.500 cm)
 	// else if false:
 	//    Windspeed <= 8.94 m/s                AND
-	//    Rainfall <= .197 inches
+	//    Rainfall <= .197 inches  (.500 cm)
 	//
 	// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
 	Option<bool> ShouldForageDayElectionBasedOnTemperatures = true;
@@ -94,7 +94,7 @@ public:
 	
 	// Weather file options
 
-	// If the weather file to be loaded is in bynary format, this specify which format to use
+	// If the weather file to be loaded is in binary format, this specify which format to use
 	// Valid options are:
 	// - Observed
 	// - Modeled

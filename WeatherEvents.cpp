@@ -59,9 +59,41 @@ int CountChars(CString instg, TCHAR testchar)
 	return count;
 }
 
+//// Compute the Forage and ForageInc attributes of a newly created event
+//void UpdateForageAttributeForEvent(CEvent* event, double windSpeed)
+//{
+//	const bool forageDayBasedOnTemperatures = GlobalOptions::Get().ShouldForageDayElectionBasedOnTemperatures();
+//	if (forageDayBasedOnTemperatures)
+//	{
+//		//
+//		// Decide if this is a foraging day.  This requires:
+//		//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
+//		//    Windspeed <= 8.94 m/s                 AND
+//		//    Rainfall <= .197 inches
+//		//
+//		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
+//		event->SetForage((event->GetMaxTemp() > 12.0) && (windSpeed <= GlobalOptions::Get().WindspeedThreshold()) &&
+//			(event->GetMaxTemp() <= 43.33) && (event->GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
+//	}
+//	else
+//	{
+//		//
+//		// Decide if this is a foraging day.  This requires:
+//		//    Windspeed <= 8.94 m/s                AND
+//		//    Rainfall <= .197 inches
+//		//
+//		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
+//		event->SetForage((windSpeed <= GlobalOptions::Get().WindspeedThreshold()) && (event->GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
+//	}
+//	// Here we set the Forage Increment using the default method, may be change later depending on execution options
+//	event->SetForageInc(12.0, event->GetMaxTemp(), event->GetTemp());
+//}
+
+
 // Compute the Forage and ForageInc attributes of a newly created event
-void UpdateForageAttributeForEvent(CEvent* event, double windSpeed)
+void CEvent::UpdateForageAttributeForEvent(double windSpeed)
 {
+	if (windSpeed == -1) windSpeed = GetWindspeed();  // For default, use the current windspeed
 	const bool forageDayBasedOnTemperatures = GlobalOptions::Get().ShouldForageDayElectionBasedOnTemperatures();
 	if (forageDayBasedOnTemperatures)
 	{
@@ -72,8 +104,8 @@ void UpdateForageAttributeForEvent(CEvent* event, double windSpeed)
 		//    Rainfall <= .197 inches
 		//
 		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
-		event->SetForage((event->GetMaxTemp() > 12.0) && (windSpeed <= GlobalOptions::Get().WindspeedThreshold()) &&
-			(event->GetMaxTemp() <= 43.33) && (event->GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
+		SetForage((GetMaxTemp() > 12.0) && (windSpeed <= GlobalOptions::Get().WindspeedThreshold()) &&
+			(GetMaxTemp() <= 43.33) && (GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
 	}
 	else
 	{
@@ -83,10 +115,10 @@ void UpdateForageAttributeForEvent(CEvent* event, double windSpeed)
 		//    Rainfall <= .197 inches
 		//
 		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
-		event->SetForage((windSpeed <= GlobalOptions::Get().WindspeedThreshold()) && (event->GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
+		SetForage((windSpeed <= GlobalOptions::Get().WindspeedThreshold()) && (GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
 	}
 	// Here we set the Forage Increment using the default method, may be change later depending on execution options
-	event->SetForageInc(12.0, event->GetMaxTemp(), event->GetTemp());
+	SetForageInc(12.0, GetMaxTemp(), GetTemp());
 }
 
 
@@ -109,7 +141,7 @@ CEvent::~CEvent()
 }
 
 
-CString CEvent::ToText()
+CString CEvent::ToString()
 {
 	CString EventText;
 	CString theDate = m_Time.Format("%m/%d/%Y");
@@ -118,33 +150,6 @@ CString CEvent::ToText()
 	return EventText;
 }
 
-//void CEvent::Serialize(CArchive& ar)
-//{
-//	int iforage;
-//	if (ar.IsStoring())
-//	{
-//		// TODO: add storing code here
-//		ar << m_Time;
-//		ar << m_Temp;
-//		ar << m_MaxTemp;
-//		ar << m_MinTemp;
-//		ar << m_Rainfall;
-//		ar << (m_ForageDay?1:0);
-//		ar << m_DaylightHours;
-//	}
-//	else
-//	{
-//		// TODO: add loading code here
-//		ar >> m_Time;
-//		ar >> m_Temp;
-//		ar >> m_MaxTemp;
-//		ar >> m_MinTemp;
-//		ar >> m_Rainfall;
-//		ar >> iforage;
-//		m_ForageDay = (iforage==1);
-//		ar >> m_DaylightHours;
-//	}
-//}
 
 
 CEvent::CEvent(CEvent& event)  // Copy Constructor
@@ -194,8 +199,26 @@ double CEvent::GetMinTemp()
 	return pEventTemp;
 }
 
+void CEvent::UpdateForageDayState()
+{
+	// This function determines the value of m_ForageDay based on the values of the CEvent property.  Must be called for each CEvent
+	//
+	// Decide if this is a foraging day.  This requires:
+	//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
+	//    Windspeed <= 21.12 m/s                AND
+	//    Rainfall <= .197 inches
+	//
+	if ((m_Windspeed > 20)	||
+		(m_Temp <= -12.0)	||
+		(m_Temp >= 43.33)	||
+		//(m_Rainfall > 0.325)) m_ForageDay = false;  NOTE:  The value .325 cm was in here until 2021 when it was correctly converted from .197in to .500 cm
+		(m_Rainfall > 0.500)) m_ForageDay = false;
+	else m_ForageDay = true;
+}
+
 bool CEvent::IsForageDay()
 {
+	
 	bool forageDay = m_ForageDay;
 	static call_if_not_calling caller;
 	caller.call([this, &forageDay] {

@@ -47,6 +47,7 @@ protected:
 	CString m_WeatherFileName;
 	bool m_WeatherLoaded;
 	bool m_ShowWarnings;
+	double m_Latitude;  // The latitude of the run.  Defaults to 30degrees N
 
 	//  Errors, Status, etc
 	CStringList m_ErrorList;		//m_ErrorList holds all errors generated in a simulation run.  Can be cleared
@@ -128,6 +129,8 @@ public:
 	bool IsShowWarnings() { return m_ShowWarnings; }
 	void SetShowWarnings(bool Warn) { m_ShowWarnings = Warn; }
 	void SetWeatherLoaded(bool loadcomplete) { m_WeatherLoaded = loadcomplete; }
+	void SetLatitude(double lat) { m_Latitude = lat; }
+	double GetLatitude() { return m_Latitude; }
 
 	// Error/Status list access
 	void ClearErrorList() { m_ErrorList.RemoveAll(); }

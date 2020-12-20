@@ -1631,8 +1631,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	if (Weggs.GetCaboose() != NULL) m_InOutEvent.m_WEggsToLarv = Weggs.GetCaboose()->GetNumber();
 	if (Deggs.GetCaboose() != NULL) m_InOutEvent.m_DEggsToLarv = Deggs.GetCaboose()->GetNumber();
 
-	if (Deggs.GetCaboose() != NULL) Dlarv.Update((CEgg*)Deggs.GetCaboose());
-	if (Weggs.GetCaboose() != NULL) Wlarv.Update((CEgg*)Weggs.GetCaboose());
+	/*if (Deggs.GetCaboose() != NULL) */Dlarv.Update((CEgg*)Deggs.GetCaboose());
+	/*if (Weggs.GetCaboose() != NULL) */Wlarv.Update((CEgg*)Weggs.GetCaboose());
 
 	// At the begining of cold storage no larvae become brood
 	if (coldStorage.IsStarting())
@@ -1645,8 +1645,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	if (Wlarv.GetCaboose() != NULL) m_InOutEvent.m_WLarvToBrood = Wlarv.GetCaboose()->GetNumber();
 	if (Dlarv.GetCaboose() != NULL) m_InOutEvent.m_DLarvToBrood = Dlarv.GetCaboose()->GetNumber();
 
-	if (Dlarv.GetCaboose() != NULL) CapDrn.Update((CLarva*)Dlarv.GetCaboose());
-	if (Wlarv.GetCaboose() != NULL) CapWkr.Update((CLarva*)Wlarv.GetCaboose());
+	/*if (Dlarv.GetCaboose() != NULL) */CapDrn.Update((CLarva*)Dlarv.GetCaboose());
+	/*if (Wlarv.GetCaboose() != NULL) */CapWkr.Update((CLarva*)Wlarv.GetCaboose());
 
 	// Update stats for new Adults
 	if (CapWkr.GetCaboose() != NULL) m_InOutEvent.m_WBroodToAdult = CapWkr.GetCaboose()->GetNumber();
@@ -1685,16 +1685,16 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());
-			if (CapDrn.GetCaboose() != NULL) Dadl.Update((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
+			/*if (CapDrn.GetCaboose() != NULL) */Dadl.Update((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
 			//TRACE("HB Before Update:%s\n",Wadl.Status());
-			if (CapWkr.GetCaboose() != NULL) Wadl.Update((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
+			/*if (CapWkr.GetCaboose() != NULL) */Wadl.Update((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
 			//TRACE(" HB After Update:%s\n",Wadl.Status());
 			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose()->number);
 
 			// Update stats for adults becoming foragers
 			if (Wadl.GetCaboose() != NULL) m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose()->GetNumber();
 
-			if (Wadl.GetCaboose() != NULL) foragers.Update((CAdult*)Wadl.GetCaboose(), this, pEvent);
+			/*if (Wadl.GetCaboose() != NULL) */foragers.Update((CAdult*)Wadl.GetCaboose(), this, pEvent);
 		}
 		else
 		{

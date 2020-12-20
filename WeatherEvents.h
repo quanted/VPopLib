@@ -38,7 +38,7 @@ private:
 public:
 	CEvent();
 	~CEvent();
-	CString ToText(); // Returns a human-readable text version of the event
+	CString ToString(); // Returns a human-readable text version of the event
 	CEvent(CEvent& event);  // Copy Constructor
 	COleDateTime GetTime() {return m_Time;}
 	CString GetDateStg(CString format = "%d/%m/%Y");
@@ -47,6 +47,8 @@ public:
 	double GetMinTemp();
 	double GetRainfall() {return m_Rainfall;}
 	double GetWindspeed() { return m_Windspeed; }
+	void UpdateForageDayState();
+	void UpdateForageAttributeForEvent(double windSpeed = -1);
 	bool IsForageDay();
 	bool IsWinterDay();
 	int GetLineNum() {return m_LineNum;}

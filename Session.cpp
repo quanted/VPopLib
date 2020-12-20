@@ -413,9 +413,11 @@ void CVarroaPopSession::Simulate()
 
 		CString CurSize;
 		CurSize.Format("                                                        Capped  Capped																												              Prop           Conc            Conc                                             ");
-		m_ResultsFileHeader.AddTail(CurSize);
+		//m_ResultsFileHeader.AddTail(CurSize);
+		m_ResultsText.AddTail(CurSize);
 		CurSize.Format("            Colony  Adult     Adult           Active    Drone   Wkr     Drone  Wkr   Drone  Wkr   Total                                                         Free   DBrood WBrood DMite  WMite  Mites  Mites  Colony  Pollen  Colony  Nectar   Dead   Dead   Dead   Dead   Dead    Queen      Ave           Min     Max      Daylight  Forage  Forage");
-		m_ResultsFileHeader.AddTail(CurSize);
+		//m_ResultsFileHeader.AddTail(CurSize);
+		m_ResultsText.AddTail(CurSize);
 
 		CurSize.Format("     Date   Size    Drones    Wkr     Forgrs  Forgrs    Brood   Brood   Larv   Larv  Eggs   Eggs  Eggs      DD      L      N      P       dd       l       n    Mites  Mites  Mites  /Cell  /Cell  Dying  Dying  Pollen  Pest    Nectar  Pest     DLarv  WLarv  DAdlt  WAdlt  Forgrs  Strength   Temp  Rain    Temp    Temp     Hours     Inc     Day");
 		// Append additional command name if InOut statistics are required
@@ -426,7 +428,8 @@ void CVarroaPopSession::Simulate()
 			{
 			CurSize.Format("%s NewWorkerEggs NewDroneEggs WorkerEggsToLarvae DroneEggsToLarvae WorkerLarvaeToBrood DroneLarvaeToBrood WorkerBroodToAdult DroneBroodToAdult DroneAdultsDying ForagersKilledByPesticides WorkerAdultToForagers WinterMortalityForagersLoss ForagersDying", CurSize);
 		}
-		m_ResultsFileHeader.AddTail(CurSize);
+		//m_ResultsFileHeader.AddTail(CurSize);
+		m_ResultsText.AddTail(CurSize);
 
 		CurSize.Format(m_ResultsFileFormatStg,
 			//pEvent->GetDateStg("%m/%d/%Y"), 
