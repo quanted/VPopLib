@@ -20,7 +20,7 @@ class CAdult : public CBee  {
   public:
 	CAdult();
 	CAdult(int Num);
-	CAdult(CAdult* oldAdult);
+	//CAdult(CAdult* oldAdult);
 	void SetLifespan(int span) {m_Lifespan = (float)span;}
 	void SetCurrentAge(float age) {m_CurrentAge = age;}
 	void SetPropVirgins(double prop) {m_Virgins = prop;}
@@ -30,12 +30,12 @@ class CAdult : public CBee  {
 	int GetLifespan() {return int(m_Lifespan);}
 	void SetForageInc( double Inc ) {m_ForageInc = Inc;}
 	double GetForageInc() {return m_ForageInc;}
-	//void Serialize(CArchive &ar);
 	virtual ~CAdult();
 
-	CAdult& operator=(const CAdult& theAdult);
+	//CAdult& operator=(const CAdult& theAdult);
 
 	void SetMites(CMite theMites) {m_Mites = theMites;}
 	CMite GetMites() {return m_Mites;}
+	void Reset();
 
 };

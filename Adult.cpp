@@ -41,6 +41,16 @@ CAdult::~CAdult()
 {
 }
 
+void CAdult::Reset()
+{
+	m_Lifespan = 0;
+	m_CurrentAge = 0;
+	m_Mites = 0;
+	m_Virgins = 0.0;
+	m_ForageInc = 0.0;
+	number = 0;
+}
+
 //void CAdult::Serialize(CArchive& ar) 
 //{
 //	CBee::Serialize(ar);

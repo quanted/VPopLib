@@ -17,6 +17,7 @@ public:
 	CEgg();
 	CEgg(int Num) {number = Num;}
 	virtual ~CEgg();
+	//void Reset();
 
 };
 

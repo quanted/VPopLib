@@ -35,6 +35,7 @@ public:
 	int GetNumber() {return number;}
 	void Kill() {Alive = false; number = 0;}
 	bool IsAlive() {return Alive;}
+	void Reset();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

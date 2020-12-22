@@ -24,6 +24,15 @@ CLarva::~CLarva()
 {
 }
 
+void CLarva::Reset()
+{
+	infested = false;
+	fertilized = false;
+	mites = 0;
+	infestProbability = 0.0;
+
+}
+
 
 //void CLarva::Serialize(CArchive& ar) 
 //{

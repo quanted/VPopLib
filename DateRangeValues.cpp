@@ -16,7 +16,7 @@
 CDateRangeValues::CDateRangeValues()
 {
     pItemList = new CObList();
-    SetEnabled(true);
+    SetEnabled(false);
 }
 
 CDateRangeValues::~CDateRangeValues()

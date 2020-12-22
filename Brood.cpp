@@ -25,6 +25,10 @@ CBrood::~CBrood()
 {
 }
 
+void CBrood::Reset()
+{
+	m_Mites = 0;
+}
 
 //void CBrood::Serialize(CArchive& ar) 
 //{

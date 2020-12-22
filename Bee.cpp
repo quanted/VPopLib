@@ -27,6 +27,13 @@ CBee::~CBee()
 {
 }
 
+void CBee::Reset()
+{
+	number = 0;
+	age = 0.0;
+	Alive = true;
+}
+
 CBee CBee::operator = (CBee& bee)
 {
 	CBee temp;

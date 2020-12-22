@@ -51,8 +51,9 @@ protected:
 	CDateRangeValues* m_pDRVList;
 
 public:
-	CBeelist(){}
+	CBeelist();
 	~CBeelist();
+	void Create(const int Length);
 	void SetLength(int len) {m_ListLength = len;}
 	int GetLength() {return m_ListLength;}
 	int GetQuantity();
@@ -62,10 +63,10 @@ public:
 	void SetQuantityAt(int from, int to, int Quan);
 	void SetQuantityAtProportional(int from, int to, double Proportion);
 	void KillAll();
+	void RemoveListElements();
 	void SetColony(CColony* pCol) {m_pColony = pCol;}
 	CColony* GetColony() {return m_pColony;}
-	void AddMember(CBee* element);
-	//virtual void Serialize(CArchive &ar) = 0;
+	//void AddMember(CBee& element);
 	CString Status();
 	void FactorQuantity(double factor);
 	//void SetQuantityAt(int Quan);
@@ -86,46 +87,22 @@ public:
 class CAdultlist : public CBeelist
 {
 protected:
-	CAdult* Caboose;
+	CAdult Caboose;
 public:
 
-	CAdultlist() {Caboose = NULL;}	
-	CAdult* GetCaboose() {return Caboose;}
-	void ClearCaboose() {Caboose = NULL;}
+	CAdultlist();
+	void Create(const int Length);
+	CAdult& GetCaboose() {return Caboose;}
+	void ClearCaboose() {Caboose.Reset();}
 	//! Add method simply add theBrood to the Adults without making the adults age
-	void Add(CBrood* theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
-	void Update(CBrood* theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
-	//void Serialize(CArchive &ar);
+	void Add(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
+	void Update(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
 	void KillAll();
 	void UpdateLength(int len, bool bWorker = true);
 	int MoveToEnd(int QuantityToMove, int MinAge);
 };
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// CForagerlist - this is a type of CAdultList implementing Forager behaviors
-//
-class CForagerlist : public CAdultlist
-{
-private:
-	CAdultlist PendingForagers;
-	CAdult m_UnemployedForagers;
-	double m_PropActualForagers;
 
-public:
-	CForagerlist();
-	~CForagerlist();
-	void Update(CAdult* theAdult, CEvent* theEvent);
-	void ClearPendingForagers();
-	void KillAll();
-	int GetQuantity();  // Total Forarger Quantity including UnemployedForagers
-	int GetActiveQuantity(); // Total Forager Quantity minus UnemployedForagers
-	int GetUnemployedQuantity();
-	void SetUnemployedForagerQuantity(int Quan) { m_UnemployedForagers.SetNumber(Quan); }
-	void SetLength(int len);
-	void SetPropActualForagers(double proportion) { m_PropActualForagers = proportion; }
-	double GetPropActualForagers() { return m_PropActualForagers; }
-};
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -142,13 +119,13 @@ private:
 public:
 	CForagerlistA();
 	~CForagerlistA();
-	void Update(CAdult* theAdult, CColony* theColony, CEvent* theEvent);
+	void Create(const int Length);
+	void Update(CAdult& theAdult, CColony* theColony, CEvent* theEvent);
 	void ClearPendingForagers();
 	void KillAll();
 	int GetQuantity();  // Total Forarger Quantity including UnemployedForagers
 	int GetActiveQuantity(); // Total Forager Quantity minus UnemployedForagers
 	int GetUnemployedQuantity();
-	//void SetUnemployedForagerQuantity(int Quan) { m_UnemployedForagers.SetNumber(Quan); }
 	void SetLength(int len);
 	void SetPropActualForagers(double proportion) { m_PropActualForagers = proportion; }
 	double GetPropActualForagers() { return m_PropActualForagers; }
@@ -162,17 +139,17 @@ public:
 class CBroodlist : public CBeelist
 {
 protected:
-	CBrood* Caboose;
+	CBrood Caboose;
 public:
 	double GetMitesPerCell();
-	void Update(CLarva* theLarva);
-	//void Serialize(CArchive &ar);
+	void Create(const int Length);
+	void Update(CLarva& theLarva);
 	int GetMiteCount();
 	void KillAll();
 	void DistributeMites(CMite theMites);
 	float GetPropInfest();
-	CBrood* GetCaboose() {return Caboose;}
-	void ClearCaboose() {Caboose = NULL;}
+	CBrood GetCaboose() {return Caboose;}
+	void ClearCaboose() {Caboose.SetNumber(0);}
 };
 
 
@@ -183,13 +160,14 @@ public:
 class CLarvalist : public CBeelist
 {
 protected:
-	CLarva* Caboose;
+	CLarva Caboose;
 public:
-	void Update(CEgg* theEggs);
-	//void Serialize(CArchive &ar);
-	CLarva* GetCaboose() {return Caboose;}
+	void AddHead(CLarva* plarv);
+	void Update(CEgg& theEggs);
+	void Create(const int Length);
+	CLarva GetCaboose() {return Caboose;}
 	void KillAll();
-	void ClearCaboose() {Caboose = NULL;}
+	void ClearCaboose() {Caboose.SetNumber(0);}
 };
 
 
@@ -200,13 +178,13 @@ public:
 class CEgglist : public CBeelist
 {
 protected:
-	CEgg* Caboose;
+	CEgg Caboose;
 public:
-	void Update(CEgg* theEggs);
-	//void Serialize(CArchive &ar);
+	void Update(CEgg& theEggs);
 	void KillAll();
-	CEgg* GetCaboose() {return Caboose;}
-	void ClearCaboose() {Caboose = NULL;}
+	void Create(const int Length);
+	CEgg GetCaboose() {return Caboose;}
+	void ClearCaboose() {Caboose.SetNumber(0);}
 };
 
 
@@ -394,6 +372,7 @@ protected:
 	void SetDefaultInitConditions();
 
 public:
+	void Create();
 	void SetSession(CVarroaPopSession* pSession) { m_pSession = pSession; }
 	int m_MitesDyingThisPeriod;
 	int GetMitesDyingThisPeriod();

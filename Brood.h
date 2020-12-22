@@ -24,6 +24,7 @@ public:
 	CBrood(int Num) {number = Num; m_Mites = 0;}
 	//void Serialize(CArchive& ar);
 	virtual ~CBrood();
+	void Reset();
 
 };
 

@@ -97,11 +97,12 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 	bool vplib::InitializeModel()
 	{
 		CColony* pColony = theSession.GetColony();
-		pColony->InitializeColony();
+		pColony->Create();  
+		//pColony->InitializeColony();
 		theSession.ClearErrorList();
 		theSession.ClearInfoList();
-		theSession.AddToInfoList("Colony Initialized");
 		theSession.SetLatitude(30.0);
+		theSession.AddToInfoList("Model Initialized");
 		return true;
 	}
 
@@ -157,7 +158,8 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		CWeatherEvents* pWeatherEvents = theSession.GetWeather();
 		CEvent* pEvent = new (CEvent);
 		WeatherStringToEvent(WECString, pEvent);  // Consider adding a format ID in the parameter list to allow processing of different weather file formats
-		pEvent->SetDaylightHours(pWeatherEvents->CalcDaylightFromLatitude(30.0, pEvent->GetTime().GetDayOfYear()));
+		pEvent->SetDaylightHours(pWeatherEvents->CalcDaylightFromLatitude(30.0, pEvent->GetTime().GetDayOfYear()));  // NOTE:  Generalize - set (or default) latitude somewhere else.
+		pEvent->UpdateForageAttributeForEvent(pEvent->GetWindspeed());
 		pWeatherEvents->AddEvent(pEvent);
 		return true;
 	}

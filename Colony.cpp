@@ -11,6 +11,7 @@
 #include "cstring.format.h"
 #include "coledatetime.h"
 #include "session.h"
+#include "coblist.h"
 #include <math.h>
 
 #ifdef _DEBUG
@@ -30,7 +31,10 @@ int CBeelist::DroneCount = 0;
 int CBeelist::ForagerCount = 0;
 int CBeelist::WorkerCount = 0;
 
+CBeelist::CBeelist()
+{
 
+}
 
 CBeelist::~CBeelist()
 {
@@ -64,6 +68,12 @@ void CBeelist::KillAll()
 		theBee->Alive=false;
 		theBee->SetNumber(0);
 	}
+}
+
+void CBeelist::RemoveListElements()
+{
+	while (!IsEmpty()) delete (RemoveHead());
+	RemoveAll();
 }
 
 // Returns the quantity of bees in this boxcar.  Note this is zero-based so the first boxcar is index = 0
@@ -156,6 +166,16 @@ void CBeelist::FactorQuantity(double factor)
 
 }
 
+void CBeelist::Create(const int Length)
+{
+	RemoveListElements();
+	for (int i = 0; i < Length; i++)
+	{
+		CBee* pBee = new CBee(0);
+		AddHead(pBee);
+	}
+}
+
 CString CBeelist::Status()
 {
 	POSITION pos = GetHeadPosition();
@@ -175,259 +195,6 @@ CString CBeelist::Status()
 
 
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// CForagerlist - this is a type of CAdultList implementing Forager behaviors
-//
-CForagerlist::CForagerlist() : CAdultlist::CAdultlist()
-{
-	PendingForagers.RemoveAll();
-	m_PropActualForagers = .8;
-}
-
-CForagerlist::~CForagerlist()
-{
-	while(!PendingForagers.IsEmpty()) delete(PendingForagers.RemoveHead());
-	PendingForagers.RemoveAll();
-}
-
-
-void CForagerlist::ClearPendingForagers()
-{
-	while (!PendingForagers.IsEmpty())
-	{
-		CAdult* temp = (CAdult*)PendingForagers.RemoveHead();
-		ASSERT(temp);
-		delete(temp);
-	}
-}
-
-int CForagerlist::GetQuantity()
-{
-	int quan = CBeelist::GetQuantity();
-	POSITION pos = PendingForagers.GetHeadPosition();
-	CAdult* temp;
-	while (pos != NULL)
-	{
-		temp = (CAdult*)PendingForagers.GetNext(pos);
-		quan += temp->GetNumber();
-	}
-	quan += m_UnemployedForagers.GetNumber();
-	return quan;
-}
-
-int CForagerlist::GetActiveQuantity()
-{
-	return (GetQuantity() - m_UnemployedForagers.GetNumber());
-}
-
-int CForagerlist::GetUnemployedQuantity()
-{
-	return m_UnemployedForagers.GetNumber();
-}
-
-void CForagerlist::KillAll()
-{
-	CBeelist::KillAll();
-	SetUnemployedForagerQuantity(0);
-	//Caboose->SetNumber(0);
-}
-
-void CForagerlist::Update(CAdult* theAdult, CEvent* theDay)
-// The Adult Workers coming in are added to the Forager list.
-// If the day is a foraging day, the new adult is pushed onto 
-// the Pending Forager list and the list is aged one forage increment(.25, .5, .75, or 1.0)
-// Then the Pending Forager list is scanned and any elements that have accumulated
-// at least one foraging day are moved to the Forager list.  If the day is not a foraging
-// day, the number of number of bees coming in are just added to the number of 
-// bees in the first boxcar.  Also, a check is
-// done on the foragers to see if they have had their lifetime reduced
-// due to varroa infestation.
-//
-// March 2017:  Update to limit active forager population to a proportion of total colony size.
-//
-//	Reference Gloria DeGrandi-Hoffman "Establishing the foraging population in VARROAPOP"  3/23/2017
-//
-// Incoming foragers are all added to the UnemployedForager bucket.  Then a quantity of foragers = PropActiveForagers * ColonySize
-// is moved from this bucket and added to the first forager boxcar.  If not enough foragers are available in UnemployedForager then
-// move all the foragers in UnemployedForager and be done.
-
-{
-	// We will either add adults to the existing first boxcar or we will add a new boxcar
-	bool AddToFirstBoxcar = true;
-
-	// 10% of foragers die over the winter 11/1 - 4/1
-	if (theDay->GetTime() > COleDateTime(2000,4,15,0,0,0))
-	{
-		int i=0;
-	}
-#define WINTER_MORTALITY_PER_DAY 0.10/152 // Reduce 10% over the 152 days of winter
-	ASSERT(theAdult);
-	// Change lifespan from that of Worker to that of forager
-	WorkerCount--;
-	ForagerCount++;
-	theAdult->SetLifespan(GetColony()->m_CurrentForagerLifespan); 
-
-	if (theDay->IsForageDay())							 
-	{
-		/****  Bypass the Pending Forager logic - too complicated for not much value.  All foraging days age one day
-		PendingForagers.AddHead(theAdult);
-
-		POSITION pos = PendingForagers.GetHeadPosition();
-		CAdult* pendingAdult;
-		while (pos != NULL) // Increment the forageIncrement for Pending List
-		{
-			pendingAdult = (CAdult*)PendingForagers.GetNext(pos);
-			pendingAdult->SetForageInc(theAdult->GetForageInc()+theDay->GetForageInc());
-		}
-		pos = PendingForagers.GetTailPosition();
-		POSITION oldpos;
-		while (pos != NULL)
-		{
-			oldpos = pos;  // Save old position for possible deletion
-			pendingAdult = (CAdult*)PendingForagers.GetPrev(pos);
-			if (pendingAdult->GetForageInc() >= 1.0) // Ready to move some forward now
-			{
-				pendingAdult->SetForageInc(0.0);
-				//AddHead(pendingAdult); // Add the appropriate incoming adults to the first boxcar in forager list.
-				m_UnemployedForagers.SetNumber(m_UnemployedForagers.GetNumber() + pendingAdult->GetNumber());
-				AddToFirstBoxcar = false;
-
-				PendingForagers.RemoveAt(oldpos);
-				if (GetCount() >= m_ListLength+1) 
-				{
-					Caboose = (CAdult*)RemoveTail();
-					delete Caboose;
-					ForagerCount--;
-					Caboose = NULL;
-				}
-				else Caboose = NULL;
-			}
-		}
-		**********  End of Pending Forager logic  */
-		m_UnemployedForagers.SetNumber(m_UnemployedForagers.GetNumber() + theAdult->GetNumber());
-		AddToFirstBoxcar = false;
-
-	}
-	else  //Non-forage day
-	{
-		if (IsEmpty()) 
-		{
-		   if (GetLength() > 0) // In special case of 0 lifespan, don't add head
-		   {
-			   //AddHead(theAdult); 
-			   m_UnemployedForagers.SetNumber(m_UnemployedForagers.GetNumber() + theAdult->GetNumber());
-			   AddToFirstBoxcar = false;
-		   }
-		}
-		else
-		{
-			m_UnemployedForagers.SetNumber(m_UnemployedForagers.GetNumber() + theAdult->GetNumber());
-			AddToFirstBoxcar = true;
-		}
-	}
-
-	// Calculate how many new foragers we have.  Total DesiredForager count is ColonySize*m_PropActualForagers.  If 
-	// The NewForagerNumber is the difference between the current active forager quantity and the Desired Forager quantity
-	int NewForagerNumber = (int)(m_pColony->GetColonySize() * m_PropActualForagers) - GetActiveQuantity();
-	if (NewForagerNumber < 0) NewForagerNumber = 0;
-	if (NewForagerNumber > m_UnemployedForagers.GetNumber()) NewForagerNumber = m_UnemployedForagers.GetNumber(); //Limit to available potential foragers
-	int uf = m_UnemployedForagers.GetNumber() - NewForagerNumber;
-	m_UnemployedForagers.SetNumber(uf);
-
-	if (m_UnemployedForagers.GetNumber() > 0)//test
-	{
-		int i = 1;
-	}
-
-	if (AddToFirstBoxcar)
-	{
-		CAdult* ForagerHead = (CAdult*)GetHead();
-		ForagerHead->SetNumber(ForagerHead->GetNumber() + NewForagerNumber);
-
-	}
-	else
-	{
-		CAdult* NewBoxcar = new CAdult(NewForagerNumber);
-		AddHead(NewBoxcar);
-		delete theAdult;
-		Caboose = (CAdult*)RemoveTail();
-		delete Caboose;
-		Caboose = NULL;
-	}
-	
-	TRACE("Unemployed Foragers %s --- %d\n", theDay->GetDateStg(), m_UnemployedForagers.GetNumber());
-
-	// Check for lifespan reduction
-	if (true) // Turn on or off
-	{
-		CAdult* ListAdult;
-		double PropRedux;
-		POSITION pos = GetHeadPosition();
-		int day = WADLLIFE + 1;
-		while (pos!=NULL)
-		{
-			ListAdult = (CAdult*)GetNext(pos);
-			if (ListAdult->IsAlive()) // If already killed, don't kill again
-			{
-				if (ListAdult->GetNumber()<=0) PropRedux = m_pColony->LongRedux[0];
-				else PropRedux = m_pColony->LongRedux[int(ListAdult->GetMites()/ListAdult->GetNumber())];
-				if (day>(1-PropRedux)*(WADLLIFE+ GetColony()->m_CurrentForagerLifespan)) 
-				{
-					ListAdult->Kill();
-				}
-			}
-			day++;
-		}
-	}
-
-	//  Is this a winter mortality day?
-	if ((theDay->GetTime().GetMonth() >= 11) || (theDay->GetTime().GetMonth() < 4))
-	{
-		POSITION pos = GetHeadPosition();
-		CAdult* theForager;
-		int Number;
-		while (pos != NULL)
-		{
-			theForager = (CAdult*)GetNext(pos);
-			Number = theForager->GetNumber();
-			Number = int(Number*(1-WINTER_MORTALITY_PER_DAY));
-			theForager->SetNumber(Number);
-		}
-		// Mortality for Unemployed Foragers
-		Number = m_UnemployedForagers.GetNumber();
-		Number = (int)(Number * (1.0-WINTER_MORTALITY_PER_DAY));
-		m_UnemployedForagers.SetNumber(Number);
-	}
-
-
-}
-
-void CForagerlist::SetLength(int len)
-{
-	// Because forager lifespan can change as a function of Date/Time spans, SetLength is different than all the other life stages
-	// If the desired length is greater than the current length, new, empty boxcars are added to the list.  If the desired length
-	// is shorter than the current length, the excess tail boxcars are removed.
-	CAdult* pForager;
-	if (len < GetCount())
-	{
-		while((GetCount() > len) && (GetCount() > 0)) // Delete all boxcars over new age value
-		{
-			pForager = (CAdult*)RemoveTail();
-			delete pForager;      
-		}
-	}
-	else if (len > GetCount())
-	{
-		while(GetCount() < len)
-		{
-			pForager = new CAdult(0);            
-			AddTail(pForager);
-		}
-	}
-	m_ListLength = len;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -492,7 +259,14 @@ void CForagerlistA::KillAll()
 	//Caboose->SetNumber(0);
 }
 
-void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
+
+void CForagerlistA::Create(const int Length)
+{
+	SetLength(Length);
+}
+
+
+void CForagerlistA::Update(CAdult& theAdult, CColony* theColony, CEvent* theDay)
 // The Adult Workers coming in are added to the Forager list.
 // If the day is a foraging day, the new adult is pushed onto 
 // the Pending Forager list and the list is aged one forage increment(.25, .5, .75, or 1.0)
@@ -517,16 +291,16 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 {
 	// 10% of foragers die over the winter 11/1 - 4/1
 #define WINTER_MORTALITY_PER_DAY 0.10/152 // Reduce 10% over the 152 days of winter
-	if (theAdult == NULL)
-	{
-		// make sure we have an adult box card used to age the foragers list even during winter
-		theAdult = new CAdult(0);
-	}
+	//if (theAdult == NULL)
+	//{
+	//	// make sure we have an adult box card used to age the foragers list even during winter
+	//	theAdult = new CAdult(0);
+	//}
 	// Change lifespan from that of Worker to that of forager
 	WorkerCount--;
 	ForagerCount++;
-	theAdult->SetLifespan(GetColony()->m_CurrentForagerLifespan);
-	theAdult->SetCurrentAge(0.0);
+	theAdult.SetLifespan(GetColony()->m_CurrentForagerLifespan);
+	theAdult.SetCurrentAge(0.0);
 
 	const bool pendingForagersFirst = GlobalOptions::Get().ShouldForagersAlwaysAgeBasedOnForageInc();
 	if (pendingForagersFirst)
@@ -534,7 +308,14 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 		// Add the Adult to the Pending Foragers list
 		if (PendingForagers.GetCount() == 0)
 		{
-			PendingForagers.AddHead(theAdult);
+			CAdult* addAdult = new CAdult();
+			addAdult->SetCurrentAge(theAdult.GetCurrentAge()); 
+			addAdult->SetForageInc(theAdult.GetForageInc());
+			addAdult->SetLifespan(theAdult.GetLifespan());
+			addAdult->SetMites(theAdult.GetMites());
+			addAdult->SetNumber(theAdult.GetNumber());
+			addAdult->SetPropVirgins(theAdult.GetPropVirgins());
+			PendingForagers.AddHead(addAdult);
 		}
 		else
 		{
@@ -543,13 +324,20 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 			CAdult* pendingAdult = (CAdult*)PendingForagers.GetNext(pos);
 			if (pendingAdult->GetForageInc() == 0.0)
 			{
-				pendingAdult->SetNumber(pendingAdult->GetNumber() + theAdult->GetNumber());
-				delete theAdult;
+				pendingAdult->SetNumber(pendingAdult->GetNumber() + theAdult.GetNumber());
+				theAdult.Reset();
 				ForagerCount--;
 			}
 			else
 			{
-				PendingForagers.AddHead(theAdult);
+				CAdult* addAdult = new CAdult();
+				addAdult->SetCurrentAge(theAdult.GetCurrentAge());
+				addAdult->SetForageInc(theAdult.GetForageInc());
+				addAdult->SetLifespan(theAdult.GetLifespan());
+				addAdult->SetMites(theAdult.GetMites());
+				addAdult->SetNumber(theAdult.GetNumber());
+				addAdult->SetPropVirgins(theAdult.GetPropVirgins());
+				PendingForagers.AddHead(addAdult);
 			}
 		}
 	}
@@ -558,7 +346,15 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 	{
 		if (!pendingForagersFirst)
 		{
-			PendingForagers.AddHead(theAdult);
+			CAdult* addAdult = new CAdult();
+			addAdult->SetCurrentAge(theAdult.GetCurrentAge());
+			addAdult->SetForageInc(theAdult.GetForageInc());
+			addAdult->SetLifespan(theAdult.GetLifespan());
+			addAdult->SetMites(theAdult.GetMites());
+			addAdult->SetNumber(theAdult.GetNumber());
+			addAdult->SetPropVirgins(theAdult.GetPropVirgins());
+			PendingForagers.AddHead(addAdult);
+
 		}
 
 		POSITION pos = PendingForagers.GetHeadPosition();
@@ -602,24 +398,35 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 		}
 		else delete foragersHead;
 		// If the foragers list is full let's remove the oldest hive
-		if (GetCount() == m_ListLength + 1)
+		if (GetCount() >= m_ListLength + (int)1)
 		{
-			Caboose = (CAdult*)RemoveTail();
+			Caboose = *((CAdult*)RemoveTail());
 			ForagerCount--;
 		}
-		else Caboose = NULL;
+		else Caboose.Reset();
 	}
 	else if (!pendingForagersFirst)
 	{
 		if (IsEmpty())
 		{
-			if (GetLength() > 0) AddHead(theAdult); // In special case of 0 lifespan, don't add head
+			if (GetLength() > 0)
+			{
+				CAdult* addAdult = new CAdult();
+				addAdult->SetCurrentAge(theAdult.GetCurrentAge());
+				addAdult->SetForageInc(theAdult.GetForageInc());
+				addAdult->SetLifespan(theAdult.GetLifespan());
+				addAdult->SetMites(theAdult.GetMites());
+				addAdult->SetNumber(theAdult.GetNumber());
+				addAdult->SetPropVirgins(theAdult.GetPropVirgins());
+				PendingForagers.AddHead(addAdult);
+				AddHead(addAdult); // In special case of 0 lifespan, don't add head
+			}
 		}
 		else
 		{
 			CAdult* ForagerHead = (CAdult*)GetHead();
-			ForagerHead->SetNumber(ForagerHead->GetNumber() + theAdult->GetNumber());
-			delete theAdult;
+			ForagerHead->SetNumber(ForagerHead->GetNumber() + theAdult.GetNumber());
+			theAdult.Reset();
 			ForagerCount--;
 		}
 	}
@@ -638,7 +445,7 @@ void CForagerlistA::Update(CAdult* theAdult, CColony* theColony, CEvent* theDay)
 			{
 				if (ListAdult->GetNumber() <= 0) PropRedux = m_pColony->LongRedux[0];
 				else PropRedux = m_pColony->LongRedux[int(ListAdult->GetMites() / ListAdult->GetNumber())];
-				if (day>(1 - PropRedux)*(WADLLIFE + GetColony()->m_CurrentForagerLifespan))
+				if (day>(1 - PropRedux)*((int)WADLLIFE + GetColony()->m_CurrentForagerLifespan))
 				{
 					ListAdult->Kill();
 				}
@@ -701,17 +508,23 @@ void CForagerlistA::SetLength(int len)
 //
 // CAdultlist - Drones and Workers
 //
-void CAdultlist::Add(CBrood* theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
+
+CAdultlist::CAdultlist()
 {
-	ASSERT(theBrood);
+	Caboose.Reset();
+}
+
+void CAdultlist::Add(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
+{
+	//ASSERT(theBrood);
 	{
-		CAdult* theAdult = new CAdult(theBrood->GetNumber());
+		CAdult* theAdult = new CAdult(theBrood.GetNumber());
 		if (bWorker) WorkerCount++;
 		else DroneCount++;
-		theAdult->SetMites(theBrood->m_Mites);
-		theAdult->SetPropVirgins(theBrood->m_PropVirgins);
+		theAdult->SetMites(theBrood.m_Mites);
+		theAdult->SetPropVirgins(theBrood.m_PropVirgins);
 		theAdult->SetLifespan(WADLLIFE);
-		delete theBrood;  // These brood are now  gone
+		theBrood.Reset();  // These brood are now  gone
 
 		POSITION pos = GetHeadPosition();
 		CAdult* adult = (CAdult*)GetNext(pos);
@@ -727,7 +540,7 @@ void CAdultlist::Add(CBrood* theBrood, CColony* theColony, CEvent* theEvent, boo
 		}
 	}
 }
-void CAdultlist::Update(CBrood* theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
+void CAdultlist::Update(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
 // The Capped Brood coming in are converted to Adults and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose for Workers or the 
@@ -740,38 +553,40 @@ void CAdultlist::Update(CBrood* theBrood, CColony* theColony, CEvent* theEvent, 
 //
 // When the following are all true (non-foraging day, no brood, no larvae), do not age the adults
 {
-	ASSERT(theBrood);
+	//ASSERT(theBrood);
 	//int NumberOfNonAdults = theColony->Wlarv.GetQuantity() +  theColony->Dlarv.GetQuantity() + 
 	//	theColony->CapDrn.GetQuantity() + theColony->CapWkr.GetQuantity() + theBrood->GetNumber();
 	//if (Caboose != NULL) Caboose->SetNumber(0); // Initialize the Caboose to zero - will pass 0 Adults to foragers unless aging occurs
 	//if (( theBrood->GetNumber() > 0) || (NumberOfNonAdults > 0) || (theEvent->IsForageDay())) // Age if any of these are true
 	{
-		CAdult* theAdult = new CAdult(theBrood->GetNumber());
+		CAdult* theAdult = new CAdult(theBrood.GetNumber());
 		if (bWorker) WorkerCount++;
 		else DroneCount++;
-		theAdult->SetMites(theBrood->m_Mites);
-		theAdult->SetPropVirgins(theBrood->m_PropVirgins);
+		theAdult->SetMites(theBrood.m_Mites);
+		theAdult->SetPropVirgins(theBrood.m_PropVirgins);
 		theAdult->SetLifespan(WADLLIFE);
-		delete theBrood;  // These brood are now  gone
+		theBrood.Reset();  // These brood are now  gone
 		AddHead(theAdult);
 		int count = GetCount();
-		if (GetCount() == m_ListLength+1) // All Boxcars are full - put workers in caboose, drones die off
+		if (GetCount() >= m_ListLength + (int)1) // All Boxcars are full - put workers in caboose, drones die off
 		{
-			Caboose = (CAdult*)RemoveTail();
-			Caboose->number *= GetPropTransition();
+			CAdult* pAdult = (CAdult*)RemoveTail();
+			Caboose.age = pAdult->age;
+			Caboose.Alive = pAdult->Alive;
+			Caboose.number = pAdult->number;
+			Caboose.number *= GetPropTransition();
 			if (!bWorker) 
 			{
 				// Update stats for dead drones
-				theColony->m_InOutEvent.m_DeadDAdults = Caboose->GetNumber();
+				theColony->m_InOutEvent.m_DeadDAdults = Caboose.GetNumber();
 
-				delete Caboose;
+				Caboose.Reset();
 				DroneCount--;
-				Caboose = NULL;
 			}
 		}
 		else 
 		{
-			Caboose = NULL;
+			Caboose.Reset();
 		}
 
 		// Check for age beyond reduced lifespan in workers
@@ -827,7 +642,7 @@ void CAdultlist::UpdateLength(int len, bool bWorker)
 				AdultsToForagers+= pAdult->GetNumber();
 				delete pAdult;      
 			}
-			Caboose->number += AdultsToForagers;
+			Caboose.number += AdultsToForagers;
 		}
 		else if (len > GetCount()) //Add empty boxcars
 		{
@@ -872,27 +687,42 @@ int CAdultlist::MoveToEnd(int QuantityToMove, int MinAge)
 	return TotalMoved;
 }
 
-
+void CAdultlist::Create(const int Length)
+{
+	RemoveListElements();
+	for (int i = 0; i < Length; i++)
+	{
+		CAdult* pAdult = new CAdult(0);
+		AddHead(pAdult);
+	}
+}
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // CBroodlist - capped brood
 //
-void CBroodlist::Update(CLarva* theLarva)
+void CBroodlist::Update(CLarva& theLarva)
 // The Larva coming in are converted to Capped Brood and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
 {
-	ASSERT(theLarva);
-	CBrood* theBrood = new CBrood((int)theLarva->GetNumber());
-	delete theLarva;  // These larvae are now  gone
+	//ASSERT(theLarva);
+	CBrood* theBrood = new CBrood((int)theLarva.GetNumber());
+	theLarva.Reset();  // These larvae are now  gone
 	AddHead(theBrood);
-	if (GetCount() == m_ListLength+1)
+	if (GetCount() >= m_ListLength + (int)1)
 	{
-		Caboose = (CBrood*)RemoveTail();
-		Caboose->number *= GetPropTransition();
+		CBrood* tail = (CBrood*)RemoveTail();
+		Caboose.age = tail->age;
+		Caboose.Alive = tail->Alive;
+		Caboose.number = tail->number;
+		Caboose.m_Mites = tail->m_Mites;
+		Caboose.m_PropVirgins = tail->m_PropVirgins;
+		//CBrood* pTail = (CBrood*)RemoveTail();
+		//Caboose = *pTail;
+		Caboose.number *= GetPropTransition();
 	}
-	else Caboose = NULL;
+	else Caboose.Reset();
 
 }
 
@@ -965,27 +795,39 @@ void CBroodlist::DistributeMites(CMite theMites)
 	}
 }
 
+void CBroodlist::Create(const int Length)
+{
+	RemoveListElements();
+	for (int i = 0; i < Length; i++)
+	{
+		CBrood* pBrood = new CBrood(0);
+		AddHead(pBrood);
+	}
+}
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // CLarvalist
 //
-void CLarvalist::Update(CEgg* theEggs)
+void CLarvalist::Update(CEgg& theEggs)
 // The eggs coming in are converted to Larvae and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
 {
-	ASSERT(theEggs);
-	CLarva* theLarva = new CLarva((int)theEggs->GetNumber());
-	delete theEggs;  // These eggs are now  gone
+	//ASSERT(theEggs);
+	CLarva* theLarva = new CLarva((int)theEggs.GetNumber());
+	theEggs.Reset();  // These eggs are now  gone
 	AddHead(theLarva);
-	if (GetCount() == m_ListLength+1) 
+	if (GetCount() >= m_ListLength + (int)1) 
 	{
-		Caboose = (CLarva*)RemoveTail();
-		Caboose->number *= GetPropTransition();
+		CLarva* tail = (CLarva*)RemoveTail();
+		Caboose.age = tail->age;
+		Caboose.Alive = tail->Alive;
+		Caboose.number = tail->number;
+		Caboose.number *= GetPropTransition();
 	}
-	else Caboose = NULL;
+	else Caboose.Reset();
 
 }
 
@@ -995,23 +837,44 @@ void CLarvalist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
+void CLarvalist::AddHead(CLarva* plarv)
+{
+	{
+		CObList::AddHead(plarv);
+		int i = 0;
+	}
+}
+
+void CLarvalist::Create(const int Length)
+{
+	RemoveListElements();
+	for (int i = 0; i < Length; i++)
+	{
+		CLarva* pLarv = new CLarva(0);
+		AddHead(pLarv);
+	}
+}
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // CEgglist
 //
-void CEgglist::Update(CEgg* theEggs)
+void CEgglist::Update(CEgg& theEggs)
 // The eggs laid by the queen on this day are pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
 {
-	AddHead(theEggs);
-	if (GetCount() == m_ListLength+1)
+	CEgg* newEggs = new CEgg(theEggs.GetNumber());
+	AddHead(newEggs);
+	if (GetCount() >= (int)(m_ListLength + 1))  /// NOTE:  Changed from == to >= which shouldn't make a difference but did.  Need to track this down.
 	{
-		Caboose = (CEgg*)RemoveTail();
-		Caboose->number *= GetPropTransition();
+		CEgg* tail = (CEgg*)RemoveTail();
+		Caboose.age = tail->age;
+		Caboose.Alive = tail->Alive;
+		Caboose.number = tail->number;
+		Caboose.number *= GetPropTransition();
 	}
-	else Caboose = NULL;
+	else Caboose.Reset();
 
 }
 void CEgglist::KillAll()
@@ -1020,6 +883,15 @@ void CEgglist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
+void CEgglist::Create(const int Length)
+{
+	RemoveListElements();
+	for (int i = 0; i < Length; i++)
+	{
+		CEgg* pEgg = new CEgg(0);
+		AddHead(pEgg);
+	}
+}
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1103,6 +975,7 @@ END_MESSAGE_MAP()
 
 void CColony::InitializeColony()
 {
+	//SetDefaultInitConditions();
 	InitializeBees();
 	InitializeMites();
 
@@ -1145,7 +1018,6 @@ void CColony::InitializeColony()
 	//m_NutrientCT.RemoveAll();
 	if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
 
-	SetDefaultInitConditions();
 	SetInitialized(true);
 
 }
@@ -1191,6 +1063,45 @@ void CColony::KillColony()
 	Wadl.KillAll();
 	foragers.KillAll();
 	foragers.ClearPendingForagers();
+}
+
+void CColony::Create()
+{
+	Clear();  //Clear all the lists in case they have been build already
+
+	//  Set lengths of the various lists
+	Deggs.SetLength(EGGLIFE);
+	Deggs.SetPropTransition(1.0);
+	//Deggs.Create(Deggs.GetLength());
+	Weggs.SetLength(EGGLIFE);
+	Weggs.SetPropTransition(1.0);
+	//Weggs.Create(Weggs.GetLength());
+	Dlarv.SetLength(DLARVLIFE);
+	Dlarv.SetPropTransition(1.0);
+	//Dlarv.Create(Dlarv.GetLength());
+	Wlarv.SetLength(WLARVLIFE);
+	Wlarv.SetPropTransition(1.0);
+	//Wlarv.Create(Wlarv.GetLength());
+	CapDrn.SetLength(DBROODLIFE);
+	CapDrn.SetPropTransition(1.0);
+	//CapDrn.Create(CapDrn.GetLength());
+	CapWkr.SetLength(WBROODLIFE);
+	CapWkr.SetPropTransition(1.0);
+	//CapWkr.Create(CapWkr.GetLength());
+	Dadl.SetLength(DADLLIFE);
+	Dadl.SetPropTransition(1.0);
+	//Dadl.Create(Dadl.GetLength());
+	Wadl.SetLength(WADLLIFE);
+	Wadl.SetPropTransition(1.0);
+	Wadl.SetColony(this);
+	//Wadl.Create(Wadl.GetLength());
+	foragers.SetLength(m_CurrentForagerLifespan);
+	foragers.SetColony(this);
+	//foragers.SetUnemployedForagerQuantity(0);
+
+	//Remove any current list boxcars in preparation for new initialization
+	SetDefaultInitConditions();
+
 }
 
 void CColony::Clear()
@@ -1327,27 +1238,31 @@ void CColony::InitializeBees()
 	// Initialize Queen
 	queen.SetStrength(m_InitCond.m_QueenStrength);
 
-	//  Set lengths of the various lists
-	Deggs.SetLength(EGGLIFE);
-	Deggs.SetPropTransition(1.0);
-	Weggs.SetLength(EGGLIFE);
-	Weggs.SetPropTransition(1.0);
-	Dlarv.SetLength(DLARVLIFE);
-	Dlarv.SetPropTransition(1.0);
-	Wlarv.SetLength(WLARVLIFE);
-	Wlarv.SetPropTransition(1.0);
-	CapDrn.SetLength(DBROODLIFE);
-	CapDrn.SetPropTransition(1.0);
-	CapWkr.SetLength(WBROODLIFE);
-	CapWkr.SetPropTransition(1.0);
-	Dadl.SetLength(DADLLIFE);
-	Dadl.SetPropTransition(1.0);
-	Wadl.SetLength(WADLLIFE);
-	Wadl.SetPropTransition(1.0);
-	Wadl.SetColony(this);
-	foragers.SetLength(m_CurrentForagerLifespan);
-	foragers.SetColony(this);
-	//foragers.SetUnemployedForagerQuantity(0);
+	////  Set lengths of the various lists
+	//Deggs.SetLength(EGGLIFE);
+	//Deggs.SetPropTransition(1.0);
+	//Weggs.SetLength(EGGLIFE);
+	//Weggs.SetPropTransition(1.0);
+	//Dlarv.SetLength(DLARVLIFE);
+	//Dlarv.SetPropTransition(1.0);
+	//Wlarv.SetLength(WLARVLIFE);
+	//Wlarv.SetPropTransition(1.0);
+	//CapDrn.SetLength(DBROODLIFE);
+	//CapDrn.SetPropTransition(1.0);
+	//CapWkr.SetLength(WBROODLIFE);
+	//CapWkr.SetPropTransition(1.0);
+	//Dadl.SetLength(DADLLIFE);
+	//Dadl.SetPropTransition(1.0);
+	//Wadl.SetLength(WADLLIFE);
+	//Wadl.SetPropTransition(1.0);
+	//Wadl.SetColony(this);
+	//foragers.SetLength(m_CurrentForagerLifespan);
+	//foragers.SetColony(this);
+	////foragers.SetUnemployedForagerQuantity(0);
+
+	////Remove any current list boxcars in preparation for new initialization
+	//Clear();  //Clear all the lists
+
 	
 	// Distribute bees from initial conditions into age groupings
 	// Any rounding error goes into the last boxcar
@@ -1355,12 +1270,12 @@ void CColony::InitializeBees()
 	
 	// Eggs
 	e = m_InitCond.m_droneEggsField/Deggs.GetLength();
-	del  = m_InitCond.m_droneEggsField - e*Deggs.GetLength();
+	del  = m_InitCond.m_droneEggsField - e*Deggs.GetLength();  // Any remainder due to integer truncation
 	for (i=0;i<Deggs.GetLength();i++)
 	{
 		CEgg* theEggs;
 		if (i<(Deggs.GetLength()-1)) theEggs = new CEgg(e);
-		else  theEggs = new CEgg(e+del);
+		else  theEggs = new CEgg(e+del); // For the last boxcar, load the average + the trucation number.
 		Deggs.AddHead(theEggs);
 	}
 
@@ -1603,19 +1518,19 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		coldStorage.Update(*pEvent, *this);
 	}
 
-	CEgg* l_DEggs = queen.GetDeggs();
-	CEgg* l_WEggs = queen.GetWeggs();
+	CEgg l_DEggs = *(queen.GetDeggs());
+	CEgg l_WEggs = *(queen.GetWeggs());
 
 	// At the begining of cold storage all eggs are lost
 	if (coldStorage.IsStarting())
 	{
-		l_DEggs->SetNumber(0);
-		l_WEggs->SetNumber(0);
+		l_DEggs.SetNumber(0);
+		l_WEggs.SetNumber(0);
 	}
 
 	// Update stats for new eggs
-	m_InOutEvent.m_NewWEggs = l_WEggs->GetNumber();
-	m_InOutEvent.m_NewDEggs = l_DEggs->GetNumber();
+	m_InOutEvent.m_NewWEggs = l_WEggs.GetNumber();
+	m_InOutEvent.m_NewDEggs = l_DEggs.GetNumber();
 
 	Deggs.Update(l_DEggs);
 	Weggs.Update(l_WEggs);
@@ -1623,34 +1538,34 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	// At the begining of cold storage no eggs become larvae
 	if (coldStorage.IsStarting())
 	{
-		if (Weggs.GetCaboose() != NULL) Weggs.GetCaboose()->SetNumber(0);
-		if (Deggs.GetCaboose() != NULL) Deggs.GetCaboose()->SetNumber(0);
+		Weggs.GetCaboose().Reset();
+		Deggs.GetCaboose().Reset();
 	}
 
 	// Update stats for new larvae
-	if (Weggs.GetCaboose() != NULL) m_InOutEvent.m_WEggsToLarv = Weggs.GetCaboose()->GetNumber();
-	if (Deggs.GetCaboose() != NULL) m_InOutEvent.m_DEggsToLarv = Deggs.GetCaboose()->GetNumber();
+	m_InOutEvent.m_WEggsToLarv = Weggs.GetCaboose().GetNumber();
+	m_InOutEvent.m_DEggsToLarv = Deggs.GetCaboose().GetNumber();
 
-	/*if (Deggs.GetCaboose() != NULL) */Dlarv.Update((CEgg*)Deggs.GetCaboose());
-	/*if (Weggs.GetCaboose() != NULL) */Wlarv.Update((CEgg*)Weggs.GetCaboose());
+	Dlarv.Update(Deggs.GetCaboose());
+	Wlarv.Update(Weggs.GetCaboose());
 
 	// At the begining of cold storage no larvae become brood
 	if (coldStorage.IsStarting())
 	{
-		if (Wlarv.GetCaboose() != NULL) Wlarv.GetCaboose()->SetNumber(0);
-		if (Dlarv.GetCaboose() != NULL) Dlarv.GetCaboose()->SetNumber(0);
+		Wlarv.GetCaboose().Reset();
+		Dlarv.GetCaboose().Reset();
 	}
 
 	// Update stats for new brood
-	if (Wlarv.GetCaboose() != NULL) m_InOutEvent.m_WLarvToBrood = Wlarv.GetCaboose()->GetNumber();
-	if (Dlarv.GetCaboose() != NULL) m_InOutEvent.m_DLarvToBrood = Dlarv.GetCaboose()->GetNumber();
+	m_InOutEvent.m_WLarvToBrood = Wlarv.GetCaboose().GetNumber();
+	m_InOutEvent.m_DLarvToBrood = Dlarv.GetCaboose().GetNumber();
 
-	/*if (Dlarv.GetCaboose() != NULL) */CapDrn.Update((CLarva*)Dlarv.GetCaboose());
-	/*if (Wlarv.GetCaboose() != NULL) */CapWkr.Update((CLarva*)Wlarv.GetCaboose());
+	CapDrn.Update(Dlarv.GetCaboose());
+	CapWkr.Update(Wlarv.GetCaboose());
 
 	// Update stats for new Adults
-	if (CapWkr.GetCaboose() != NULL) m_InOutEvent.m_WBroodToAdult = CapWkr.GetCaboose()->GetNumber();
-	if (CapDrn.GetCaboose() != NULL) m_InOutEvent.m_DBroodToAdult = CapDrn.GetCaboose()->GetNumber();
+	m_InOutEvent.m_WBroodToAdult = CapWkr.GetCaboose().GetNumber();
+	m_InOutEvent.m_DBroodToAdult = CapDrn.GetCaboose().GetNumber();
 
 	int NumberOfNonAdults = Wlarv.GetQuantity() + Dlarv.GetQuantity() + CapDrn.GetQuantity() + CapWkr.GetQuantity();
 
@@ -1685,34 +1600,39 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());
-			/*if (CapDrn.GetCaboose() != NULL) */Dadl.Update((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
+			Dadl.Update(CapDrn.GetCaboose(), this, pEvent, false);
 			//TRACE("HB Before Update:%s\n",Wadl.Status());
-			/*if (CapWkr.GetCaboose() != NULL) */Wadl.Update((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
+			int WkrAdlCabooseNumber = Wadl.GetCaboose().GetNumber();
+			Wadl.Update(CapWkr.GetCaboose(), this, pEvent, true);
+			int DrnNumberFromCaboose = CapWkr.GetCaboose().GetNumber();
+			WkrAdlCabooseNumber = Wadl.GetCaboose().GetNumber();
 			//TRACE(" HB After Update:%s\n",Wadl.Status());
-			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose()->number);
+			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose().number);
 
 			// Update stats for adults becoming foragers
-			if (Wadl.GetCaboose() != NULL) m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose()->GetNumber();
+			m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose().GetNumber();
 
-			/*if (Wadl.GetCaboose() != NULL) */foragers.Update((CAdult*)Wadl.GetCaboose(), this, pEvent);
+			foragers.Update(Wadl.GetCaboose(), this, pEvent);
 		}
 		else
 		{
 			if (NumberOfNonAdults > 0 && GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs())
 			{
 				// Let's make sure brood are becoming adults
-				if (CapDrn.GetCaboose() != NULL) Dadl.Add((CBrood*)CapDrn.GetCaboose(), this, pEvent, false);
-				if (CapWkr.GetCaboose() != NULL) Wadl.Add((CBrood*)CapWkr.GetCaboose(), this, pEvent, true);
+				Dadl.Add(CapDrn.GetCaboose(), this, pEvent, false);
+				Wadl.Add(CapWkr.GetCaboose(), this, pEvent, true);
 			}
 
 			// Update stats for new Foragers
 			m_InOutEvent.m_WAdultToForagers = 0;
 
-			foragers.Update(nullptr, this, pEvent);
+			CAdult resetAdult;
+			resetAdult.Reset();
+			foragers.Update(resetAdult, this, pEvent);
 		}
 
 		// Update stats for dead Foragers
-		if (foragers.GetCaboose() != NULL) m_InOutEvent.m_DeadForagers = foragers.GetCaboose() ? foragers.GetCaboose()->GetNumber() : 0;
+		m_InOutEvent.m_DeadForagers = foragers.GetCaboose().GetNumber() > 0 ? foragers.GetCaboose().GetNumber() : 0;
 
 		//TRACE("Updated Foragers:%s\n",foragers.Status());
 	}

@@ -119,6 +119,7 @@ void CEvent::UpdateForageAttributeForEvent(double windSpeed)
 	}
 	// Here we set the Forage Increment using the default method, may be change later depending on execution options
 	SetForageInc(12.0, GetMaxTemp(), GetTemp());
+	//m_ForageInc = 1.0;  // NOTE:  test only - remove after test
 }
 
 
