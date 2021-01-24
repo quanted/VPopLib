@@ -200,6 +200,11 @@ double CEvent::GetMinTemp()
 	return pEventTemp;
 }
 
+void CEvent::SetForage(bool Forage)
+{
+	m_ForageDay = Forage;
+}
+
 void CEvent::UpdateForageDayState()
 {
 	// This function determines the value of m_ForageDay based on the values of the CEvent property.  Must be called for each CEvent
@@ -221,12 +226,12 @@ bool CEvent::IsForageDay()
 {
 	
 	bool forageDay = m_ForageDay;
-	static call_if_not_calling caller;
-	caller.call([this, &forageDay] {
-		const CColdStorageSimulator& coldStorage = CColdStorageSimulator::Get();
-		if (coldStorage.IsEnabled())
-			forageDay = coldStorage.IsForageDay(*this);
-		});
+	//static call_if_not_calling caller;
+	//caller.call([this, &forageDay] {
+	//	const CColdStorageSimulator& coldStorage = CColdStorageSimulator::Get();
+	//	if (coldStorage.IsEnabled())
+	//		forageDay = coldStorage.IsForageDay(*this);
+	//	});
 	return forageDay;
 }
 
@@ -246,6 +251,32 @@ double CEvent::GetForageInc()
 		});
 	return forageInc;
 }
+
+double CEvent::CalcDaylightFromLatitude(double Lat)
+{
+	// Reference:  Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 
+	// Comparison for Daylength as a Function of Latitude and Day of the Year."
+	// Lat is in degrees - limited to be between +65 and -65 degrees.  Beyond that, Day is either 24 or 0 hours.
+	// Probably not a lot of honeybee colonies inside the arctic and antarctic circles anyway.
+
+	int DayNum = this->GetTime().GetDayOfYear();
+
+	if (Lat < 0.0)
+	{
+		Lat = -Lat;
+		DayNum = (DayNum + 182) % 365;
+	}
+	if (Lat > 65.0) Lat = 65.0;
+
+	double PI = 3.14159265358979;
+	double DaylightHours = 0;
+
+	double P = asin(0.39795 * cos(0.2163108 + 2 * atan(0.9671396 * tan(0.00860 * (DayNum - 186)))));
+	DaylightHours =
+		24 - (24 / PI) * acos((sin(0.833 * PI / 180) + sin(Lat * PI / 180) * sin(P)) / cos(Lat * PI / 180) * cos(P));
+	return DaylightHours;
+}
+
 
 CEvent CEvent:: operator = (CEvent& event)
 {
@@ -1731,28 +1762,28 @@ const char GridDataTypeId::Rcp45[] = "Rcp45";
 //}
 //
 
-double CWeatherEvents::CalcDaylightFromLatitude(double Lat, int DayNum)
-{
-	// Reference:  Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 
-	// Comparison for Daylength as a Function of Latitude and Day of the Year."
-	// Lat is in degrees - limited to be between +65 and -65 degrees.  Beyond that, Day is either 24 or 0 hours.
-	// Probably not a lot of honeybee colonies inside the arctic and antarctic circles anyway.
-
-	if (Lat < 0.0)
-	{
-		Lat = - Lat;
-		DayNum = (DayNum + 182)%365;
-	}
-	if (Lat > 65.0) Lat = 65.0;
-
-	double PI = 3.14159265358979;
-	double DaylightHours = 0;
-
-	double P = asin(0.39795*cos(0.2163108 + 2*atan(0.9671396*tan(0.00860*(DayNum-186)))));
-	DaylightHours =
-		24 - (24/PI)*acos((sin(0.833*PI/180) + sin(Lat*PI/180)*sin(P))/cos(Lat*PI/180)*cos(P));
-	return DaylightHours;
-}
+//double CWeatherEvents::CalcDaylightFromLatitude(double Lat, int DayNum)
+//{
+//	// Reference:  Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 
+//	// Comparison for Daylength as a Function of Latitude and Day of the Year."
+//	// Lat is in degrees - limited to be between +65 and -65 degrees.  Beyond that, Day is either 24 or 0 hours.
+//	// Probably not a lot of honeybee colonies inside the arctic and antarctic circles anyway.
+//
+//	if (Lat < 0.0)
+//	{
+//		Lat = - Lat;
+//		DayNum = (DayNum + 182)%365;
+//	}
+//	if (Lat > 65.0) Lat = 65.0;
+//
+//	double PI = 3.14159265358979;
+//	double DaylightHours = 0;
+//
+//	double P = asin(0.39795*cos(0.2163108 + 2*atan(0.9671396*tan(0.00860*(DayNum-186)))));
+//	DaylightHours =
+//		24 - (24/PI)*acos((sin(0.833*PI/180) + sin(Lat*PI/180)*sin(P))/cos(Lat*PI/180)*cos(P));
+//	return DaylightHours;
+//}
 
 // TODO:  Will have to implement this in the library but not when reading the weather file
 //void CWeatherEvents::ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events)

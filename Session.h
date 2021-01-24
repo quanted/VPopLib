@@ -6,6 +6,8 @@
 #include "WeatherEvents.h"
 #include "MiteTreatments.h"
 #include "Colony.h"
+#include "cstring.format.h"
+#include "GlobalOptions.h"
 
 //
 // CVarroaPopSession contains the state of the simulation.  
@@ -112,14 +114,8 @@ public:
 
 protected:
 
-	//CVarroaPopSessionBridge* m_Bridge;
-
 	// Operations
 public:
-
-	//void SetBridge(CVarroaPopSessionBridge* bridge) { m_Bridge = bridge; }
-	//CVarroaPopSessionBridge* GetBridge() const { return m_Bridge; }
-
 	CWeatherEvents* GetWeather() { return m_pWeather; }
 	CColony* GetColony() { return &theColony; }
 	int GetDocumentLength();

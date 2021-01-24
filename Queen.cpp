@@ -127,7 +127,6 @@ void CQueen::LayEggs(int LayDays, double DegreeDays, double DaylightHours, int N
 	*/
 
 	double E, P, DD, L, N, Z, B, F, S;
-
 	// First test to see if egg laying is turned on based on having enough
 	// house bees to tend to the larvae
 

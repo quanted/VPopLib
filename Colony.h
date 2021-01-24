@@ -43,17 +43,16 @@ class CVarroaPopSession;
 class CBeelist : public CObList
 {
 protected:
-	int m_ListLength;
-	CColony* m_pColony;
+	int m_ListLength = 0;
+	CColony* m_pColony = NULL;
 	static const int m_DefaultPropTransition = 1;
-	double m_PropTransition;  // The proportion of bees from this list that go to the caboose
+	double m_PropTransition = 0.0;  // The proportion of bees from this list that go to the caboose
 							  // A number between 0.0 .. 1.0
-	CDateRangeValues* m_pDRVList;
+	CDateRangeValues* m_pDRVList = NULL;
 
 public:
 	CBeelist();
 	~CBeelist();
-	void Create(const int Length);
 	void SetLength(int len) {m_ListLength = len;}
 	int GetLength() {return m_ListLength;}
 	int GetQuantity();
@@ -66,7 +65,6 @@ public:
 	void RemoveListElements();
 	void SetColony(CColony* pCol) {m_pColony = pCol;}
 	CColony* GetColony() {return m_pColony;}
-	//void AddMember(CBee& element);
 	CString Status();
 	void FactorQuantity(double factor);
 	//void SetQuantityAt(int Quan);
@@ -91,7 +89,6 @@ protected:
 public:
 
 	CAdultlist();
-	void Create(const int Length);
 	CAdult& GetCaboose() {return Caboose;}
 	void ClearCaboose() {Caboose.Reset();}
 	//! Add method simply add theBrood to the Adults without making the adults age
@@ -119,7 +116,6 @@ private:
 public:
 	CForagerlistA();
 	~CForagerlistA();
-	void Create(const int Length);
 	void Update(CAdult& theAdult, CColony* theColony, CEvent* theEvent);
 	void ClearPendingForagers();
 	void KillAll();
@@ -142,7 +138,6 @@ protected:
 	CBrood Caboose;
 public:
 	double GetMitesPerCell();
-	void Create(const int Length);
 	void Update(CLarva& theLarva);
 	int GetMiteCount();
 	void KillAll();
@@ -164,7 +159,6 @@ protected:
 public:
 	void AddHead(CLarva* plarv);
 	void Update(CEgg& theEggs);
-	void Create(const int Length);
 	CLarva GetCaboose() {return Caboose;}
 	void KillAll();
 	void ClearCaboose() {Caboose.SetNumber(0);}
@@ -182,7 +176,6 @@ protected:
 public:
 	void Update(CEgg& theEggs);
 	void KillAll();
-	void Create(const int Length);
 	CEgg GetCaboose() {return Caboose;}
 	void ClearCaboose() {Caboose.SetNumber(0);}
 };
@@ -193,37 +186,37 @@ public:
 
 struct ColonyInitCond
 {
-	float	m_droneAdultInfestField;
-	float	m_droneBroodInfestField;
-	float	m_droneMiteOffspringField;
-	float	m_droneMiteSurvivorshipField;
-	float	m_workerAdultInfestField;
-	float	m_workerBroodInfestField;
-	float	m_workerMiteOffspring;
-	float	m_workerMiteSurvivorship;
-	int		m_droneAdultsField;
-	int		m_droneBroodField;
-	int		m_droneEggsField;
-	int		m_droneLarvaeField;
-	int		m_workerAdultsField;
-	int		m_workerBroodField;
-	int		m_workerEggsField;
-	int		m_workerLarvaeField;
-	int		m_totalEggsField;
-	double  m_DDField;
-	double  m_LField;
-	double  m_NField;
-	double  m_PField;
-	double  m_ddField;
-	double  m_lField;
-	double  m_nField;
+	float	m_droneAdultInfestField = 0.0;
+	float	m_droneBroodInfestField = 0.0;
+	float	m_droneMiteOffspringField = 0.0;
+	float	m_droneMiteSurvivorshipField = 0.0;
+	float	m_workerAdultInfestField = 0.0;
+	float	m_workerBroodInfestField = 0.0;
+	float	m_workerMiteOffspring = 0.0;
+	float	m_workerMiteSurvivorship = 0.0;
+	int		m_droneAdultsField = 0;
+	int		m_droneBroodField = 0;
+	int		m_droneEggsField = 0;
+	int		m_droneLarvaeField = 0;
+	int		m_workerAdultsField = 0;
+	int		m_workerBroodField = 0;
+	int		m_workerEggsField = 0;
+	int		m_workerLarvaeField = 0;
+	int		m_totalEggsField = 0;
+	double  m_DDField = 0.0;
+	double  m_LField = 0.0;
+	double  m_NField = 0.0;
+	double  m_PField = 0.0;
+	double  m_ddField = 0.0;
+	double  m_lField = 0.0;
+	double  m_nField = 0.0;
 	//  From Simulation Initial Conditions
-	double	m_QueenStrength;
-	double	m_QueenSperm;
-	double	m_MaxEggs;
-	int		m_ForagerLifespan;
-	CString m_SimStart;
-	CString	m_SimEnd;
+	double	m_QueenStrength = 0.0;
+	double	m_QueenSperm = 0.0;
+	double	m_MaxEggs = 0.0;
+	int		m_ForagerLifespan = 4;
+	CString m_SimStart = "";
+	CString	m_SimEnd = "";
 	CDateRangeValues m_EggTransitionDRV;
 	CDateRangeValues m_LarvaeTransitionDRV;
 	CDateRangeValues m_BroodTransitionDRV;

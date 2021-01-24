@@ -37,7 +37,7 @@ public:
 	CObList();
 	virtual ~CObList();
 
-	INT_PTR GetCount() const;
+	/*INT_PTR*/ int GetCount() const;
 	BOOL IsEmpty() const;
 
 	// In the MFC framework we use the index to go through the linked list and return

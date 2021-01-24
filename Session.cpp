@@ -294,19 +294,7 @@ CMite CVarroaPopSession::GetImmigrationMites(CEvent* pEvent)
 
 void CVarroaPopSession::InitializeSimulation()
 {
-	// Initialize Results Matrix
-	/*  The columns of this CMatrix are defined as follows:
 
-				Col 0 = Day Number
-				Col 1 = Data point for first series to be plotted
-				Col 2 = Data point for second series to be plotted
-				Col n = Data point for Nth series to be plotted
-
-		The rows correspond to the values for each day.  The dimensions of the
-		CMatrix array are set to (Number of series + 1, Number of days being plotted)
-	*/
-
-	
 	m_ResultsText.RemoveAll();
 	m_ResultsHeader.RemoveAll();
 	m_ResultsFileHeader.RemoveAll();
@@ -321,9 +309,6 @@ void CVarroaPopSession::InitializeSimulation()
 //	theColony.m_Spores.SetMortalityFunction(0.10,,0);
 	m_CumImmigratingMites = int(0);
 	m_FirstResultEntry = true;
-
-
-
 }
 
 
@@ -479,8 +464,8 @@ void CVarroaPopSession::Simulate()
 			0	 // Forage Day
 		);
 		// Append additional command name if InOut statistics are required
-		//if (GlobalOptions::Get().ShouldOutputInOutCounts())
-		if (true)
+		if (GlobalOptions::Get().ShouldOutputInOutCounts())
+		//if (true)
 			{
 			CurSize.Format("%s %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d"
 				, CurSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -596,8 +581,8 @@ void CVarroaPopSession::Simulate()
 					pEvent->IsForageDay()
 				);
 				// Append additional command name if InOut statistics are required
-//				if (GlobalOptions::Get().ShouldOutputInOutCounts())
-				if (true)
+				if (GlobalOptions::Get().ShouldOutputInOutCounts())
+				//if (true)
 					{
 					CurSize.Format("%s %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d"
 						, CurSize
@@ -676,6 +661,11 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		//theColony.m_InitCond.m_SimEnd = m_SimEndTime.Format("%m/%d/%Y");
 
 		//m_Bridge->SimulationEndUpdated();
+		return true;
+	}
+	if (Name == "latitude")
+	{
+		SetLatitude(atof(Value));
 		return true;
 	}
 	if (Name == "icdroneadults")

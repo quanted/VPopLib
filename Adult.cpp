@@ -51,6 +51,18 @@ void CAdult::Reset()
 	number = 0;
 }
 
+CAdult CAdult::operator = (CAdult& adult)
+{
+	CAdult m;
+	m.m_Lifespan = adult.m_Lifespan;
+	m.m_CurrentAge = adult.m_CurrentAge;
+	m.m_Mites = adult.m_Mites;
+	m.m_Virgins = adult.m_Virgins;
+	m.m_ForageInc = adult.m_ForageInc;
+	m.number = adult.number;
+	return m;
+
+}
 //void CAdult::Serialize(CArchive& ar) 
 //{
 //	CBee::Serialize(ar);

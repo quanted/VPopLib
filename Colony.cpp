@@ -166,15 +166,6 @@ void CBeelist::FactorQuantity(double factor)
 
 }
 
-void CBeelist::Create(const int Length)
-{
-	RemoveListElements();
-	for (int i = 0; i < Length; i++)
-	{
-		CBee* pBee = new CBee(0);
-		AddHead(pBee);
-	}
-}
 
 CString CBeelist::Status()
 {
@@ -260,10 +251,10 @@ void CForagerlistA::KillAll()
 }
 
 
-void CForagerlistA::Create(const int Length)
-{
-	SetLength(Length);
-}
+//void CForagerlistA::Create(const int Length)
+//{
+//	SetLength(Length);
+//}
 
 
 void CForagerlistA::Update(CAdult& theAdult, CColony* theColony, CEvent* theDay)
@@ -398,7 +389,7 @@ void CForagerlistA::Update(CAdult& theAdult, CColony* theColony, CEvent* theDay)
 		}
 		else delete foragersHead;
 		// If the foragers list is full let's remove the oldest hive
-		if (GetCount() >= m_ListLength + (int)1)
+		if (GetCount() >= m_ListLength + 1)
 		{
 			Caboose = *((CAdult*)RemoveTail());
 			ForagerCount--;
@@ -445,7 +436,7 @@ void CForagerlistA::Update(CAdult& theAdult, CColony* theColony, CEvent* theDay)
 			{
 				if (ListAdult->GetNumber() <= 0) PropRedux = m_pColony->LongRedux[0];
 				else PropRedux = m_pColony->LongRedux[int(ListAdult->GetMites() / ListAdult->GetNumber())];
-				if (day>(1 - PropRedux)*((int)WADLLIFE + GetColony()->m_CurrentForagerLifespan))
+				if (day>(1 - PropRedux)*(WADLLIFE + GetColony()->m_CurrentForagerLifespan))
 				{
 					ListAdult->Kill();
 				}
@@ -573,8 +564,7 @@ void CAdultlist::Update(CBrood& theBrood, CColony* theColony, CEvent* theEvent, 
 			CAdult* pAdult = (CAdult*)RemoveTail();
 			Caboose.age = pAdult->age;
 			Caboose.Alive = pAdult->Alive;
-			Caboose.number = pAdult->number;
-			Caboose.number *= GetPropTransition();
+			Caboose.number = int(pAdult->number * GetPropTransition());
 			if (!bWorker) 
 			{
 				// Update stats for dead drones
@@ -687,16 +677,6 @@ int CAdultlist::MoveToEnd(int QuantityToMove, int MinAge)
 	return TotalMoved;
 }
 
-void CAdultlist::Create(const int Length)
-{
-	RemoveListElements();
-	for (int i = 0; i < Length; i++)
-	{
-		CAdult* pAdult = new CAdult(0);
-		AddHead(pAdult);
-	}
-}
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // CBroodlist - capped brood
@@ -715,12 +695,9 @@ void CBroodlist::Update(CLarva& theLarva)
 		CBrood* tail = (CBrood*)RemoveTail();
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
-		Caboose.number = tail->number;
 		Caboose.m_Mites = tail->m_Mites;
 		Caboose.m_PropVirgins = tail->m_PropVirgins;
-		//CBrood* pTail = (CBrood*)RemoveTail();
-		//Caboose = *pTail;
-		Caboose.number *= GetPropTransition();
+		Caboose.number = int(tail->number * GetPropTransition());
 	}
 	else Caboose.Reset();
 
@@ -795,15 +772,6 @@ void CBroodlist::DistributeMites(CMite theMites)
 	}
 }
 
-void CBroodlist::Create(const int Length)
-{
-	RemoveListElements();
-	for (int i = 0; i < Length; i++)
-	{
-		CBrood* pBrood = new CBrood(0);
-		AddHead(pBrood);
-	}
-}
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -824,8 +792,7 @@ void CLarvalist::Update(CEgg& theEggs)
 		CLarva* tail = (CLarva*)RemoveTail();
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
-		Caboose.number = tail->number;
-		Caboose.number *= GetPropTransition();
+		Caboose.number = int(tail->number * GetPropTransition());
 	}
 	else Caboose.Reset();
 
@@ -845,15 +812,6 @@ void CLarvalist::AddHead(CLarva* plarv)
 	}
 }
 
-void CLarvalist::Create(const int Length)
-{
-	RemoveListElements();
-	for (int i = 0; i < Length; i++)
-	{
-		CLarva* pLarv = new CLarva(0);
-		AddHead(pLarv);
-	}
-}
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -871,8 +829,7 @@ void CEgglist::Update(CEgg& theEggs)
 		CEgg* tail = (CEgg*)RemoveTail();
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
-		Caboose.number = tail->number;
-		Caboose.number *= GetPropTransition();
+		Caboose.number = int(tail->number * GetPropTransition());
 	}
 	else Caboose.Reset();
 
@@ -883,15 +840,6 @@ void CEgglist::KillAll()
 	//Caboose->SetNumber(0);
 }
 
-void CEgglist::Create(const int Length)
-{
-	RemoveListElements();
-	for (int i = 0; i < Length; i++)
-	{
-		CEgg* pEgg = new CEgg(0);
-		AddHead(pEgg);
-	}
-}
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -973,12 +921,18 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CColony 
 
+
+/////////////////////////////////////////////////////////////////////////////
+// Initialize Colony
+//
+// Called at the beginning of each simulation run.  Should reset internal simulation variables and clear lists
+// but should not change the initial conditions which are set elsewhere.
+//
 void CColony::InitializeColony()
 {
 	//SetDefaultInitConditions();
 	InitializeBees();
 	InitializeMites();
-
 
 	// Set pesticide Dose rate to 0
 	m_EPAData.m_D_L4 = 0;
@@ -1025,7 +979,8 @@ void CColony::InitializeColony()
 void CColony::AddEventNotification(CString DateStg, CString Msg)
 {
 	CString EventString = DateStg + ": " + Msg;
-	m_ColonyEventList.AddTail(EventString);
+	//m_ColonyEventList.AddTail(EventString);
+	m_pSession->AddToInfoList(EventString);
 }
 
 
@@ -1034,7 +989,7 @@ COleDateTime* CColony::GetDayNumDate(int DayNum)
 {
 	COleDateTime temptime;
 	COleDateTime* pReturnDate = NULL;
-	COleDateTimeSpan ts(DayNum -1,0,0,0); // First day is 0 span
+	COleDateTimeSpan ts((DayNum - 1),0,0,0); // First day is 0 span
 	if( temptime.ParseDateTime(m_InitCond.m_SimStart) )
 	//if( temptime.ParseDateTime(Get) )
 	{
@@ -1238,26 +1193,9 @@ void CColony::InitializeBees()
 	// Initialize Queen
 	queen.SetStrength(m_InitCond.m_QueenStrength);
 
-	////  Set lengths of the various lists
-	//Deggs.SetLength(EGGLIFE);
-	//Deggs.SetPropTransition(1.0);
-	//Weggs.SetLength(EGGLIFE);
-	//Weggs.SetPropTransition(1.0);
-	//Dlarv.SetLength(DLARVLIFE);
-	//Dlarv.SetPropTransition(1.0);
-	//Wlarv.SetLength(WLARVLIFE);
-	//Wlarv.SetPropTransition(1.0);
-	//CapDrn.SetLength(DBROODLIFE);
-	//CapDrn.SetPropTransition(1.0);
-	//CapWkr.SetLength(WBROODLIFE);
-	//CapWkr.SetPropTransition(1.0);
-	//Dadl.SetLength(DADLLIFE);
-	//Dadl.SetPropTransition(1.0);
-	//Wadl.SetLength(WADLLIFE);
-	//Wadl.SetPropTransition(1.0);
-	//Wadl.SetColony(this);
-	//foragers.SetLength(m_CurrentForagerLifespan);
-	//foragers.SetColony(this);
+
+	foragers.SetLength(m_CurrentForagerLifespan);
+	foragers.SetColony(this);
 	////foragers.SetUnemployedForagerQuantity(0);
 
 	////Remove any current list boxcars in preparation for new initialization
@@ -1356,6 +1294,7 @@ void CColony::InitializeBees()
 		theWorker->SetLifespan(WADLLIFE);
 		Wadl.AddHead(theWorker);
 	}
+	int ll = foragers.GetLength();
 	for (i=0;i<foragers.GetLength();i++) // Distribute remaining into Foragers
 	{
 		CAdult* theForager;
@@ -2561,7 +2500,7 @@ void CColony::AddPollenToResources(SResourceItem theResource)
 	// If CurrentPollen/MaxPollen > 0.9, Add theResources * (1 - CurrentPollen/MaxPollen)
 	if (m_ColonyPolMaxAmount <= 0) 
 	{
-		//MyMessageBox("Maximum Colony Pollen is <= 0.  Forcing to 5000g");
+		m_pSession->AddToInfoList("Maximum Colony Pollen is <= 0.  Forcing to 5000g");
 		m_ColonyPolMaxAmount = 5000;
 	}
 	double PropFull = m_Resources.GetPollenQuantity()/m_ColonyPolMaxAmount;
@@ -2580,7 +2519,7 @@ void CColony::AddNectarToResources(SResourceItem theResource)
 	// Add nectar but don't exceed the maximum amount
 	if (m_ColonyNecMaxAmount <= 0) 
 	{
-		//MyMessageBox("Maximum Colony Nectar is <= 0.  Forcing to 5000g");
+		m_pSession->AddToInfoList("Maximum Colony Nectar is <= 0.  Forcing to 5000g");
 		m_ColonyNecMaxAmount = 5000;
 	}
 	double PropFull = m_Resources.GetNectarQuantity()/m_ColonyNecMaxAmount;

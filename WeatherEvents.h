@@ -59,13 +59,13 @@ public:
 	void SetMinTemp(double minTemp) {m_MinTemp = minTemp;}
 	void SetRainfall(double rainfall) {m_Rainfall = rainfall;}
 	void SetWindspeed(double windspeed) { m_Windspeed = windspeed; }
-	void SetForage(bool Forage) {m_ForageDay = Forage;}
+	void SetForage(bool Forage);
 	void SetForageInc(double forageInc) {m_ForageInc = forageInc;};
 	void SetForageInc(double TThresh, double TMax, double TAve);
 	double GetForageInc();
 	void SetLineNum(int line) {m_LineNum = line;}
 	void SetDaylightHours(double hrs) {m_DaylightHours = hrs;}
-	//void Serialize(CArchive& ar);
+	double CalcDaylightFromLatitude(double Lat);
 
 	//  Overloaded Operators
 	CEvent operator = (CEvent& event);

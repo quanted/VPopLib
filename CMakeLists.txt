@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.10)
 
-# Add source to this project's executable.
+# Add source to this project's executable. 
 
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
@@ -26,12 +26,12 @@ find_package(fmt CONFIG REQUIRED)
 HUNTER_ADD_PACKAGE(fmt)
 
 #Boost framework
+find_package(Boost CONFIG REQUIRED system filesystem)
 HUNTER_ADD_PACKAGE(Boost COMPONENTS system filesystem)
 
 include_directories(CMAKE_INCLUDE_DIRECTORIES_BEFORE .)
 include_directories(${PROJECT_BINARY_DIR})
 
-find_package(Boost CONFIG REQUIRED system filesystem)
 
 set (SOURCES    
                 stdafx.cpp

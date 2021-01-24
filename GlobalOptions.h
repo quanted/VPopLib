@@ -74,7 +74,7 @@ public:
 	//    Rainfall <= .197 inches  (.500 cm)
 	//
 	// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
-	Option<bool> ShouldForageDayElectionBasedOnTemperatures = true;
+	Option<bool> ShouldForageDayElectionBasedOnTemperatures = false;
 	// This option affect the Windspeed threshold to determinate if the current day can be a Forage Day
 	Option<double> WindspeedThreshold = 8.94;
 	// This option affect the Rainfall threshold to determinate if the current day can be a Forage Day

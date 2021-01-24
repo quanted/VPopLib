@@ -34,32 +34,14 @@ void CLarva::Reset()
 }
 
 
-//void CLarva::Serialize(CArchive& ar) 
-//{
-//#define INFESTED 1
-//#define NOT_INFESTED 0
-//#define FERTILIZED 1
-//#define NOT_FERTILIZED 0
-//
-//	int temp;
-//	if (ar.IsStoring())
-//	// have to add a little complexity since there is no >> operator for bool types
-//	{	// storing code
-//		temp = (infested==true) ? INFESTED : NOT_INFESTED; 
-//		ar << temp;
-//		temp = (fertilized==true) ? FERTILIZED : NOT_FERTILIZED;
-//		ar << temp;
-//		ar << mites;
-//		ar << infestProbability;
-//	}
-//	else
-//	{	// loading code
-//		ar >> temp;
-//		infested = (temp == INFESTED) ? true : false;
-//		ar >> temp;
-//		fertilized = (temp == FERTILIZED) ? true : false;
-//		ar >> mites;
-//		ar >> infestProbability;
-//	}
-//	CBee::Serialize(ar);
-//}
+CLarva CLarva::operator = (CLarva& larva)
+{
+	CLarva temp;
+	temp.Alive = larva.Alive;
+	temp.number = larva.number;
+	temp.infested = larva.infested;
+	temp.fertilized = larva.fertilized;
+	temp.mites = larva.mites;
+	temp.infestProbability = larva.infestProbability;
+	return temp;
+}

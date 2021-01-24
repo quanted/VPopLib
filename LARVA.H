@@ -13,10 +13,10 @@
 
 class CLarva : public CBee  {
   private:
-	bool infested;
-	bool fertilized;
-	int mites;
-	float infestProbability;
+	bool infested = false;
+	bool fertilized = false;
+	int mites = 0;;
+	float infestProbability = 0.0;
 
 
   public:
@@ -24,7 +24,8 @@ class CLarva : public CBee  {
 //	CLarva(int quantity, bool isFertilized=false,
 //		   int initialMites=0, float infestProb=1.0);
 	CLarva(int quantity) {number = quantity;}
-	CLarva(CLarva* oldLarva);
+	//CLarva(CLarva* oldLarva);
+	CLarva operator = (CLarva& larva);
 	//void Serialize(CArchive &ar);
 	virtual ~CLarva();
 	void Reset();

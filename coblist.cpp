@@ -8,7 +8,7 @@ CObList::~CObList()
 {
 }
 
-INT_PTR CObList::GetCount() const
+/*INT_PTR*/ int CObList::GetCount() const
 {
     return m_data.size();   
 }

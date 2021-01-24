@@ -20,7 +20,7 @@ class CAdult : public CBee  {
   public:
 	CAdult();
 	CAdult(int Num);
-	//CAdult(CAdult* oldAdult);
+	CAdult operator = (CAdult& adult);
 	void SetLifespan(int span) {m_Lifespan = (float)span;}
 	void SetCurrentAge(float age) {m_CurrentAge = age;}
 	void SetPropVirgins(double prop) {m_Virgins = prop;}
