@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "Bee.h"
-#include "Mite.h"
+#include "bee.h"
+#include "mite.h"
 
 class CBrood : public CBee  
 {

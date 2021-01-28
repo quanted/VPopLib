@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "Adult.h"
+#include "adult.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

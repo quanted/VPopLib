@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "WeatherGridData.h"
-#include "WeatherEvents.h"
+#include "weathergriddata.h"
+#include "weatherevents.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>

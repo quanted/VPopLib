@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "coledatetime.h"
-#include "MiteTreatmentItem.h"
+#include "mitetreatmentitem.h"
 
 CMiteTreatmentItem::CMiteTreatmentItem(void)
 {

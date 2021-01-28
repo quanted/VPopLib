@@ -6,6 +6,7 @@
 #  define libvpop_EXPORT
 #  define LIBVPOP_NO_EXPORT
 #else
+#ifdef _WIN32
 #  ifndef libvpop_EXPORT
 #    ifdef libvpop_EXPORTS
         /* We are building this library */
@@ -15,6 +16,9 @@
 #      define libvpop_EXPORT __declspec(dllimport)
 #    endif
 #  endif
+#else
+#  define libvpop_EXPORT
+#endif
 
 #  ifndef LIBVPOP_NO_EXPORT
 #    define LIBVPOP_NO_EXPORT 

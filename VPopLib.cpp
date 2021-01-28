@@ -1,11 +1,11 @@
 ﻿// VPopLib.cpp : Defines the entry point for the application.
 //
 
-#include "VPopLib.h"
-#include "Session.h"
-#include "Colony.h"
+#include "vpoplib.h"
+#include "session.h"
+#include "colony.h"
 #include "stdafx.h"
-#include "WeatherEvents.h"
+#include "weatherevents.h"
 
 using namespace std;
 
@@ -43,69 +43,6 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 	//		Windspeed - m/s
 	//		Daily Rainfall - mm
 	//		Daylight Hours - number of hours of daylight
-
-	int StrPos = 0;
-	CString theToken;
-	int InitStgLen = theString.GetLength();
-
-	theToken = theString.Tokenize(" ,", StrPos);	//Date
-	COleDateTime theDate;
-	bool retval = theDate.ParseDateTime(theToken, VAR_DATEVALUEONLY);
-	if (retval) // the date parse was successful.  Assume all the atof conversions are possible
-	{
-		pEvent->SetTime(theDate);
-		theToken = theString.Tokenize(" ,", StrPos);	//Max Temp
-		pEvent->SetMaxTemp(atof(theToken));
-		theToken = theString.Tokenize(" ,", StrPos);	//Min Temp
-		pEvent->SetMinTemp(atof(theToken));
-		theToken = theString.Tokenize(" ,", StrPos);	//Ave Temp
-		pEvent->SetTemp(atof(theToken));
-		theToken = theString.Tokenize(" ,", StrPos);	//Windspeed
-		pEvent->SetWindspeed(atof(theToken));
-		theToken = theString.Tokenize(" ,", StrPos);	//Rainfall Amount
-		pEvent->SetRainfall(atof(theToken));
-		if (CalcDaylightByLat)
-		{
-			pEvent->SetDaylightHours(pEvent->CalcDaylightFromLatitude(theSession.GetLatitude()));
-		}
-		else
-		{
-			theToken = theString.Tokenize(" ,", StrPos);	//Daylight hours
-			pEvent->SetDaylightHours(atof(theToken));
-		}
-		pEvent->UpdateForageDayState();
-	}
-	return retval;
-}
-bool WeatherStringToEventWEA(CString theString, CEvent* pEvent, bool CalcDaylightByLat = false)
-{
-	//NOTE: Need to validate these values to ensure 
-	/////////////////////////////////////////////////////////////////////////////
-	//  The weather string format is a CString with comma or space delimited field as follows:
-	//		theDate - any date format that is properly parsed by COleDateTime
-	//		Maximum Temp - degrees C
-	//		Minimum Temp - degrees C
-	//		Mean Temp - degrees C
-	//		Windspeed - m/s
-	//		Daily Rainfall - mm
-	//		Daylight Hours - number of hours of daylight
-
-	/***********************************************************************************
-		The EPA.wea Weather files are described as follows
-
-		The weather files here were created per methods in Fry et al(2016); (see Fry_etal.pdf).
-		Formatting is given in the supporting material(see SupportingMaterial_Fryetal.pdf).
-		Briefly, the comma - separated fields are :
-	mm, dd, yyyy, precipitation(cm / day), ETo(cm / day), mean daily temperature(C), wind speed(cm / s), solar radiation(La / day)
-
-		The.wea filename format is xxxxx_grid_yy.yyy_lat.wea.The xxxxx string is an identifier which is used to map the weather station to
-		the longitude of the station but we don't need that for this application.  The yy.yyy string is the weather station latitude (assumed to be N) which is
-		used to calculate hours of sunlight per day.If a valid latitude is not found, a latitude of N 30 degrees is assumed.
-
-		Reference
-		Fry, M.M., Rothman, G., Young, D.F., and Thurman, N., 2016.  Daily gridded weather for exposure modeling, Environmental Modelling& Software, 82, 167 - 173, doi.org / 10.1016 / j.envsoft.2016.04.008
-
-		*/
 
 	int StrPos = 0;
 	CString theToken;
@@ -179,7 +116,6 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 	{
 		CColony* pColony = theSession.GetColony();
 		pColony->Create();  
-		//pColony->InitializeColony();
 		theSession.ClearErrorList();
 		theSession.ClearInfoList();
 		theSession.SetLatitude(30.0);
@@ -202,8 +138,8 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		CString CSValue(Value.c_str());
 		if (theSession.UpdateColonyParameters(Name, Value))
 		{
-			//info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
-			//theSession.AddToInfoList(info);
+			info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
+			theSession.AddToInfoList(info);
 			RetVal = true;
 		}
 		else
@@ -248,7 +184,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		else
 		{
 			delete pEvent;
-			theSession.AddToErrorList("Bad Weather File Record: " + WeatherEventString);
+			theSession.AddToErrorList("Bad Weather String Format: " + WeatherEventString);
 		}
 		return retval;
 	}
@@ -262,8 +198,11 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		{
 			string wthstr = WeatherEventStringList[i];
 			retval = vplib::SetWeather(wthstr);
-			if (retval) theSession.AddToInfoList("Adding weather Event: " + WeatherEventStringList[i]);
-			//std::cout << "Adding weather Event: " << WeatherEventStringList[i] << std::endl;
+			string outstring;
+			if (retval) outstring = "Adding weather Event: " + WeatherEventStringList[i];
+			else outstring = "Error in SetWeather for the string inside the asterisks:***" + WeatherEventStringList[i] + "***";
+			//theSession.AddToInfoList(outstring);
+
 		}
 		// For inital testing, assume weather is fully loaded after this string vector is loaded
 		if (theSession.GetWeather()->GetTotalEvents() > 0)
@@ -293,14 +232,29 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
+	bool vplib::ClearErrorList()
+	{
+		theSession.GetErrorList()->RemoveAll();
+		return true;
+	}
+
 	bool vplib::GetInfoList(vector<string>& InfoList)
 	{
-		InfoList.clear();
-		for (POSITION pos = theSession.GetInfoList()->GetHeadPosition(); pos != NULL;)
+		if (theSession.GetInfoList()->GetCount() > 0)
 		{
-			InfoList.push_back(CString2StdString(theSession.GetInfoList()->GetNext(pos)));
+			InfoList.clear();
+			for (POSITION pos = theSession.GetInfoList()->GetHeadPosition(); pos != NULL;)
+			{
+				string theString = CString2StdString(theSession.GetInfoList()->GetNext(pos));
+				InfoList.push_back(theString);
+			}
 		}
+		return true;
+	}
 
+	bool vplib::ClearInfoList()
+	{
+		theSession.GetInfoList()->RemoveAll();
 		return true;
 	}
 

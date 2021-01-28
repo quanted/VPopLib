@@ -8,21 +8,21 @@
 //
 
 #include "stdafx.h"
-#include "Bee.h"
-#include "Egg.h"
-#include "Queen.h"
-#include "Larva.h"
-#include "Brood.h"
-#include "Adult.h"
-#include "Mite.h"
-#include "WeatherEvents.h"
-#include "Spores.h"
-#include "MiteTreatments.h"
-#include "MiteTreatmentItem.h"
-#include "DateRangeValues.h"
-#include "ColonyResource.h"
-#include "EPAData.h"
-#include "NutrientContaminationTable.h"
+#include "bee.h"
+#include "egg.h"
+#include "queen.h"
+#include "larva.h"
+#include "brood.h"
+#include "adult.h"
+#include "mite.h"
+#include "weatherevents.h"
+#include "spores.h"
+#include "mitetreatments.h"
+#include "mitetreatmentitem.h"
+#include "daterangevalues.h"
+#include "colonyresource.h"
+#include "epadata.h"
+#include "nutrientcontaminationtable.h"
 #include "cstring.h"
 #include "cuintarray.h"
 #include "cmapstringtoob.h"
@@ -92,8 +92,8 @@ public:
 	CAdult& GetCaboose() {return Caboose;}
 	void ClearCaboose() {Caboose.Reset();}
 	//! Add method simply add theBrood to the Adults without making the adults age
-	void Add(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
-	void Update(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
+	void Add(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
+	void Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool bWorkder = true);
 	void KillAll();
 	void UpdateLength(int len, bool bWorker = true);
 	int MoveToEnd(int QuantityToMove, int MinAge);
@@ -116,7 +116,7 @@ private:
 public:
 	CForagerlistA();
 	~CForagerlistA();
-	void Update(CAdult& theAdult, CColony* theColony, CEvent* theEvent);
+	void Update(CAdult theAdult, CColony* theColony, CEvent* theEvent);
 	void ClearPendingForagers();
 	void KillAll();
 	int GetQuantity();  // Total Forarger Quantity including UnemployedForagers
@@ -138,7 +138,7 @@ protected:
 	CBrood Caboose;
 public:
 	double GetMitesPerCell();
-	void Update(CLarva& theLarva);
+	void Update(CLarva theLarva);
 	int GetMiteCount();
 	void KillAll();
 	void DistributeMites(CMite theMites);
@@ -158,7 +158,7 @@ protected:
 	CLarva Caboose;
 public:
 	void AddHead(CLarva* plarv);
-	void Update(CEgg& theEggs);
+	void Update(CEgg theEggs);
 	CLarva GetCaboose() {return Caboose;}
 	void KillAll();
 	void ClearCaboose() {Caboose.SetNumber(0);}
@@ -174,7 +174,7 @@ class CEgglist : public CBeelist
 protected:
 	CEgg Caboose;
 public:
-	void Update(CEgg& theEggs);
+	void Update(CEgg theEggs);
 	void KillAll();
 	CEgg GetCaboose() {return Caboose;}
 	void ClearCaboose() {Caboose.SetNumber(0);}
@@ -227,8 +227,8 @@ struct ColonyInitCond
 
 struct SupplementalFeedingResource
 {
-	double m_StartingAmount;  //In Grams
-	double m_CurrentAmount;	  //In Grams
+	double m_StartingAmount = 0;  //In Grams
+	double m_CurrentAmount = 0;	  //In Grams
 	COleDateTime m_BeginDate;
 	COleDateTime m_EndDate;
 };

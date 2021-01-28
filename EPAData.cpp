@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "coledatetime.h"
-#include "EPAData.h"
+#include "epadata.h"
 #include "position.h"
 #include "math.h"
 

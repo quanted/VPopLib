@@ -4,10 +4,10 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "Bee.h"
-#include "Egg.h"
-#include "GlobalOptions.h"
-#include "Queen.h"
+#include "bee.h"
+#include "egg.h"
+#include "globaloptions.h"
+#include "queen.h"
 #include "math.h"
 
 #ifdef _DEBUG

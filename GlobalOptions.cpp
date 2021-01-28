@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GlobalOptions.h"
+#include "globaloptions.h"
 
 GlobalOptions& GlobalOptions::Get()
 {

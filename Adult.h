@@ -6,8 +6,8 @@
 // was conflicting on some Linux machines so let's get rid of it
 #pragma once
 
-#include "Bee.h"
-#include "Mite.h"
+#include "bee.h"
+#include "mite.h"
 
 class CAdult : public CBee  {
   private:

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "NutrientContaminationTable.h"
-#include "VPopLib.h"
+#include "nutrientcontaminationtable.h"
+#include "vpoplib.h"
 
 CNutrientContaminationTable::CNutrientContaminationTable(void)
 {

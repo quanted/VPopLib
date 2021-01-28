@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "Bee.h"
+#include "bee.h"
 
 class CLarva : public CBee  {
   private:

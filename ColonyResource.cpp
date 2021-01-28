@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "ColonyResource.h"
+#include "colonyresource.h"
 
 
 // CColonyResource

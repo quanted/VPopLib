@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "EGG.H"
+#include "egg.h"
 
 class CQueen : public CBee  {
   private:

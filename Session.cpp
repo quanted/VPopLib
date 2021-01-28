@@ -1,4 +1,4 @@
-#include "Session.h"
+#include "session.h"
 
 CVarroaPopSession::CVarroaPopSession()
 {
@@ -582,7 +582,6 @@ void CVarroaPopSession::Simulate()
 				);
 				// Append additional command name if InOut statistics are required
 				if (GlobalOptions::Get().ShouldOutputInOutCounts())
-				//if (true)
 					{
 					CurSize.Format("%s %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d"
 						, CurSize

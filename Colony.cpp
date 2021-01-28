@@ -2,10 +2,9 @@
 //
 
 #include "stdafx.h"
-//#include "VPopLib.h"
-#include "ColdStorageSimulator.h"
-#include "Colony.h"
-#include "GlobalOptions.h"
+#include "coldstoragesimulator.h"
+#include "colony.h"
+#include "globaloptions.h"
 #include "ctime.h"
 #include "cstring.h"
 #include "cstring.format.h"
@@ -257,7 +256,7 @@ void CForagerlistA::KillAll()
 //}
 
 
-void CForagerlistA::Update(CAdult& theAdult, CColony* theColony, CEvent* theDay)
+void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 // The Adult Workers coming in are added to the Forager list.
 // If the day is a foraging day, the new adult is pushed onto 
 // the Pending Forager list and the list is aged one forage increment(.25, .5, .75, or 1.0)
@@ -505,7 +504,7 @@ CAdultlist::CAdultlist()
 	Caboose.Reset();
 }
 
-void CAdultlist::Add(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
+void CAdultlist::Add(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
 {
 	//ASSERT(theBrood);
 	{
@@ -531,7 +530,7 @@ void CAdultlist::Add(CBrood& theBrood, CColony* theColony, CEvent* theEvent, boo
 		}
 	}
 }
-void CAdultlist::Update(CBrood& theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
+void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool bWorker)
 // The Capped Brood coming in are converted to Adults and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose for Workers or the 
@@ -681,7 +680,7 @@ int CAdultlist::MoveToEnd(int QuantityToMove, int MinAge)
 //
 // CBroodlist - capped brood
 //
-void CBroodlist::Update(CLarva& theLarva)
+void CBroodlist::Update(CLarva theLarva)
 // The Larva coming in are converted to Capped Brood and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
@@ -778,7 +777,7 @@ void CBroodlist::DistributeMites(CMite theMites)
 //
 // CLarvalist
 //
-void CLarvalist::Update(CEgg& theEggs)
+void CLarvalist::Update(CEgg theEggs)
 // The eggs coming in are converted to Larvae and pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
@@ -817,7 +816,7 @@ void CLarvalist::AddHead(CLarva* plarv)
 //
 // CEgglist
 //
-void CEgglist::Update(CEgg& theEggs)
+void CEgglist::Update(CEgg theEggs)
 // The eggs laid by the queen on this day are pushed onto the list.
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.

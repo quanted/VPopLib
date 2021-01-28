@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-#include "ColdStorageSimulator.h"
-#include "Colony.h"
-#include "Egg.h"
-#include "Queen.h"
-#include "WeatherEvents.h"
+#include "coldstoragesimulator.h"
+#include "colony.h"
+#include "egg.h"
+#include "queen.h"
+#include "weatherevents.h"
 
 
 //////////////////////////////////////////////////////////////////////

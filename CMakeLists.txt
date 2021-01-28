@@ -22,12 +22,14 @@ project ("libvpop")
 
 
 #Add the fmt library to get access to string formatting.  part of vcpkg
-find_package(fmt CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)  #cannot use this for linux.  Need to figure out how to make something work for both
 HUNTER_ADD_PACKAGE(fmt)
 
 #Boost framework
-find_package(Boost CONFIG REQUIRED system filesystem)
-HUNTER_ADD_PACKAGE(Boost COMPONENTS system filesystem)
+#find_package(Boost CONFIG REQUIRED system filesystem)
+#HUNTER_ADD_PACKAGE(Boost COMPONENTS system filesystem)
+find_package(Boost CONFIG REQUIRED system )
+HUNTER_ADD_PACKAGE(Boost COMPONENTS system )
 
 include_directories(CMAKE_INCLUDE_DIRECTORIES_BEFORE .)
 include_directories(${PROJECT_BINARY_DIR})
@@ -35,28 +37,28 @@ include_directories(${PROJECT_BINARY_DIR})
 
 set (SOURCES    
                 stdafx.cpp
-                Adult.cpp
-                Bee.cpp
-                Brood.cpp
-                ColdStorageSimulator.cpp
-                Colony.cpp
-                ColonyResource.cpp
-                DateRangeValues.cpp
-                Egg.cpp
-                EPAData.cpp
-                GlobalOptions.cpp
-                IEDItem.cpp
-                Larva.cpp
-                Mite.cpp
-                MiteTreatmentItem.cpp
-                MiteTreatments.cpp
-                NutrientContaminationTable.cpp
-                Queen.cpp
-                Session.cpp
-                Spores.cpp
-                VPopLib.cpp
-                WeatherEvents.cpp
-                WeatherGridData.cpp)
+                adult.cpp
+                bee.cpp
+                brood.cpp
+                coldstoragesimulator.cpp
+                colony.cpp
+                colonyresource.cpp
+                daterangevalues.cpp
+                egg.cpp
+                epadata.cpp
+                globaloptions.cpp
+                ieditem.cpp
+                larva.cpp
+                mite.cpp
+                mitetreatmentitem.cpp
+                mitetreatments.cpp
+                nutrientcontaminationtable.cpp
+                queen.cpp
+                session.cpp
+                spores.cpp
+                vpoplib.cpp
+                weatherevents.cpp
+                weathergriddata.cpp)
 
 set (PORT_SOURCES  
                 position.cpp
@@ -69,7 +71,7 @@ set (PORT_SOURCES
                 coblist.cpp
                 cobject.cpp
                 cmapstringtoob.cpp
-                cfile.cpp
+                #cfile.cpp
                 ccmdtarget.cpp
                 carray.cpp)
 
@@ -90,6 +92,7 @@ GENERATE_EXPORT_HEADER( libvpop
 target_include_directories(libvpop PUBLIC  ${PROJECT_SOURCE_DIR})
 
 target_link_libraries(libvpop PRIVATE fmt::fmt)
-target_link_libraries(libvpop PRIVATE Boost::system Boost::filesystem)
+target_link_libraries(libvpop PRIVATE Boost::system)
+#target_link_libraries(libvpop PRIVATE Boost::system Boost::filesystem)
 #target_link_libraries(libvpop PRIVATE libportcode)
 #target_precompile_headers(libportcode PRIVATE ${VarroaPopPCH})

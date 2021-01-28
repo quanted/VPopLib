@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "Bee.h"
+#include "bee.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

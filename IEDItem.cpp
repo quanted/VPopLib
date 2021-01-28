@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "coledatetime.h"
 //#include "VarroaPop.h"
-#include "IEDItem.h"
+#include "ieditem.h"
 
 
 // CIEDItem

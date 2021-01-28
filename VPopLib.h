@@ -79,7 +79,9 @@ namespace vplib // This is the interface for VPopLib
 	bool libvpop_EXPORT SetWeather(vector<string>& WeatherEventStringList);
 	bool libvpop_EXPORT ClearWeather();
 	bool libvpop_EXPORT GetErrorList(vector<string>& ErrList);
+	bool libvpop_EXPORT ClearErrorList();
 	bool libvpop_EXPORT GetInfoList(vector<string>& InfoList);
+	bool libvpop_EXPORT ClearInfoList();
 	bool libvpop_EXPORT RunSimulation();
 	bool libvpop_EXPORT GetResults(vector<string>& ResultsList);
 }

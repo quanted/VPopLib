@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "MiteTreatments.h"
+#include "mitetreatments.h"
 #include "position.h"
 #include "coblist.h"
 

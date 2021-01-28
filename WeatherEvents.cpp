@@ -3,10 +3,10 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "WeatherEvents.h"
-#include "WeatherGridData.h"
-#include "ColdStorageSimulator.h"
-#include "GlobalOptions.h"
+#include "weatherevents.h"
+#include "weathergriddata.h"
+#include "coldstoragesimulator.h"
+#include "globaloptions.h"
 #include "math.h"
 
 #include <algorithm>

@@ -2,12 +2,12 @@
 //#include "Matrix.h"
 #include "coblist.h"
 #include "coledatetime.h"
-#include "Mite.h"
-#include "WeatherEvents.h"
-#include "MiteTreatments.h"
-#include "Colony.h"
+#include "mite.h"
+#include "weatherevents.h"
+#include "mitetreatments.h"
+#include "colony.h"
 #include "cstring.format.h"
-#include "GlobalOptions.h"
+#include "globaloptions.h"
 
 //
 // CVarroaPopSession contains the state of the simulation.  

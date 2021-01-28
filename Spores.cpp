@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 //#include "VarroaPop.h"
-#include "Spores.h"
+#include "spores.h"
 
 
 // CSpores
