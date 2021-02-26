@@ -72,11 +72,12 @@ using namespace std;
 namespace vplib // This is the interface for VPopLib
 {
 	bool libvpop_EXPORT InitializeModel();
-	bool libvpop_EXPORT ClearResultsBuffers();
+	bool libvpop_EXPORT ClearResultsBuffer();
 	bool libvpop_EXPORT SetICVariables(string Name, string Value);
 	bool libvpop_EXPORT SetICVariables(vector<string>& NVPairs);
 	bool libvpop_EXPORT SetWeather(string WeatherEventString);
 	bool libvpop_EXPORT SetWeather(vector<string>& WeatherEventStringList);
+	bool libvpop_EXPORT SetContaminationTable(vector<string>& ContaminationTableList);
 	bool libvpop_EXPORT ClearWeather();
 	bool libvpop_EXPORT GetErrorList(vector<string>& ErrList);
 	bool libvpop_EXPORT ClearErrorList();

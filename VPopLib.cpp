@@ -46,7 +46,7 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 
 	int StrPos = 0;
 	CString theToken;
-	int InitStgLen = theString.GetLength();
+	//int InitStgLen = theString.GetLength();
 
 	theToken = theString.Tokenize(" ,", StrPos);	//Date
 	COleDateTime theDate;
@@ -78,6 +78,26 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 	return retval;
 }
 
+/*******************************************************************************
+* Converts a Nutrient string into a SNCElement struct
+* Nutrient String Format is:  Date, Nectar, Pollen
+* 
+*/
+bool String2NutrientElement(SNCElement &theElement, CString theString)
+{
+	CString theToken;
+	int StrPos = 0;
+	theToken = theString.Tokenize(" ,", StrPos);
+	bool retval = theElement.m_NCDate.ParseDateTime(theToken, VAR_DATEVALUEONLY);  // If date parses, assume other items are valid
+	if (retval)
+	{
+		theToken = theString.Tokenize(" ,", StrPos);
+		theElement.m_NCNectarCont = atof(theToken);
+		theToken = theString.Tokenize(" ,", StrPos);
+		theElement.m_NCPollenCont = atof(theToken);
+	}
+	return retval;
+}
 
 std::string  CString2StdString(CString cstr)
 {
@@ -123,7 +143,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
-	bool vplib::ClearResultsBuffers()
+	bool vplib::ClearResultsBuffer()
 	{
 		theSession.m_ResultsText.RemoveAll();
 		theSession.AddToInfoList("Results Buffer Cleared");
@@ -220,6 +240,33 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 	{
 		theSession.GetWeather()->ClearAllEvents();
 		return true;
+	}
+
+	bool vplib::SetContaminationTable(vector<string>& ContaminationTableList)
+	{
+		// Contamination Table records are strings in comma-separated format of:  Date, NectarConcentration, PollenConcentration
+		// Concentrations are in grams of active ingredient / total grams material.  Normally nanograms AI per grams nectar for example 
+		// so would be a number like 0.000000020  or it's scientific notation equivalent 2.00E-8
+		bool retval = false;
+		if (ContaminationTableList.size() > 0)
+		{
+			CColony* pColony = theSession.GetColony();
+			pColony->m_NutrientCT.RemoveAll();
+			COleDateTime theTime;
+			double theNecConc;
+			double thePolConc;
+			string CTRecord;
+			SNCElement theElement;
+			for (int i = 0; i < ContaminationTableList.size(); i++)
+			{
+				if (String2NutrientElement(theElement, ContaminationTableList[i]))
+				{
+					pColony->m_NutrientCT.AddContaminantConc(theElement);
+					retval = true; // Set true if any items are added
+				}
+			}
+		}
+		return retval;
 	}
 
 	bool vplib::GetErrorList(vector<string>& ErrList)

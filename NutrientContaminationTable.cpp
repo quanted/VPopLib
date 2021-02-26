@@ -141,3 +141,8 @@ void CNutrientContaminationTable::GetContaminantConc(COleDateTime Date, double &
 		}
 	}
 }
+
+void CNutrientContaminationTable::AddContaminantConc(SNCElement theElement)
+{
+	m_ContDateArray.Add(theElement);
+}
