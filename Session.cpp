@@ -664,6 +664,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 	}
 	if (Name == "latitude")
 	{
+		double lat = atof(Value);
 		SetLatitude(atof(Value));
 		return true;
 	}

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// Define the simulation global variables and classes
+// Initialize  the session 
 CVarroaPopSession theSession;
 
 
@@ -33,7 +33,7 @@ CVarroaPopSession theSession;
 */
 bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightByLat = false)
 {
-	//NOTE: Need to validate these values to ensure 
+	
 	/////////////////////////////////////////////////////////////////////////////
 	//  The weather string format is a CString with comma or space delimited field as follows:
 	//		theDate - any date format that is properly parsed by COleDateTime
@@ -43,10 +43,11 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 	//		Windspeed - m/s
 	//		Daily Rainfall - mm
 	//		Daylight Hours - number of hours of daylight
+	//
+	//	Note:  If CalcDaylightByLat = true, the last field of theString, Daylight Hours, need not be present and is ignored if present.
 
 	int StrPos = 0;
 	CString theToken;
-	//int InitStgLen = theString.GetLength();
 
 	theToken = theString.Tokenize(" ,", StrPos);	//Date
 	COleDateTime theDate;
@@ -219,8 +220,8 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 			string wthstr = WeatherEventStringList[i];
 			retval = vplib::SetWeather(wthstr);
 			string outstring;
-			if (retval) outstring = "Adding weather Event: " + WeatherEventStringList[i];
-			else outstring = "Error in SetWeather for the string inside the asterisks:***" + WeatherEventStringList[i] + "***";
+			//if (retval) outstring = "Adding weather Event: " + WeatherEventStringList[i];
+			//else outstring = "Error in SetWeather for the string inside the asterisks:***" + WeatherEventStringList[i] + "***";
 			//theSession.AddToInfoList(outstring);
 
 		}
@@ -267,6 +268,12 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 			}
 		}
 		return retval;
+	}
+
+	bool vplib::ClearContaminationTable()
+	{
+		theSession.GetColony()->m_NutrientCT.RemoveAll();
+		return true;
 	}
 
 	bool vplib::GetErrorList(vector<string>& ErrList)
