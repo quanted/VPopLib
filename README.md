@@ -55,24 +55,28 @@ simulation run.
 
 In order to compile, vpoplib.h must be in the "include" path for VPLibUser.  This can be done in
 Visual Studio by adding the directory containing vpoplib.h to the Additional Include Directories field of
-Project Properties->C/C++->General.	Alternately, vpoplib.h can be moved to the project header file folder.
-You have to idenfity the location of the libvpop.lib file in order to link the library with VPLibUser.  
+Project Properties->C/C++->General.	Alternately, vpoplib.h can be moved to the project header file folder.  
+
+You will have to idenfity the location of the libvpop.lib file in order to link the library with VPLibUser.
 This can be done through Project Properties->Linker->General where you can add the directory containing
-libvpop.lib to the Additional Library Directories field.  You will also have to go to Project Properties->Linker->Input
-and add libvpop.lib to the Additional Dependencies field.  Once your VPLibUser program is compiled, you will 
+libvpop.lib to the Additional Library Directories field.  You will also have to go to 
+Project Properties->Linker->Input and add libvpop.lib to the Additional Dependencies field.  
+
+Once your VPLibUser program is compiled, you will 
 need to copy libvpop.dll to the same directory as your executable so it can be found at run time (there
 are other approaches to this including putting the .dll in your PATH environment variable).
 
 ### Linux
 
 To build VPLibUser with linux, you need to have the location of the library liblibvpop.so (note the additional 
-"lib" at the beginning of the filename.  You also need to have the vpoplib.h file in the include path and as
+"lib" at the beginning of the filename.)  You also need to have the vpoplib.h file in the include path and as
 mentionied above, it is easiest to put it in the same directory as your VPopLibUser header files.  Once that 
 has been completed, the following command will compile and link VPopLibUser:  
 
-`g++  -Wall -v -o test vpoplibuser.cpp -L"/home/stratpilot/projects/TestVPLibLinuxBld/MyProject/VPopLib/build" -llibvpop`
+`g++  -Wall -v -o test vpoplibuser.cpp -L"<path to liblibvpop.so>" -llibvpop`
 
-Note that the path inside the double quotes after -L is where liblibvpop.so is found on my Ubuntu machine.
+It's a bit confusing but even though the actual library file is liblibvpop.so, the filename following 
+the "-l" flag in this command is specified without the leading "lib" as shown.
 
 
 
