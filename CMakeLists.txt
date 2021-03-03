@@ -9,7 +9,7 @@ set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 set (CMAKE_DEBUG_POSTFIX "")
 set (BUILD_SHARED_LIBS TRUE)
-set (PORTCODE_PATH "${PROJECT_BINARY_DIR}/libportcode.lib")
+#set (PORTCODE_PATH "${PROJECT_BINARY_DIR}/libportcode.lib")
 
 include("HunterGate.cmake")
 
