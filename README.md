@@ -14,13 +14,19 @@ my Linux system.  I suspect that is due to default build configuration differenc
 ## Building VPopLib
 
 VpopLib code can be found at this git repository https://github.com/RobertCurry/VPopLib.
-### Windows
+### Windows and Linux with MS Visual Studio
 Clone the git repository to a folder on your Windows development system.  Using MS Visual Studio 2019, 
 open the folder containing the local repository.  The .json file should have both windows and linux 
 configurations that can be build and deployed from Visual Studio 
-(you will have to set up the connection to your remote linux system).
+(you will have to set up the connection to your remote Linux system if you are building for Linux). 
+Select the configuration you would like to build from the configuration 
+manager (x64-Release, x64-Debug, Linux-GCC-Release, Linux-GCC-Debug).  
+CMake will automatically run the first time a configuration is selected.  After CMake completed, select 
+Build->Build All from the main menu.  This will generate the library as either .lib/.dll or .so for 
+Windows and Linux respectively.  The Linux files and output directories will have been copied to your 
+Linux systems as needed.
 
-### Linux
+### Linux only build with CMake
 Create a folder on the Linux system – for example: MyProject  
 `$ mkdir MyProject`  
 Move to that folder and clone the git repository  
@@ -41,13 +47,13 @@ version is 3 mb.  So maybe the vs version statically links some dependencies?? A
 
 ## Creating an executable to use VPopLib
 
-The interface for VPopLib is contained in the header file vpoplib.h.  This provides all the access necessary to 
-load the model parameters, execute a simulation run, and get results.  
+The interface for VPopLib is contained in the header file vpoplib.h.  This provides all the access necessary 
+for the c++ compiler.  In a simple example, imagine a small c++ project called VPLibUser which uses VPopLib to load values and execute a 
+simulation run.  
 
 ### Windows
 
-In a simple example, imagine a small c++ project called VPLibUser which uses VPopLib to load values and execute a 
-simulation run.  In order to compile, vpoplib.h must be in the "include" path for VPLibUser.  This can be done in
+In order to compile, vpoplib.h must be in the "include" path for VPLibUser.  This can be done in
 Visual Studio by adding the directory containing vpoplib.h to the Additional Include Directories field of
 Project Properties->C/C++->General.	Alternately, vpoplib.h can be moved to the project header file folder.
 You have to idenfity the location of the libvpop.lib file in order to link the library with VPLibUser.  
@@ -61,8 +67,8 @@ are other approaches to this including putting the .dll in your PATH environment
 
 To build VPLibUser with linux, you need to have the location of the library liblibvpop.so (note the additional 
 "lib" at the beginning of the filename.  You also need to have the vpoplib.h file in the include path and as
-on Windows, it is easiest to put it in the same directory as your VPopLibUser header files.  Once that has been
-completed, the following command will compile and link VPopLibUser:  
+mentionied above, it is easiest to put it in the same directory as your VPopLibUser header files.  Once that 
+has been completed, the following command will compile and link VPopLibUser:  
 
 `g++  -Wall -v -o test vpoplibuser.cpp -L"/home/stratpilot/projects/TestVPLibLinuxBld/MyProject/VPopLib/build" -llibvpop`
 
