@@ -69,14 +69,14 @@
 
 using namespace std;
 
-namespace vplib // This is the interface for VPopLib
+extern "C"
 {
+	// This is the c++ style interface - did not use parameter signature overloading of functions.
 	bool libvpop_EXPORT InitializeModel();
-	bool libvpop_EXPORT ClearResultsBuffer();
-	bool libvpop_EXPORT SetICVariables(string Name, string Value);
-	bool libvpop_EXPORT SetICVariables(vector<string>& NVPairs);
-	bool libvpop_EXPORT SetWeather(string WeatherEventString);
-	bool libvpop_EXPORT SetWeather(vector<string>& WeatherEventStringList);
+	bool libvpop_EXPORT SetICVariablesS(string Name, string Value);
+	bool libvpop_EXPORT SetICVariablesV(vector<string>& NVPairs);
+	bool libvpop_EXPORT SetWeatherS(string WeatherEventString);
+	bool libvpop_EXPORT SetWeatherV(vector<string>& WeatherEventStringList);
 	bool libvpop_EXPORT SetContaminationTable(vector<string>& ContaminationTableList);
 	bool libvpop_EXPORT ClearContaminationTable();
 	bool libvpop_EXPORT ClearWeather();
@@ -86,4 +86,15 @@ namespace vplib // This is the interface for VPopLib
 	bool libvpop_EXPORT ClearInfoList();
 	bool libvpop_EXPORT RunSimulation();
 	bool libvpop_EXPORT GetResults(vector<string>& ResultsList);
+	bool libvpop_EXPORT ClearResultsBuffer();
+
+	// This is the c-sytle interface for VPopLib - no vectors or strings
+	bool libvpop_EXPORT SetICVariablesCP(char* NameCP, char* ValueCP);
+	bool libvpop_EXPORT SetICVariablesCPA(char** NVPairsCPA, int Count);
+	bool libvpop_EXPORT SetWeatherCP(char* WeatherEventStringCP);  // Passes in a char* string
+	bool libvpop_EXPORT SetWeatherCPA(char** WeatherEventStringCPA, int count);  // Passes in an array of char* strings and the length of the array
+	bool libvpop_EXPORT SetContaminationTableCPA(char** ContaminationTableListCPA, int Count);
+	bool libvpop_EXPORT GetErrorListCPA(char** ErrListCPA, int* pCount);
+	bool libvpop_EXPORT GetInfoListCPA(char** InfoListCPA, int* pCount);
+	bool libvpop_EXPORT GetResultsCPA(char*** ResultsListCPA, int* pCount);
 }

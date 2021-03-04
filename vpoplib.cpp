@@ -133,7 +133,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 //
 //*****************************************************************************************************************
 
-	bool vplib::InitializeModel()
+	bool InitializeModel()
 	{
 		CColony* pColony = theSession.GetColony();
 		pColony->Create();  
@@ -144,14 +144,14 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
-	bool vplib::ClearResultsBuffer()
+	bool ClearResultsBuffer()
 	{
 		theSession.m_ResultsText.RemoveAll();
 		theSession.AddToInfoList("Results Buffer Cleared");
 		return true;
 	}
 	
-	bool vplib::SetICVariables(std::string Name, std::string Value)
+	bool SetICVariablesS(std::string Name, std::string Value)
 	{
 		bool RetVal = false;
 		CString info;
@@ -173,7 +173,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return RetVal;
 	}
 	
-	bool vplib::SetICVariables(vector<string>& NVPairs)
+	bool SetICVariablesV(vector<string>& NVPairs)
 	{
 		std::string stgName;
 		std::string stgValue;
@@ -184,13 +184,13 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 			{
 				stgName = NVPairs[i].substr(0, eqpos);
 				stgValue = NVPairs[i].substr(eqpos + 1, NVPairs[i].npos - (eqpos + 1));
-				vplib::SetICVariables(stgName, stgValue);
+				SetICVariablesS(stgName, stgValue);
 			}
 		}
 		return true;
 	}
 
-	bool vplib::SetWeather(std::string WeatherEventString)
+	bool SetWeatherS(std::string WeatherEventString)
 	{
 		CString WECString = StdString2CString(WeatherEventString);
 		CWeatherEvents* pWeatherEvents = theSession.GetWeather();
@@ -212,13 +212,13 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 
 
 	// SetWeather with stringlist parameter - will return false if any of the weather events are bad - may be just one out of many.
-	bool vplib::SetWeather(vector<string>& WeatherEventStringList)
+	bool SetWeatherV(vector<string>& WeatherEventStringList)
 	{
 		bool retval = true;
 		for (size_t i = 0; (retval) && (i < WeatherEventStringList.size()); i++)
 		{
 			string wthstr = WeatherEventStringList[i];
-			retval = vplib::SetWeather(wthstr);
+			retval = SetWeatherS(wthstr);
 			string outstring;
 			//if (retval) outstring = "Adding weather Event: " + WeatherEventStringList[i];
 			//else outstring = "Error in SetWeather for the string inside the asterisks:***" + WeatherEventStringList[i] + "***";
@@ -237,13 +237,13 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return retval;
 	}
 
-	bool vplib::ClearWeather()
+	bool ClearWeather()
 	{
 		theSession.GetWeather()->ClearAllEvents();
 		return true;
 	}
 
-	bool vplib::SetContaminationTable(vector<string>& ContaminationTableList)
+	bool SetContaminationTable(vector<string>& ContaminationTableList)
 	{
 		// Contamination Table records are strings in comma-separated format of:  Date, NectarConcentration, PollenConcentration
 		// Concentrations are in grams of active ingredient / total grams material.  Normally nanograms AI per grams nectar for example 
@@ -270,13 +270,13 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return retval;
 	}
 
-	bool vplib::ClearContaminationTable()
+	bool ClearContaminationTable()
 	{
 		theSession.GetColony()->m_NutrientCT.RemoveAll();
 		return true;
 	}
 
-	bool vplib::GetErrorList(vector<string>& ErrList)
+	bool GetErrorList(vector<string>& ErrList)
 	{
 		ErrList.clear();
 		for (POSITION pos = theSession.GetErrorList()->GetHeadPosition(); pos != NULL;)
@@ -286,13 +286,13 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
-	bool vplib::ClearErrorList()
+	bool ClearErrorList()
 	{
 		theSession.GetErrorList()->RemoveAll();
 		return true;
 	}
 
-	bool vplib::GetInfoList(vector<string>& InfoList)
+	bool GetInfoList(vector<string>& InfoList)
 	{
 		if (theSession.GetInfoList()->GetCount() > 0)
 		{
@@ -306,20 +306,20 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
-	bool vplib::ClearInfoList()
+	bool ClearInfoList()
 	{
 		theSession.GetInfoList()->RemoveAll();
 		return true;
 	}
 
-	bool vplib::RunSimulation()
+	bool RunSimulation()
 	{
 		theSession.InitializeSimulation();
 		theSession.Simulate();
 		return true;
 	}
 
-	bool vplib::GetResults(vector<string>& ResultList)
+	bool GetResults(vector<string>& ResultList)
 	{
 		bool ResVal = false;
 		if (!theSession.m_ResultsText.IsEmpty())
