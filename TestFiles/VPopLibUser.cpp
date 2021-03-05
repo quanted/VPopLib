@@ -111,7 +111,7 @@ int main(int argc, char** argv)
     string ResultFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/ResultsfromFeedingStudyLib.txt";
     string ErrorFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/Errors.txt";
     string MessageFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/Messages.txt";
-    string ContaminationTablePath = "C:/Users/strat/Desktop/verificationtests/Parameter Files/NutrientContaminationFileNoTrash.txt";
+    string ContaminationTablePath = "C:/Users/strat/Desktop/verificationtests/Parameter Files/NutrientContaminationFile.txt";
     bool VPLIB_Return = true;
     bool ReleaseVersion = true;
 
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
     auto start = chrono::system_clock::now();
     vector<string> Result;
     int i;
-    int maxruns = 1;
+    int maxruns = 10;
     for (i = 0; i < maxruns; i++)  // Run multiple times
     {
         VPLIB_Return = RunSimulation();
@@ -173,7 +173,9 @@ int main(int argc, char** argv)
                 char* CPstring = resultsCPA[i];
                 std::string line(CPstring);
                 Result.push_back(line);
+                delete CPstring;  // Free up the memory allocated by GetResultsCPA
             }
+            delete resultsCPA;
         }
 
         // String vector version of GetResults
