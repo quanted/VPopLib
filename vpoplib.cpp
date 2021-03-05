@@ -123,6 +123,21 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 	return StringVector;
 }
 
+char** StringVector2CharStringArray(vector<string> stringvector)
+{
+	// Note - the calling function is responsible for freeing the memory created with this
+	int VectorLength = stringvector.size();
+	char** CPArray = new char* [VectorLength]();
+	for (int i = 0; i < VectorLength; i++)
+	{
+		CPArray[i] = new char[stringvector[i].size() + 1];
+		strcpy(CPArray[i], stringvector[i].c_str());
+	}
+
+	return CPArray;
+}
+
+
 
 
 
@@ -150,7 +165,20 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		theSession.AddToInfoList("Results Buffer Cleared");
 		return true;
 	}
-	
+
+	bool SetICVariablesCP(char* NameCP, char* ValueCP)
+	{
+		string Name = NameCP;
+		string Value = ValueCP;
+		return (SetICVariablesS(Name, Value));
+	}
+
+	bool SetICVariablesCPA(char** NVPairsCPA, int Count)
+	{
+		vector<string> NVPairs(NVPairsCPA, NVPairsCPA + Count);
+		return SetICVariablesV(NVPairs);
+	}
+
 	bool SetICVariablesS(std::string Name, std::string Value)
 	{
 		bool RetVal = false;
@@ -188,6 +216,19 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 			}
 		}
 		return true;
+	}
+
+	bool SetWeatherCP(char* WeatherEventStringCP)
+	{
+		string WeatherEventString = WeatherEventStringCP;
+		return (SetWeatherS(WeatherEventString));
+	}
+
+	bool SetWeatherCPA(char** WeatherEventStringListCPA, int Count)
+	{
+		vector<string> WeatherEventStringList(WeatherEventStringListCPA, WeatherEventStringListCPA + Count);
+		return SetWeatherV(WeatherEventStringList);
+
 	}
 
 	bool SetWeatherS(std::string WeatherEventString)
@@ -270,6 +311,12 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return retval;
 	}
 
+	bool SetContaminationTableCPA(char** ContaminationTableListCPA, int Count)
+	{
+		vector<string> ContaminationTableList(ContaminationTableListCPA, ContaminationTableListCPA + Count);
+		return SetContaminationTable(ContaminationTableList);
+	}
+
 	bool ClearContaminationTable()
 	{
 		theSession.GetColony()->m_NutrientCT.RemoveAll();
@@ -284,6 +331,17 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 			ErrList.push_back(CString2StdString(theSession.GetErrorList()->GetNext(pos)));
 		}
 		return true;
+	}
+
+	bool GetErrorListCPA(char*** ErrListCPA, int* pCount)
+	{
+		vector<string> ErrList;
+		if (GetErrorList(ErrList))
+		{
+			*ErrListCPA = StringVector2CharStringArray(ErrList);
+			return true;
+		}
+		else return false;
 	}
 
 	bool ClearErrorList()
@@ -306,6 +364,18 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		return true;
 	}
 
+	bool GetInfoListCPA(char*** InfoListCPA, int* pCount)
+	{
+		vector<string> InfoList;
+		if (GetErrorList(InfoList))
+		{
+			*InfoListCPA = StringVector2CharStringArray(InfoList);
+			return true;
+		}
+		else return false;
+	}
+
+
 	bool ClearInfoList()
 	{
 		theSession.GetInfoList()->RemoveAll();
@@ -318,6 +388,20 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 		theSession.Simulate();
 		return true;
 	}
+
+	bool GetResultsCPA(char*** ResultsListCPA, int* pCount)
+	{
+		vector<string> ResultsList;
+		if (GetResults(ResultsList))
+		{
+			*ResultsListCPA = StringVector2CharStringArray(ResultsList);
+			*pCount = ResultsList.size();
+			return true;
+		}
+		else return false;
+	}
+
+
 
 	bool GetResults(vector<string>& ResultList)
 	{

@@ -86,7 +86,7 @@ bool LoadCTList(vector<string> &theCTList, string ContaminationTablePath)
 
 void OutputStringList(vector<string> List, string Filename, string title = "")
 {
-    if (List.size() == 0) cout << "Empty Output String List " << title << endl;
+    if (List.size() == 0) cout << "Empty Output String List" << title << endl;
     else
     {
         ofstream resultfile(Filename);
@@ -111,38 +111,41 @@ int main(int argc, char** argv)
     string ResultFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/ResultsfromFeedingStudyLib.txt";
     string ErrorFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/Errors.txt";
     string MessageFilePath = "C:/Users/strat/Desktop/verificationtests/VPopLibVerification/Messages.txt";
-    string ContaminationTablePath = "C:/Users/strat/Desktop/verificationtests/Parameter Files/NutrientContaminationFile.txt";
+    string ContaminationTablePath = "C:/Users/strat/Desktop/verificationtests/Parameter Files/NutrientContaminationFileNoTrash.txt";
     bool VPLIB_Return = true;
     bool ReleaseVersion = true;
 
-    // Command line parameters are InputFilePath WeatherFilePath ResultFilePath.  If any are present, assume all are
+    // Command line parameters are InputFilePath WeatherFilePath ResultFilePath ErrorFilePath MessageFilePath and ContaminationTablePath.  If any are present, assume all are
     if (argc > 1)  // ignore the program name
     {
         InputFilePath = argv[1];
         WeatherFilePath = argv[2];
         ResultFilePath = argv[3];
+        ErrorFilePath = argv[4];
+        MessageFilePath = argv[5];
+        ContaminationTablePath = argv[6];
     }
-    VPLIB_Return = vplib::InitializeModel();
+    VPLIB_Return = InitializeModel();
     if (!VPLIB_Return) cout << "InitializeModel" << endl;
-    VPLIB_Return = vplib::ClearResultsBuffer();
+    VPLIB_Return = ClearResultsBuffer();
     if (!VPLIB_Return) cout << "ClearResultsBuffer failed" << endl;
 
     vector<string> theList;
     LoadICList(theList, InputFilePath);  //Local function to load the name/value pairs for the initial conditions from a file
-    VPLIB_Return = vplib::SetICVariables(theList);
+    VPLIB_Return = SetICVariablesV(theList);
     if (!VPLIB_Return) cout << "SetICVariables failed" << endl;
 
-    VPLIB_Return = vplib::ClearWeather();
+    VPLIB_Return = ClearWeather();
     if (!VPLIB_Return) cout << "ClearWeather failed" << endl;
 
     vector<string> theWeatherList;
     LoadWeatherFileWTH(WeatherFilePath, theWeatherList); // Local function to load weather list from a filel;
-    VPLIB_Return = vplib::SetWeather(theWeatherList);
+    VPLIB_Return = SetWeatherV(theWeatherList);
     if (!VPLIB_Return) cout << "SetWeather failed" << endl;
 
     vector<string> theCTList;
     LoadCTList(theCTList, ContaminationTablePath);
-    VPLIB_Return = vplib::SetContaminationTable(theCTList);
+    VPLIB_Return = SetContaminationTable(theCTList);
     if (!VPLIB_Return) cout << "SetContaminationTable failed" << endl;
 
     auto start = chrono::system_clock::now();
@@ -151,12 +154,34 @@ int main(int argc, char** argv)
     int maxruns = 1;
     for (i = 0; i < maxruns; i++)  // Run multiple times
     {
-        VPLIB_Return = vplib::RunSimulation();
+        VPLIB_Return = RunSimulation();
         if (!VPLIB_Return) cout << "RunSimulation failed" << endl;
-        VPLIB_Return = vplib::GetResults(Result);
-        if (!VPLIB_Return) cout << "GetResults failed" << endl;
+
+        // Character Pointer Array version of GetResults.
+        char** resultsCPA;
+        int resultSize;
+        VPLIB_Return = GetResultsCPA(&resultsCPA, &resultSize);
+        if (!VPLIB_Return)
+        {
+            cout << "GetResults CPA failed" << endl;
+        }
+        else
+        {
+            // convert the character pointer array into string list in order to save
+            for (int i = 0; i < resultSize; i++)
+            {
+                char* CPstring = resultsCPA[i];
+                std::string line(CPstring);
+                Result.push_back(line);
+            }
+        }
+
+        // String vector version of GetResults
+        //VPLIB_Return = GetResults(Result);
+        //if (!VPLIB_Return) cout << "GetResults failed" << endl;
+
         if (Result.size() > 0) OutputStringList(Result, ResultFilePath);  // Local function to list results on console
-        VPLIB_Return = vplib::ClearResultsBuffer();
+        VPLIB_Return = ClearResultsBuffer();
         if (!VPLIB_Return) cout << "ClearResultsBuffer failed" << endl;
 
     }
@@ -164,15 +189,19 @@ int main(int argc, char** argv)
     cout << "Exiting Loop" << endl;
     chrono::duration<double> diff = end - start;
     cout << "Time to run " << i << " simulations = " << diff.count() << " Seconds" << endl;
- 
+
 
     vector<string> infolist;
-    VPLIB_Return = vplib::GetInfoList(infolist);
+    VPLIB_Return = GetInfoList(infolist);
     if (!VPLIB_Return) cout << "GetInfoList failed" << endl;
     OutputStringList(infolist, MessageFilePath, "Information"); //Local function to list any passed information messages to the console
 
+    char** infoCPA;
+    int infoSize;
+    VPLIB_Return = GetInfoListCPA(&infoCPA, &infoSize);
+
     vector<string> errlist;
-    VPLIB_Return = vplib::GetErrorList(errlist);
+    VPLIB_Return = GetErrorList(errlist);
     if (!VPLIB_Return) cout << "GetErrorList failed" << endl;
     OutputStringList(errlist, ErrorFilePath, "Errors"); // Local function to list the errors to the console
 
@@ -180,7 +209,4 @@ int main(int argc, char** argv)
 
 
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
 

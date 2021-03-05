@@ -94,7 +94,7 @@ extern "C"
 	bool libvpop_EXPORT SetWeatherCP(char* WeatherEventStringCP);  // Passes in a char* string
 	bool libvpop_EXPORT SetWeatherCPA(char** WeatherEventStringCPA, int count);  // Passes in an array of char* strings and the length of the array
 	bool libvpop_EXPORT SetContaminationTableCPA(char** ContaminationTableListCPA, int Count);
-	bool libvpop_EXPORT GetErrorListCPA(char** ErrListCPA, int* pCount);
-	bool libvpop_EXPORT GetInfoListCPA(char** InfoListCPA, int* pCount);
+	bool libvpop_EXPORT GetErrorListCPA(char*** ErrListCPA, int* pCount);
+	bool libvpop_EXPORT GetInfoListCPA(char*** InfoListCPA, int* pCount);
 	bool libvpop_EXPORT GetResultsCPA(char*** ResultsListCPA, int* pCount);
 }
