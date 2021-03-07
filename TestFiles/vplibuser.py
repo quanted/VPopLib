@@ -92,13 +92,44 @@ if __name__ == "__main__":
 
         # Get Results
         theCount = ctypes.c_int(0)
-        #p_Count.contents = theCount
-        #p_Results = ctypes.POINTER(ctypes.c_char)()
-        #p_Count = ctypes.POINTER(ctypes.c_int)()
-        #libvpop.GetResultsCPA.argtypes = ctypes.P
-        p_Results - (ctypes.c_char_p*4)(*map(ctypes.addressof, pResults))
-        if libvpop.GetResultsCPA(ctypes.pointer(p_Results), ctypes.pointer(theCount)) :
-            print(p_Results[1])
-        # Store Results
-        # Clear Results 
+        p_Results = ctypes.POINTER(ctypes.c_char_p)()
+        if libvpop.GetResultsCPA(ctypes.byref(p_Results),ctypes.byref(theCount)) :
+            # Store Reaults
+            max = int(theCount.value)
+            print('Number lines of results' ,max)
+            outfile = open(resultpath, "w")
+            for j in range(0, max -1): 
+                outfile.write(p_Results[j].decode("utf-8"))
+            outfile.close()
+            print('Wrote Results to file')
+            libvpop.ClearResultsBuffer()
+    
+    # Get Info and Errors
+    p_Errors = ctypes.POINTER(ctypes.c_char_p)()
+    NumErrors = ctypes.c_int(0)
+    if libvpop.GetErrorListCPA(ctypes.byref(p_Errors), ctypes.byref(NumErrors)) :
+        # Get Errors
+        max = int(NumErrors.value)
+        outfile = open(errorpath, "w")
+        for j in range(0,max-1) :
+            outfile.write(p_Errors[j].decode("utf-8"))
+        outfile.close()
+        print('Wrote Error List to file')
+        libvpop.ClearErrorList()
+    
+    p_Info = ctypes.POINTER(ctypes.c_char_p)()
+    NumInfo = ctypes.c_int(0)
+    if libvpop.GetInfoListCPA(ctypes.byref(p_Info), ctypes.byref(NumInfo)) :
+        # Get Info
+        max = int(NumInfo.value)
+        print('Number of info lines.' ,max)
+        outfile = open(infopath, "w")
+        for j in range(0,max-1) :
+            outfile.write(p_Info[j].decode("utf-8"))
+        outfile.close()
+        print('Wrote Info List to file')
+        libvpop.ClearInfoList()   
+                
+
+       
 
