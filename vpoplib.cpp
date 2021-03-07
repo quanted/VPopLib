@@ -339,6 +339,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (GetErrorList(ErrList))
 		{
 			*ErrListCPA = StringVector2CharStringArray(ErrList);
+			*pCount = ErrList.size();
 			return true;
 		}
 		else return false;
@@ -370,6 +371,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (GetErrorList(InfoList))
 		{
 			*InfoListCPA = StringVector2CharStringArray(InfoList);
+			*pCount = InfoList.size();
 			return true;
 		}
 		else return false;
