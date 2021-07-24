@@ -283,7 +283,7 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 #define WINTER_MORTALITY_PER_DAY 0.10/152 // Reduce 10% over the 152 days of winter
 	//if (theAdult == NULL)
 	//{
-	//	// make sure we have an adult box card used to age the foragers list even during winter
+	//	// make sure we have an adult box car used to age the foragers list even during winter
 	//	theAdult = new CAdult(0);
 	//}
 	// Change lifespan from that of Worker to that of forager
@@ -385,6 +385,7 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 		if (addHead)
 		{
 			AddHead(foragersHead);
+			delete (RemoveTail());
 		}
 		else delete foragersHead;
 		// If the foragers list is full let's remove the oldest hive
@@ -518,11 +519,12 @@ void CAdultlist::Add(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool
 
 		POSITION pos = GetHeadPosition();
 		CAdult* adult = (CAdult*)GetNext(pos);
-		if (adult != NULL)
+		if (adult != NULL) // Add the incoming brood to the first boxcar
 		{
 			adult->SetNumber(adult->GetNumber() + theAdult->GetNumber());
 			adult->SetMites(adult->GetMites() + theAdult->GetMites());
 			adult->SetPropVirgins(adult->GetPropVirgins() * theAdult->GetPropVirgins());
+			delete theAdult;
 		}
 		else
 		{
@@ -564,6 +566,7 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 			Caboose.age = pAdult->age;
 			Caboose.Alive = pAdult->Alive;
 			Caboose.number = int(pAdult->number * GetPropTransition());
+			delete(pAdult);
 			if (!bWorker) 
 			{
 				// Update stats for dead drones
@@ -697,6 +700,7 @@ void CBroodlist::Update(CLarva theLarva)
 		Caboose.m_Mites = tail->m_Mites;
 		Caboose.m_PropVirgins = tail->m_PropVirgins;
 		Caboose.number = int(tail->number * GetPropTransition());
+		delete(tail);
 	}
 	else Caboose.Reset();
 
@@ -792,6 +796,8 @@ void CLarvalist::Update(CEgg theEggs)
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
 		Caboose.number = int(tail->number * GetPropTransition());
+		delete(tail);
+		
 	}
 	else Caboose.Reset();
 
@@ -829,6 +835,7 @@ void CEgglist::Update(CEgg theEggs)
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
 		Caboose.number = int(tail->number * GetPropTransition());
+		delete(tail);
 	}
 	else Caboose.Reset();
 
@@ -1445,7 +1452,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		{
 			if (queen.ComputeL(pEvent->GetDaylightHours()) == 0)
 			{
-				// In Automatic mode the cold storage is activated if we don't have non adults in the colony anymore
+				// In Automatic mode the cold storage is activated if we don't have non adults in the colony anymore ((NOTE:  I don't think this comment is correct
+				// cold storage is activated when L = 0 when automatic
 				coldStorage.Activate();
 			}
 			else
@@ -1456,8 +1464,11 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		coldStorage.Update(*pEvent, *this);
 	}
 
-	CEgg l_DEggs = *(queen.GetDeggs());
-	CEgg l_WEggs = *(queen.GetWeggs());
+	
+	//CEgg l_DEggs = *(queen.GetDeggs());
+	//CEgg l_WEggs = *(queen.GetWeggs());
+	CEgg l_DEggs(queen.GetDeggs());
+	CEgg l_WEggs(queen.GetWeggs());
 
 	// At the begining of cold storage all eggs are lost
 	if (coldStorage.IsStarting())
@@ -1512,7 +1523,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	// To correct that, we are saying that a forage day is valid if we have favorable flight hours during that day
 	const bool ForageIncIsValid = GlobalOptions::Get().ShouldForageDayElectionBasedOnTemperatures() || pEvent->GetForageInc() > 0.0;
 
-	if ((NumberOfNonAdults > 0) || (pEvent->IsForageDay() && ForageIncIsValid))
+	if ((NumberOfNonAdults > 0) || (pEvent->IsForageDay() && ForageIncIsValid))  
 	{
 		// Foragers killed due to pesticide.  Recruit precocious Adult Workers to be foragers - Add them to the last Adult Boxcar
 		// The last boxcar will be moved to the Caboose when Wadl.Update is called a little later.  The Wadl Caboose will be moved to the 
@@ -1544,7 +1555,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 			Wadl.Update(CapWkr.GetCaboose(), this, pEvent, true);
 			int DrnNumberFromCaboose = CapWkr.GetCaboose().GetNumber();
 			WkrAdlCabooseNumber = Wadl.GetCaboose().GetNumber();
-			//TRACE(" HB After Update:%s\n",Wadl.Status());
+			//TRACE(" HB After Update:%s\n",Wadl.Statuys());
 			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose().number);
 
 			// Update stats for adults becoming foragers

@@ -20,7 +20,7 @@ HunterGate(
 
 project ("libvpop")
 
-
+set (Boost_USE_STATIC_LIBS ON)
 #Add the fmt library to get access to string formatting.  part of vcpkg
 find_package(fmt CONFIG REQUIRED)  #cannot use this for linux.  Need to figure out how to make something work for both
 HUNTER_ADD_PACKAGE(fmt)
@@ -28,8 +28,10 @@ HUNTER_ADD_PACKAGE(fmt)
 #Boost framework
 #find_package(Boost CONFIG REQUIRED system filesystem)
 #HUNTER_ADD_PACKAGE(Boost COMPONENTS system filesystem)
-find_package(Boost CONFIG REQUIRED system )
+#find_package(Boost CONFIG REQUIRED system )
+#set(BOOST_ROOT "C:/soft/boost_1_71_0")
 HUNTER_ADD_PACKAGE(Boost COMPONENTS system )
+find_package(Boost CONFIG REQUIRED system )
 
 include_directories(CMAKE_INCLUDE_DIRECTORIES_BEFORE .)
 include_directories(${PROJECT_BINARY_DIR})

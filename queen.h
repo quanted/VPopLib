@@ -36,8 +36,10 @@ class CQueen : public CBee  {
 	//void Serialize(CArchive &ar);
 	void LayEggs(int LayDays, double DegreeDays, double DaylightHours, int NumForagers, 
 		double LarvPerBee);
-	CEgg* GetWeggs();
-	CEgg* GetDeggs();
+	//CEgg* GetWeggs();
+	//CEgg* GetDeggs();
+	int GetWeggs();
+	int GetDeggs();
 	int GetTeggs() const { return m_Teggs; }
 	double GetDD() { return m_DD; }
 	double GetL() { return m_L; }

@@ -221,17 +221,27 @@ void CQueen::LayEggs(int LayDays, double DegreeDays, double DaylightHours, int N
 }
 
 
-CEgg* CQueen::GetDeggs()
+//CEgg* CQueen::GetDeggs()
+//{
+//	CEgg* theEggs = new CEgg(m_Deggs);
+//	return theEggs;
+//}
+
+int CQueen::GetDeggs()
 {
-	CEgg* theEggs = new CEgg(m_Deggs);
-	return theEggs;
+	return m_Deggs;
 }
 
-CEgg* CQueen::GetWeggs()
+int CQueen::GetWeggs()
 {
-	CEgg* theEggs = new CEgg(m_Weggs);
-	return theEggs;
+	return m_Weggs;
 }
+
+//CEgg* CQueen::GetWeggs()
+//{
+//	CEgg* theEggs = new CEgg(m_Weggs);
+//	return theEggs;
+//}
 
 
 void CQueen::ReQueen(int EggLayingDelay, double QueenStrength, int SimDayNum)

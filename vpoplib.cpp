@@ -142,7 +142,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 
 
 //*****************************************************************************************************************
-//	This following functions provide the interface to VPopLib.  All using the vplib namespace
+//	This following functions provide the interface to VPopLib.  
 //
 //
 //
