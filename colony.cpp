@@ -1545,7 +1545,9 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 		// Options of aging Adults based on Laid Eggs
 		// Aging of adults is actually function of DaylightHours 
-		const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
+		//const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
+		// Modified prior line - L doesn't necessarily go to zero every time egg laying does. Changed to stop aging if eggs laid today are zero
+		const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.GetTeggs() > 0); 
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());
