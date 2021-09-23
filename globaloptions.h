@@ -54,8 +54,7 @@ public:
 	// Egg laying options
 	
 	// This option affect Egg laying. When below threshold no egg will be laid.
-	//Option<double> DaylightHoursThreshold = 9.5;
-	Option<double> DaylightHoursThreshold = 11;
+	Option<double> DaylightHoursThreshold = 9.5;
 
 	// Adult aging options
 
@@ -69,20 +68,20 @@ public:
 	// If true:
 	//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
 	//    Windspeed <= 8.94 m/s                AND
-	//    Rainfall <= .197 inches (5.00 mm)
+	//    Rainfall <= .197 inches (.500 cm)
 	// else if false:
 	//    Windspeed <= 8.94 m/s                AND
-	//    Rainfall <= .197 inches  (5.00 mm)
+	//    Rainfall <= .197 inches  (.500 cm)
 	//
 	// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
 	Option<bool> ShouldForageDayElectionBasedOnTemperatures = false;
 	// This option affect the Windspeed threshold to determinate if the current day can be a Forage Day
-	Option<double> WindspeedThreshold = 8.94;  //m/s
+	Option<double> WindspeedThreshold = 8.94;
 	// This option affect the Rainfall threshold to determinate if the current day can be a Forage Day
-	Option<double> RainfallThreshold = 5.0; //mm
+	Option<double> RainfallThreshold = 0.197;
 	// This option will affect wth weather file data (Observed, Historical, and RCP)
 	// Hourly temperature estimation will be used to enhance ForagerInc aging increment.
-	Option<bool> ShouldComputeHourlyTemperatureEstimation = false;
+	Option<bool> ShouldComputeHourlyTemperatureEstimation = true;
 	// This option changes the way forager are processed on non foraging days.
 	// On non-Foraging days, foragers when added to the Foragers list will not age and they will age
 	// of ForageInc on the next Foraging day instead of aging 1 full day.

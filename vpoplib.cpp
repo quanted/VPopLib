@@ -166,13 +166,6 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		return true;
 	}
 
-	bool SetLatitude(double lat)
-	{
-		theSession.GetWeather()->SetLatitude(lat);
-		return true;
-	}
-
-
 	bool SetICVariablesCP(char* NameCP, char* ValueCP)
 	{
 		string Name = NameCP;
@@ -247,7 +240,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (retval)
 		{
 			pEvent->UpdateForageAttributeForEvent(pEvent->GetWindspeed());
-			//pEvent->UpdateForageDayState();  This is redundant to UpdateForageAttributeForEvent
+			pEvent->UpdateForageDayState();
 			pWeatherEvents->AddEvent(pEvent);
 		}
 		else

@@ -87,7 +87,6 @@ extern "C"
 	bool libvpop_EXPORT RunSimulation();
 	bool libvpop_EXPORT GetResults(vector<string>& ResultsList);
 	bool libvpop_EXPORT ClearResultsBuffer();
-	bool libvpop_EXPORT SetLatitude(double lat);
 
 	// This is the c-sytle interface for VPopLib - no vectors or strings
 	bool libvpop_EXPORT SetICVariablesCP(char* NameCP, char* ValueCP);
