@@ -101,9 +101,8 @@ void CEvent::UpdateForageAttributeForEvent(double windSpeed)
 		// Decide if this is a foraging day.  This requires:
 		//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
 		//    Windspeed <= 8.94 m/s                 AND
-		//    Rainfall <= .197 inches
-		//
-		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
+		//    Rainfall <= .197 inches or 5 mm per day
+
 		SetForage((GetMaxTemp() > 12.0) && (windSpeed <= GlobalOptions::Get().WindspeedThreshold()) &&
 			(GetMaxTemp() <= 43.33) && (GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
 	}
@@ -112,16 +111,103 @@ void CEvent::UpdateForageAttributeForEvent(double windSpeed)
 		//
 		// Decide if this is a foraging day.  This requires:
 		//    Windspeed <= 8.94 m/s                AND
-		//    Rainfall <= .197 inches
+		//    Rainfall <= .197 inches or 5 mm per day
 		//
 		// 5/21/2020: Changed the Windspeed from 21.13 meters/sec to 8.94 meters/sec
 		SetForage((windSpeed <= GlobalOptions::Get().WindspeedThreshold()) && (GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
 	}
-	// Here we set the Forage Increment using the default method, may be change later depending on execution options
-	SetForageInc(12.0, GetMaxTemp(), GetTemp());
-	//m_ForageInc = 1.0;  // NOTE:  test only - remove after test
+	if (GlobalOptions::Get().ShouldComputeHourlyTemperatureEstimation())
+	{
+		// We will wait until 
+	}
+	else // Use legacy approach to set the forage increment
+	{
+		SetForageInc(12.0, GetMaxTemp(), GetTemp());
+
+	}
 }
 
+
+//TODO:  Will have to implement this in the library but not when reading the weather file
+//void CEvent::ComputeHourlyTemperatureEstimationAndUpdateForageInc()
+//{
+//	try
+//	{
+//		const size_t eventsCount = events.size();
+//
+//		// Get the latitude based on the filename 
+//		double latitude = WeatherGridDataNs::GetLatitudeFromFilename((const char*)GetFileName());
+//
+//		// Compute all daylengths as a first step to keep the solstice
+//		std::vector<WeatherGridDataNs::DayLengthResult> dayLengths;
+//		dayLengths.reserve(eventsCount);
+//
+//		float solstice = 0.0;
+//
+//		for (auto it = events.begin(); it != events.end(); it++)
+//		{
+//			const auto dayLength = WeatherGridDataNs::DayLength(latitude, WeatherGridDataNs::ComputeJDay((*it)->GetTime()));
+//			dayLengths.push_back(dayLength);
+//			solstice = (std::max)(dayLength.daylength, solstice);
+//		}
+//
+//		CEvent* prevEvent = nullptr;
+//		CEvent* event = nullptr;
+//		for (size_t eventIndex = 0; eventIndex < eventsCount; eventIndex++)
+//		{
+//			CEvent* event = events[eventIndex];
+//			const size_t nextIndex = eventIndex + 1;
+//			CEvent* nextEvent = nextIndex < eventsCount ? events[nextIndex] : nullptr;
+//
+//			// alter ForageInc taking into account estimated hourly temperature
+//
+//			WeatherGridDataNs::HourlyTempraturesEstimator estimator;
+//
+//			estimator.tmin = event->GetMinTemp();
+//			estimator.tmax = event->GetMaxTemp();
+//
+//			auto& dayData = dayLengths[eventIndex];
+//
+//			estimator.sunrise = dayData.sunrise;
+//			estimator.sunset = dayData.sunset;
+//			estimator.daylength = dayData.daylength;
+//
+//			if (prevEvent != nullptr)
+//			{
+//				auto& prevDayData = dayLengths[eventIndex - 1];
+//
+//				estimator.prev_tmin = prevEvent->GetMinTemp();
+//				estimator.prev_tmax = prevEvent->GetMaxTemp();
+//				estimator.prev_sunset = prevDayData.sunset;
+//			}
+//
+//			if (nextEvent != nullptr)
+//			{
+//				auto& nextDayData = dayLengths[eventIndex + 1];
+//
+//				estimator.next_tmin = nextEvent->GetMinTemp();
+//				estimator.next_sunrise = nextDayData.sunrise;
+//			}
+//
+//			estimator.compute();
+//
+//			int flighingDayLightHours = estimator.count_dayligth();
+//
+//			event->SetDaylightHours(estimator.daylength);
+//			event->SetForageInc((std::min)(static_cast<float>(flighingDayLightHours), dayData.daylength) / solstice);
+//
+//			prevEvent = event;
+//			event = nextEvent;
+//		}
+//	}
+//	catch (std::exception& e)
+//	{
+//		// This exception only impact the computation of the adjusted Forage Increment, 
+//		// simulation is able to continue anyway
+//		CString stg = "Cannot extract latitude from filename: ";
+//		//MyMessageBox(stg + GetFileName());
+//	}
+//}
 
 //////////////////////////////////////////////////////////////////////
 // CEvents Member Functions
@@ -212,13 +298,13 @@ void CEvent::UpdateForageDayState()
 	// Decide if this is a foraging day.  This requires:
 	//    12.0 Deg C < MaxTemp < 43.33 Deg C    AND
 	//    Windspeed <= 21.12 m/s                AND
-	//    Rainfall <= .197 inches
+	//    Rainfall <= .197 inches or 5 mm
 	//
 	if ((m_Windspeed > 20)	||
 		(m_Temp <= -12.0)	||
 		(m_Temp >= 43.33)	||
 		//(m_Rainfall > 0.325)) m_ForageDay = false;  NOTE:  The value .325 cm was in here until 2021 when it was correctly converted from .197in to .500 cm
-		(m_Rainfall > 0.500)) m_ForageDay = false;
+		(m_Rainfall > 5.00)) m_ForageDay = false;
 	else m_ForageDay = true;
 }
 
@@ -995,6 +1081,7 @@ CWeatherEvents::CWeatherEvents()
 {
 	m_Filename = "";
 	m_HasBeenInitialized = false;
+	m_Latitude = -1000;  // Indicates not set
 }
 
 CWeatherEvents::~CWeatherEvents()
@@ -1785,7 +1872,7 @@ const char GridDataTypeId::Rcp45[] = "Rcp45";
 //	return DaylightHours;
 //}
 
-// TODO:  Will have to implement this in the library but not when reading the weather file
+// //TODO:  Will have to implement this in the library but not when reading the weather file
 //void CWeatherEvents::ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events)
 //{
 //	try

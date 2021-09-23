@@ -28,10 +28,10 @@ private:
 	COleDateTime m_Time;
 	double m_Temp;		//  Average Temperature in degC
 	double m_MaxTemp;	//  Maximum Temperature in degC
-	double m_MinTemp;	//  Minumum Temperature in degC
+	double m_MinTemp;	//  Minimum Temperature in degC
 	double m_Windspeed;	//  Windspeed in m/s
 	double m_Rainfall;	//  Rainfall in inches
-	bool m_ForageDay;
+	bool m_ForageDay;   //  Does forage occur on this day
 	double m_ForageInc;	//  Increment of a Forage Day
 	double m_DaylightHours;
 	int m_LineNum;
@@ -66,7 +66,7 @@ public:
 	void SetLineNum(int line) {m_LineNum = line;}
 	void SetDaylightHours(double hrs) {m_DaylightHours = hrs;}
 	double CalcDaylightFromLatitude(double Lat);
-
+	void ComputeHourlyTemperatureEstimationAndUpdateForageInc();
 	//  Overloaded Operators
 	CEvent operator = (CEvent& event);
 	CEvent operator + (CEvent event);
@@ -74,60 +74,6 @@ public:
 
 
 };
-
-//
-//class CWeatherFile : public CStdioFile
-//{
-//	friend class CWeatherEvents;
-//private:
-//	CString m_HeaderScale;
-//	CString m_HeaderFileName;
-//	CString m_HeaderFormat;
-//	CString m_HeaderBeginTime;
-//	CString m_HeaderBeginDate;
-//	CString m_HeaderEndTime;
-//	CString m_HeaderEndDate;
-//	CString m_HeaderStartSim;
-//	CString m_HeaderEndSim;
-//	int m_HeaderTempCol;
-//	int m_HeaderMaxTempCol;
-//	int m_HeaderMinTempCol;
-//	int m_HeaderRainCol;
-//	int m_HeaderWindspeedCol;
-//	int m_HeaderSolarRadCol;
-//	int m_HeaderInterval;
-//	int m_CurrentLine; // The file line number that was just read in
-//	enum DateType {UNDEFINED, DOY, MMDD, MMDDYY, MMDDYYYY, MONTHNAME};
-//	DateType m_DateType;
-//	CString m_ErrorStg;
-//	DWORD m_PrevValidLinePos;
-//	int m_Size;
-//	int m_BytesRead;
-//	bool IsMonth(CString monthname);
-//	int MonthToNum(CString monthname);
-//
-//
-//public:
-//	CWeatherFile();
-//	~CWeatherFile();
-//	BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException* pError = NULL );
-//	bool IsHeaderPresent();
-//	bool CreateHeader();
-//	bool CreateMinMaxHeader();
-//	bool CreateHourlyHeader();
-//	bool DigestHeader();
-//	void SeekToBegin();
-//	BOOL GetLine(CString& stg);
-//	bool GetValidLine(COleDateTime& theTime,CString& theLine);
-//	bool IsHourlyFormat() {return (m_HeaderFormat=="HOURLY");}
-//	CString GetError() {return m_ErrorStg;}
-//	CEvent* LineToEvent();
-//	CEvent* LinesToEvent();
-//	CEvent* GetNextEvent();
-//	bool IsLineValid(CString theLine);
-//	void GoToPrevLine() {Seek(m_PrevValidLinePos, CFile::begin);}
-//
-//};
 
 
 class CWeatherEvents : public CObject  
@@ -137,6 +83,7 @@ private:
 	POSITION pos;
 	CTypedPtrList<CPtrList, CEvent*> m_EventList;
 	bool m_HasBeenInitialized;
+	double m_Latitude;
 
 
 
@@ -149,13 +96,15 @@ public:
 	COleDateTime GetBeginningTime(); // Returns the first date in the actual weather file
 	COleDateTime GetEndingTime();    // Returns the last date in the actual weather file
 	COleDateTime GetCurrentTime();
-	double CalcDaylightFromLatitude(double Lat, int DayNum);
+	//double CalcDaylightFromLatitude(double Lat, int DayNum);
 	int GetCurrentLineNumber();
 	int GetTotalEvents();
 	void SetFileName(CString fname) {m_Filename = fname;}
 	//CString GetFileName();
 	int CheckInterval();
 	int CheckSanity();
+	void SetLatitude(double lat) { m_Latitude = lat; }
+	double GetLatitude() { return m_Latitude; }
 	//bool LoadWeatherFile(CString FileName);
 	//bool LoadEPAWeatherFileDVF(CString FileName);
 	//bool LoadEPAWeatherFileWEA(CString FileName);
@@ -165,6 +114,7 @@ public:
 //	bool LoadWeatherGridDataBinaryFile(CString FileName);
 
 	//void ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events);  //TODO:  Will have to implement this differently in the library
+	
 
 	//void Serialize(CArchive& ar);
 	bool IsInitialized() {return m_HasBeenInitialized;}

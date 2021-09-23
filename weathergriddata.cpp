@@ -272,6 +272,7 @@ namespace WeatherGridDataNs
     }
 
     int HourlyTempraturesEstimator::count_dayligth(double temperatureMinThreshold /*= 12.0*/, double temperatureMaxThreshold /*= 43.33*/)
+    // Counts the number of hours of daylight which are within the threshold values
     {
         int count = 0;
         for (size_t h = 0; h < hourly_temperatures.size(); h++)
