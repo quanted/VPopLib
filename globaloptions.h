@@ -59,8 +59,8 @@ public:
 	// Adult aging options
 
 	// This option changes the way adult are aged. Adults will be aging only during the time frame where the
-	// Queen is laying eggs if this is set to true.
-	Option<bool> ShouldAdultsAgeBasedLaidEggs = true;
+	// Queen is laying eggs.
+	Option<bool> ShouldAdultsAgeBasedLaidEggs = false;
 
 	// Forager aging options
 
@@ -81,11 +81,11 @@ public:
 	Option<double> RainfallThreshold = 0.197;
 	// This option will affect wth weather file data (Observed, Historical, and RCP)
 	// Hourly temperature estimation will be used to enhance ForagerInc aging increment.
-	Option<bool> ShouldComputeHourlyTemperatureEstimation = true;
+	Option<bool> ShouldComputeHourlyTemperatureEstimation = false;
 	// This option changes the way forager are processed on non foraging days.
 	// On non-Foraging days, foragers when added to the Foragers list will not age and they will age
 	// of ForageInc on the next Foraging day instead of aging 1 full day.
-	Option<bool> ShouldForagersAlwaysAgeBasedOnForageInc = true;
+	Option<bool> ShouldForagersAlwaysAgeBasedOnForageInc = false;
 
 	// This options controls ShouldForageDayElectionBasedOnTemperatures, ShouldComputeHourlyTemperatureEstimation and 
 	// ShouldForagersAlwaysAgeBasedOnForageInc when it is set

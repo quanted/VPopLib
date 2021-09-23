@@ -1124,7 +1124,7 @@ void CWeatherEvents::GoToFirstEvent()
 CEvent* CWeatherEvents::GetFirstEvent()
 {
 	GoToFirstEvent();
-	CEvent* pEvent = m_EventList.GetNext(pos);  //Fixed this - was GetAt which didn't iterate properly and caused duplicate first items
+	CEvent* pEvent = m_EventList.GetAt(pos);
 	return pEvent;
 }
 
