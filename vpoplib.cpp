@@ -67,14 +67,15 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 		pEvent->SetRainfall(atof(theToken));
 		if (CalcDaylightByLat)
 		{
-			pEvent->SetDaylightHours(pEvent->CalcDaylightFromLatitude(theSession.GetLatitude()));
+			pEvent->SetDaylightHours(pEvent->CalcTodayDaylightFromLatitude(theSession.GetLatitude()));
 		}
 		else
 		{
 			theToken = theString.Tokenize(" ,", StrPos);	//Daylight hours
 			pEvent->SetDaylightHours(atof(theToken));
 		}
-		pEvent->UpdateForageDayState();
+		//pEvent->UpdateForageDayState();
+		pEvent->UpdateForageAttributeForEvent(theSession.GetLatitude(), pEvent->GetWindspeed());
 	}
 	return retval;
 }
@@ -166,6 +167,13 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		return true;
 	}
 
+	bool SetLatitude(double Lat)
+	{
+		theSession.GetWeather()->SetLatitude(Lat);
+		return true;
+	}
+
+
 	bool SetICVariablesCP(char* NameCP, char* ValueCP)
 	{
 		string Name = NameCP;
@@ -239,8 +247,8 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		bool retval = WeatherStringToEvent(WECString, pEvent, true);  // Consider adding a format ID in the parameter list to allow processing of different weather file formats
 		if (retval)
 		{
-			pEvent->UpdateForageAttributeForEvent(pEvent->GetWindspeed());
-			pEvent->UpdateForageDayState();
+			pEvent->UpdateForageAttributeForEvent(theSession.GetLatitude(), pEvent->GetWindspeed());
+			//pEvent->UpdateForageDayState();
 			pWeatherEvents->AddEvent(pEvent);
 		}
 		else

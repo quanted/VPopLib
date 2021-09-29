@@ -188,6 +188,7 @@ void CQueen::LayEggs(int LayDays, double DegreeDays, double DaylightHours, int N
 		// Proportion of Drone Eggs = Z
 		S = GetPropDroneEggs();
 
+		//9-23-2021:  Noticed this is calculating L again using a different algo.  It's been like this for a long time??
 		L = log10(DaylightHours*0.1) * 0.284;
 		if (L < 0) L = 0;
 

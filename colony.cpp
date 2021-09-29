@@ -1439,7 +1439,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 #endif
 
-	// Reset additional output data struct for algorithm intermidiate results
+	// Reset additional output data struct for algorithm intermediate results
 	m_InOutEvent.Reset();
 
 	queen.LayEggs(DayNum, pEvent->GetTemp(), pEvent->GetDaylightHours(), foragers.GetQuantity(), LarvPerBee);
@@ -1470,7 +1470,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	CEgg l_DEggs(queen.GetDeggs());
 	CEgg l_WEggs(queen.GetWeggs());
 
-	// At the begining of cold storage all eggs are lost
+	// At the beginning of cold storage all eggs are lost
 	if (coldStorage.IsStarting())
 	{
 		l_DEggs.SetNumber(0);
@@ -1518,7 +1518,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 	int NumberOfNonAdults = Wlarv.GetQuantity() + Dlarv.GetQuantity() + CapDrn.GetQuantity() + CapWkr.GetQuantity();
 
-	// When the ForageInc is based on temperatures we don't have the aging stoped for Adults as we have during winter 
+	// When the ForageInc is based on temperatures we don't have the aging stopped for Adults as we have during winter 
 	// with the default ForageDay election implementation.
 	// To correct that, we are saying that a forage day is valid if we have favorable flight hours during that day
 	const bool ForageIncIsValid = GlobalOptions::Get().ShouldForageDayElectionBasedOnTemperatures() || pEvent->GetForageInc() > 0.0;

@@ -47,8 +47,8 @@ public:
 	double GetMinTemp();
 	double GetRainfall() {return m_Rainfall;}
 	double GetWindspeed() { return m_Windspeed; }
-	void UpdateForageDayState();
-	void UpdateForageAttributeForEvent(double windSpeed = -1);
+	//void UpdateForageDayState();
+	void UpdateForageAttributeForEvent( double Latitude, double windSpeed = -1 );
 	bool IsForageDay();
 	bool IsWinterDay();
 	int GetLineNum() {return m_LineNum;}
@@ -62,10 +62,13 @@ public:
 	void SetForage(bool Forage);
 	void SetForageInc(double forageInc) {m_ForageInc = forageInc;};
 	void SetForageInc(double TThresh, double TMax, double TAve);
+	void SetHourlyForageInc(double Latitude);
 	double GetForageInc();
 	void SetLineNum(int line) {m_LineNum = line;}
 	void SetDaylightHours(double hrs) {m_DaylightHours = hrs;}
-	double CalcDaylightFromLatitude(double Lat);
+	double CalcTodayDaylightFromLatitude(double Lat);
+	double CalcDaylightFromLatitudeDOY(double Lat, int DayOfYear);
+	double CalcFlightDaylight(double daylength, double MinTempThreshold = 12.0, double MaxTempThreshold = 43.0);
 
 	//  Overloaded Operators
 	CEvent operator = (CEvent& event);
@@ -137,6 +140,7 @@ private:
 	POSITION pos;
 	CTypedPtrList<CPtrList, CEvent*> m_EventList;
 	bool m_HasBeenInitialized;
+	double m_Latitude;  
 
 
 
@@ -153,20 +157,16 @@ public:
 	int GetCurrentLineNumber();
 	int GetTotalEvents();
 	void SetFileName(CString fname) {m_Filename = fname;}
-	//CString GetFileName();
 	int CheckInterval();
 	int CheckSanity();
-	//bool LoadWeatherFile(CString FileName);
-	//bool LoadEPAWeatherFileDVF(CString FileName);
-	//bool LoadEPAWeatherFileWEA(CString FileName);
 
 	//! Enable to load grid binary files directly check WeatherGridData.h to see supported formats
 	//template<typename GridDataType>
 //	bool LoadWeatherGridDataBinaryFile(CString FileName);
 
 	//void ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events);  //TODO:  Will have to implement this differently in the library
-
-	//void Serialize(CArchive& ar);
+	void SetLatitude(double lat) { m_Latitude = lat; }
+	double GetLatitude() { return m_Latitude; }
 	bool IsInitialized() {return m_HasBeenInitialized;}
 	void SetInitialized(bool val) { m_HasBeenInitialized = val; }
 	//  Access
