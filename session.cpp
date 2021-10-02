@@ -160,6 +160,18 @@ bool CVarroaPopSession::IsImmigrationWindow(CEvent* pEvent)
 
 }
 
+void CVarroaPopSession::SetLatitude(double lat)
+{
+	if (m_pWeather != NULL) m_pWeather->SetLatitude(lat);
+}
+
+double CVarroaPopSession::GetLatitude()
+{
+	double lat;
+	if (m_pWeather != NULL) lat = m_pWeather->GetLatitude();
+	return lat;
+}
+
 
 //CMite CVarroaPopSession::GetImmigrationMites(COleDateTime theDate)
 CMite CVarroaPopSession::GetImmigrationMites(CEvent* pEvent)
@@ -408,9 +420,8 @@ void CVarroaPopSession::Simulate()
 		// Append additional command name if InOut statistics are required
 		//
 		// NOTE:  Bypassing GlobalOptions for now - suspect desire is to have all variables available - Verify
-		//if (GlobalOptions::Get().ShouldOutputInOutCounts())
-		if (true)
-			{
+		if (GlobalOptions::Get().ShouldOutputInOutCounts())
+		{
 			CurSize.Format("%s NewWorkerEggs NewDroneEggs WorkerEggsToLarvae DroneEggsToLarvae WorkerLarvaeToBrood DroneLarvaeToBrood WorkerBroodToAdult DroneBroodToAdult DroneAdultsDying ForagersKilledByPesticides WorkerAdultToForagers WinterMortalityForagersLoss ForagersDying", CurSize);
 		}
 		//m_ResultsFileHeader.AddTail(CurSize);
@@ -466,7 +477,7 @@ void CVarroaPopSession::Simulate()
 		// Append additional command name if InOut statistics are required
 		if (GlobalOptions::Get().ShouldOutputInOutCounts())
 		//if (true)
-			{
+		{
 			CurSize.Format("%s %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d %5d"
 				, CurSize, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}

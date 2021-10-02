@@ -1544,10 +1544,20 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		// End Forgers killed due to pesticide
 
 		// Options of aging Adults based on Laid Eggs
-		// Aging of adults is actually function of DaylightHours 
-		//const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
+		// Aging of adults is actually function of DaylightHours
+		// Troubleshooting
+		bool csa;
+		bool saa;
+		double dlh;
+		double l;
+		csa = coldStorage.IsActive();
+		saa = GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs();
+		dlh = pEvent->GetDaylightHours();
+		l = queen.ComputeL(pEvent->GetDaylightHours());
+
+		const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
 		// Modified prior line - L doesn't necessarily go to zero every time egg laying does. Changed to stop aging if eggs laid today are zero
-		const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.GetTeggs() > 0); 
+		//const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.GetTeggs() > 0); 
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());

@@ -169,7 +169,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 
 	bool SetLatitude(double Lat)
 	{
-		theSession.GetWeather()->SetLatitude(Lat);
+		theSession.SetLatitude(Lat);
 		return true;
 	}
 
@@ -235,7 +235,8 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool SetWeatherCPA(char** WeatherEventStringListCPA, int Count)
 	{
 		vector<string> WeatherEventStringList(WeatherEventStringListCPA, WeatherEventStringListCPA + Count);
-		return SetWeatherV(WeatherEventStringList);
+		bool retval = SetWeatherV(WeatherEventStringList);
+		return retval;
 
 	}
 

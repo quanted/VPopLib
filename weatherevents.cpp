@@ -74,7 +74,8 @@ void CEvent::UpdateForageAttributeForEvent(double Latitude, double windSpeed)
 		SetForage((windSpeed <= GlobalOptions::Get().WindspeedThreshold()) && (GetRainfall() <= GlobalOptions::Get().RainfallThreshold()));
 	}
 	// Here we set the Forage Increment using the default method, may be change later depending on execution options
-	SetForageInc(12.0, GetMaxTemp(), GetTemp());
+	//SetForageInc(12.0, GetMaxTemp(), GetTemp());
+	SetHourlyForageInc(Latitude);
 	//m_ForageInc = 1.0;  // NOTE:  test only - remove after test
 }
 
@@ -292,16 +293,22 @@ void CEvent::SetHourlyForageInc(double Latitude)
 {
 		// Calculate the daylight hours for the longest day of the year at this latitude - this is the solstice
 
-		const double solstice = CalcDaylightFromLatitudeDOY(Latitude, 182);
-		if (solstice <= 0) SetForageInc(0);
+		double solstice = CalcDaylightFromLatitudeDOY(Latitude, 182) + 1;  // Length of longest day plus one hour of flying time before sunrise
+		if (solstice <= 0)
+		{
+			SetForageInc(0);
+			return;
+		}
 
-		const double todaylength = CalcTodayDaylightFromLatitude(Latitude);
+		//const double todaylength = CalcTodayDaylightFromLatitude(Latitude);
+		double todaylength = CalcDaylightFromLatitudeDOY(Latitude, GetTime().GetDayOfYear());
 
 		//Now estimate the number of hours of daylight today within the temperature thresholds
-		const double flightdaylength = CalcFlightDaylight(todaylength);
+		double flightdaylength = CalcFlightDaylight(todaylength);
 
 		//Now set ForageInc as a proportion of flying daylight hours to solstice daylight hours
-		SetForageInc(flightdaylength / solstice);
+		const double FInc = (flightdaylength / solstice) > 1.0 ? 1.0 : (flightdaylength / solstice);
+		SetForageInc(FInc);
 
 }
 
@@ -312,15 +319,15 @@ double CEvent::CalcFlightDaylight(double daylength, double MinTempThreshold, dou
 	From:  New algorithm for generating hourly temperaturevalues using daily maximum, minimum and average values 
 	rom climate modelsDHC Chow BSc BEng PhD MCIBSE MASHRAEand Geoff J Levermore BSc ARCS PhD DIC CEng DMSFCIBSE MASHRAE
 	*/
-	const int Sunrise = 12 - (daylength / 2);  //  Sunrise is half the daylight period before noon
-	const int Sunset = Sunrise + daylength;
-	const int TimeTMin = Sunrise - 1;  // Typically
-	const int TimeTMax = 14;  // Two hours after noon
-	const double TMax = m_MaxTemp;
-	const double TMin = m_MinTemp;
+	int Sunrise = 12 - (daylength / 2);  //  Sunrise is half the daylight period before noon
+	int Sunset = Sunrise + daylength;
+	int TimeTMin = Sunrise - 1;  // Typically
+	int TimeTMax = 14;  // Two hours after noon
+	double TMax = m_MaxTemp;
+	double TMin = m_MinTemp;
 
 	// Now calculate the number of hours of daylength that are within the temperature thresholds.
-	double flighthours = 0;
+	int flighthours = 0;
 	double HrTemp;
 	for (int i = TimeTMin; i <= Sunset; i++)
 	{
@@ -331,7 +338,7 @@ double CEvent::CalcFlightDaylight(double daylength, double MinTempThreshold, dou
 			flighthours++;
 		}
 	}
-	return flighthours;
+	return double(flighthours);
 }
 
 
