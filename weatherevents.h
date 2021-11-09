@@ -78,60 +78,6 @@ public:
 
 };
 
-//
-//class CWeatherFile : public CStdioFile
-//{
-//	friend class CWeatherEvents;
-//private:
-//	CString m_HeaderScale;
-//	CString m_HeaderFileName;
-//	CString m_HeaderFormat;
-//	CString m_HeaderBeginTime;
-//	CString m_HeaderBeginDate;
-//	CString m_HeaderEndTime;
-//	CString m_HeaderEndDate;
-//	CString m_HeaderStartSim;
-//	CString m_HeaderEndSim;
-//	int m_HeaderTempCol;
-//	int m_HeaderMaxTempCol;
-//	int m_HeaderMinTempCol;
-//	int m_HeaderRainCol;
-//	int m_HeaderWindspeedCol;
-//	int m_HeaderSolarRadCol;
-//	int m_HeaderInterval;
-//	int m_CurrentLine; // The file line number that was just read in
-//	enum DateType {UNDEFINED, DOY, MMDD, MMDDYY, MMDDYYYY, MONTHNAME};
-//	DateType m_DateType;
-//	CString m_ErrorStg;
-//	DWORD m_PrevValidLinePos;
-//	int m_Size;
-//	int m_BytesRead;
-//	bool IsMonth(CString monthname);
-//	int MonthToNum(CString monthname);
-//
-//
-//public:
-//	CWeatherFile();
-//	~CWeatherFile();
-//	BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException* pError = NULL );
-//	bool IsHeaderPresent();
-//	bool CreateHeader();
-//	bool CreateMinMaxHeader();
-//	bool CreateHourlyHeader();
-//	bool DigestHeader();
-//	void SeekToBegin();
-//	BOOL GetLine(CString& stg);
-//	bool GetValidLine(COleDateTime& theTime,CString& theLine);
-//	bool IsHourlyFormat() {return (m_HeaderFormat=="HOURLY");}
-//	CString GetError() {return m_ErrorStg;}
-//	CEvent* LineToEvent();
-//	CEvent* LinesToEvent();
-//	CEvent* GetNextEvent();
-//	bool IsLineValid(CString theLine);
-//	void GoToPrevLine() {Seek(m_PrevValidLinePos, CFile::begin);}
-//
-//};
-
 
 class CWeatherEvents : public CObject  
 {

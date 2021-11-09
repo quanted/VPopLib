@@ -32,21 +32,22 @@ public:
 		OptionType m_value;
 	};
 
-	template<typename OptionType>
-	class AggregateOption : Option<OptionType>
-	{
-	public:
-		AggregateOption(GlobalOptions& options) : Option<OptionType>(), m_options(options) {}
-		virtual void Set(const OptionType& value);
-		virtual const OptionType& operator()() const 
-		{
-			throw std::runtime_error("GlobalOptions::AggregateOption::operator()() should not be called directly");
-			return Option<OptionType>::m_value;
-		}
+	// Note:  Commented out AggregateOption references - no apparent need. Delete eventually
+	//template<typename OptionType>
+	//class AggregateOption : Option<OptionType>
+	//{
+	//public:
+	//	AggregateOption(GlobalOptions& options) : Option<OptionType>(), m_options(options) {}
+	//	virtual void Set(const OptionType& value);
+	//	virtual const OptionType& operator()() const 
+	//	{
+	//		throw std::runtime_error("GlobalOptions::AggregateOption::operator()() should not be called directly");
+	//		return Option<OptionType>::m_value;
+	//	}
 
-	private:
-		GlobalOptions& m_options;
-	};
+	//private:
+	//	GlobalOptions& m_options;
+	//};
 
 	// Options
 public:
@@ -90,7 +91,9 @@ public:
 	// This options controls ShouldForageDayElectionBasedOnTemperatures, ShouldComputeHourlyTemperatureEstimation and 
 	// ShouldForagersAlwaysAgeBasedOnForageInc when it is set
 	typedef bool ForagerAgingBasedHourlyTemperatureEstimate;
-	AggregateOption<ForagerAgingBasedHourlyTemperatureEstimate> ShouldForagerAgingBasedOnHourlyTemperatureEstimate;
+
+
+	//AggregateOption<ForagerAgingBasedHourlyTemperatureEstimate> ShouldForagerAgingBasedOnHourlyTemperatureEstimate;
 	
 	// Weather file options
 

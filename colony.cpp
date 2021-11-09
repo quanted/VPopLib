@@ -978,6 +978,11 @@ void CColony::InitializeColony()
 	//m_NutrientCT.RemoveAll();
 	if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
 
+	//Set the initial state of the AdultAgingDelayArming.  Set armed if the first date is between Jan and Apr inclusive
+	auto monthnum = m_pSession->GetSimStart().GetMonth();
+	if ((monthnum >= 1) && (monthnum < 3)) SetAdultAgingDelayArmed(true);  // If we start the simulation in Jan or Feb arm Adult Aging Delay
+	else SetAdultAgingDelayArmed(false);
+
 	SetInitialized(true);
 
 }
@@ -1159,6 +1164,41 @@ void CColony::Clear()
 	queen.SetStrength(m_InitCond.m_QueenStrength);  // Reset this in case requeening happened, reset to original initial condition
 }
 
+bool CColony::IsAdultAgingDelayActive()
+{
+	 //This function updates the Adult Aging parameters related to the part of the Adult aging logic which prevents aging until queen has been laying for a specified number of days.
+	 //This function can be called every day but must be called at least once prior to egglaying beginning in the spring and needs to keep being called
+	 //daily at least until the delay period has been met.
+
+	//if (queen.GetTeggs() == 0)
+	//{
+	//	m_DaysSinceEggLayingBegan = 0;
+	//}
+	//else
+	//{
+	//	m_DaysSinceEggLayingBegan++;
+	//}
+	//bool theResult = (m_DaysSinceEggLayingBegan < m_AdultAgeDelayLimit);
+	//return theResult;
+
+	if (IsAdultAgingDelayArmed())
+	{
+		if (queen.GetTeggs() > 0)
+		{
+			SetAdultAgingDelayArmed(false);
+			m_DaysSinceEggLayingBegan = 0;
+		}
+	}
+	auto active = (m_DaysSinceEggLayingBegan++ < m_AdultAgeDelayLimit);
+	//Test
+	if (active)
+	{
+		int i = 1;
+	}
+	return active;
+}
+
+
 void CColony::SetDefaultInitConditions()
 {
 	// This function sets the ICs to values that will allow the model to run without error.
@@ -1195,6 +1235,10 @@ void CColony::InitializeBees()
 {
 	// Set current forager lifespan to the initial condition - could be changed during sim run
 	m_CurrentForagerLifespan = m_InitCond.m_ForagerLifespan;
+
+	// Set current Adult aging delay duration when queen restarts egg laying equal to the max duration required so no aging delay happens
+	// initially unless egg laying is zero.
+	m_DaysSinceEggLayingBegan = m_AdultAgeDelayLimit;
 
 	// Initialize Queen
 	queen.SetStrength(m_InitCond.m_QueenStrength);
@@ -1326,6 +1370,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 	float LarvPerBee = float(Wlarv.GetQuantity() + Dlarv.GetQuantity()) /
 		(Wadl.GetQuantity() + Dadl.GetQuantity() + foragers.GetQuantity());
+
+	if ((pEvent->GetTime().GetMonth() == 1) && pEvent->GetTime().GetDay() == 1) SetAdultAgingDelayArmed(true);
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// Apply Date Range values
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1555,9 +1601,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		dlh = pEvent->GetDaylightHours();
 		l = queen.ComputeL(pEvent->GetDaylightHours());
 
-		const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
-		// Modified prior line - L doesn't necessarily go to zero every time egg laying does. Changed to stop aging if eggs laid today are zero
-		//const bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.GetTeggs() > 0); 
+		bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
+		agingAdults = agingAdults && !IsAdultAgingDelayActive();
 		if (agingAdults)
 		{
 			//TRACE("Date: %s\n",pEvent->GetDateStg());

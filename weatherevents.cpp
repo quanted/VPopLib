@@ -201,6 +201,7 @@ double CEvent::CalcTodayDaylightFromLatitude(double Lat)
 
 
 }
+
 double CEvent::CalcDaylightFromLatitudeDOY(double Lat, int DayOfYear)
 {
 	// Reference:  Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 

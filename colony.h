@@ -262,6 +262,7 @@ protected:
 	BOOL GetDiscreteEvents(CString key, CUIntArray*& theArray);
 	CString name;
 	bool HasBeenInitialized;
+	bool m_AdultAgingArmedState;
 	int m_VTStart;
 	int m_SPStart;
 	UINT m_VTDuration;
@@ -272,6 +273,8 @@ protected:
 	bool m_SPTreatmentActive;
 	double  m_InitMitePctResistant;
 	int m_MitesDyingToday;
+	int	m_AdultAgeDelayLimit = 24;
+	int m_DaysSinceEggLayingBegan = m_AdultAgeDelayLimit;  //Reset to 0 when eggs laid == 0 and incremented each day when eggs laid != 0;
 	bool m_PollenFeedingDay;  // Specifies this is a day when man-made feed is available.
 	bool m_NectarFeedingDay;  // Specifies this is a day when man-made feed is available.
 	CVarroaPopSession* m_pSession; //Links back to the session if it is present
@@ -373,6 +376,11 @@ public:
 	int GetTotalMiteCount();
 	int GetMitesDyingToday();
 	int GetNurseBees();
+	int GetAdultAgingDelay() { return m_AdultAgeDelayLimit; }
+	void SetAdultAgingDelay(int delay) { m_AdultAgeDelayLimit = delay; }
+	bool IsAdultAgingDelayArmed() {return m_AdultAgingArmedState;}
+	void SetAdultAgingDelayArmed(bool armed_state) { m_AdultAgingArmedState = armed_state; }
+	bool IsAdultAgingDelayActive();
 	void RemoveDiscreteEvent(CString datestg, UINT EventID);
 	void AddDiscreteEvent(CString datestg, UINT EventID);
 	void DoPendingEvents(CEvent* pWeatherEvent, int CurSimDay);

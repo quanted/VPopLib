@@ -1462,6 +1462,12 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		return true;
 	}
 
+	if (Name == "adultagedelay")
+	{
+		theColony.SetAdultAgingDelay(atoi(Value));
+		return true;
+	}
+
 	//Fall through - no match
 	{
 		//m_Bridge->InputFileUnknownVariable(Name);
