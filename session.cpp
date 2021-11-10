@@ -83,7 +83,7 @@ CVarroaPopSession::CVarroaPopSession()
 
 	m_pWeather = new CWeatherEvents; // Create the WeatherEvents
 	m_WeatherLoaded = false;
-	SetShowWarnings(true);
+	SetShowWarnings(false);  //Not appropriate to show warnings for library version
 
 	theColony.SetSession(this);
 }
