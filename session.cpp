@@ -379,7 +379,8 @@ void CVarroaPopSession::Simulate()
 			"%8.3f", // Max Temp
 			"%8.2f", // Daylight Hours
 			"%8.2f", // Activity Ratio (Forage Inc)
-			"%8d", // Forage Day
+			//"%8d", // Forage Day as 1 or 0
+			"%s", // Forage Day as Y or N
 			NULL
 		};
 
@@ -472,7 +473,7 @@ void CVarroaPopSession::Simulate()
 			0.0, // Max Temp
 			0.0, // Daylight Hours
 			0.0, // Activity Ratio
-			0	 // Forage Day
+			"No"	 // Forage Day
 		);
 		// Append additional command name if InOut statistics are required
 		if (GlobalOptions::Get().ShouldOutputInOutCounts())
@@ -589,7 +590,7 @@ void CVarroaPopSession::Simulate()
 					pEvent->GetMaxTemp(),
 					pEvent->GetDaylightHours(),
 					pEvent->GetForageInc(),
-					pEvent->IsForageDay()
+					(pEvent->IsForageDay() == 1)? "Yes": "No"
 				);
 				// Append additional command name if InOut statistics are required
 				if (GlobalOptions::Get().ShouldOutputInOutCounts())
@@ -857,11 +858,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		m_VTMortality = UINT(atoi(Value));
 		return true;
 	}
-	if (Name == "vtenable")
-	{
-		m_VTEnable = (Value == "true") ? TRUE : FALSE;
-		return true;
-	}
+
 	if (Name == "vttreatmentstart")
 	{
 		COleDateTime theDate;
@@ -872,6 +869,48 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		}
 		return true;
 	}
+
+	if (Name == "vtenable")
+	{
+		m_VTEnable = (Value == "true") ? TRUE : FALSE;
+		return true;
+	}
+
+	if (Name == "vtdata")
+	{
+		if (Value == "clear")
+		{
+			//theColony.m_MiteTreatmentInfo.ClearAll();
+			m_MiteTreatments.ClearAll();
+		}
+		int curpos = 0;
+		double NumVal = 0.0;
+		CString StartDateStg = Value.Tokenize(",", curpos);
+		if (StartDateStg.GetLength() > 0) // Was Start Date Found?
+		{
+			CString Duration = Value.Tokenize(",", curpos);
+			if (Duration.GetLength() > 0) // Was duration found?
+			{
+				CString PctMort = Value.Tokenize(",", curpos);
+				if (PctMort.GetLength() > 0) // Was Percent Mortality found?
+				{
+					CString PctRes = Value.Tokenize(",", curpos);
+					if (PctRes.GetLength() > 0) // Was Percent Resistant found?
+					{
+						COleDateTime theDate;
+						theDate.ParseDateTime(StartDateStg);
+						UINT theDuration = atoi(Duration);
+						double thePctMort = atof(PctMort);
+						double thePctRes = atof(PctRes);
+						//theColony.m_MiteTreatmentInfo.AddItem(theDate, theDuration, thePctMort, thePctRes);
+						m_MiteTreatments.AddItem(theDate, theDuration, thePctMort, thePctRes);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	if (Name == "initmitepctresistant")
 	{
 		m_InitMitePctResistant = atof(Value);
@@ -1256,6 +1295,9 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		return true;
 
 	}
+
+
+
 
 	if (Name == "etolxition")
 	{
