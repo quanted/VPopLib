@@ -89,16 +89,26 @@ bool CDateRangeValues::GetActiveItem(COleDateTime theDate, DR_ITEM& theItem)
         COleDateTimeSpan TimeSinceStart = (COleDateTimeSpan)(theDate - pListItem->StartTime);
         COleDateTimeSpan TimeTillEnd = (COleDateTimeSpan)(pListItem->EndTime - theDate);
         
-            int month = theDate.GetMonth();
-            int day = theDate.GetDay();
-            int year = theDate.GetYear();
-            
-            if ((month >= 3) && (day >= 2) && (year == 1999))
-            {
-                int i = 0;
-                
-            }
-        
+        //int month = theDate.GetMonth();
+        //int day = theDate.GetDay();
+        //int year = theDate.GetYear();
+
+        //CString theStartDate, theEndDate, theCurrentDate;
+        //theStartDate = pListItem->StartTime.Format("%m/%d/%Y");
+        //theEndDate = pListItem->EndTime.Format("%m/%d/%Y");
+        //theCurrentDate = theDate.Format("%m/%d/%Y");
+
+        //
+        //if ((month >= 3) && (day >= 2) && (year == 1999))
+        //{
+        //    int i = 0;
+        //    
+        //}
+
+        //int tss, tte;
+        //tss = TimeSinceStart.GetDays();
+        //tte = TimeTillEnd.GetDays();
+        //int bogus = tss + tte;
         
         if ((TimeSinceStart.GetDays() > 0) && (TimeTillEnd.GetDays() > 0))
         {
@@ -143,7 +153,7 @@ void CDateRangeValues::AddItem(CString theStartTimeStg, CString theEndTimeStg, d
 {
 	DR_ITEM Item;
 	// If the date strings are valid, the item is added.
-	if ((Item.EndTime.ParseDateTime(theEndTimeStg) && Item.StartTime.ParseDateTime(theStartTimeStg)))
+	if ((Item.EndTime.ParseDateTime(theEndTimeStg, VAR_DATEVALUEONLY) && Item.StartTime.ParseDateTime(theStartTimeStg, VAR_DATEVALUEONLY)))
 	{
 		Item.Value = theValue;
 		AddItem(Item);

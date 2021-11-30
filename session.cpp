@@ -316,9 +316,6 @@ void CVarroaPopSession::InitializeSimulation()
 	theColony.SetMiticideTreatment(m_MiteTreatments, m_VTEnable);
 	theColony.SetMitePctResistance(m_InitMitePctResistant);
 
-	// Initializing the Spore functions
-//	theColony.SetSporeTreatment(GetSimDayNumber(m_SPTreatmentStart),m_SPEnable);
-//	theColony.m_Spores.SetMortalityFunction(0.10,,0);
 	m_CumImmigratingMites = int(0);
 	m_FirstResultEntry = true;
 }
@@ -330,7 +327,6 @@ void CVarroaPopSession::Simulate()
 	{
 		if (!CheckDateConsistency(IsShowWarnings())) return;
 
-		//InitializeSimulation();  //Assume this is done previously 
 
 		//  Set results frequency 
 		int ResFreq = m_DispWeeklyData ? 7 : 1;
