@@ -978,6 +978,14 @@ void CColony::InitializeColony()
 	//m_NutrientCT.RemoveAll();
 	if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
 
+	// Clear DRVs
+	//m_InitCond.m_AdultLifespanDRV.ClearAll();
+	//m_InitCond.m_AdultTransitionDRV.ClearAll();
+	//m_InitCond.m_BroodTransitionDRV.ClearAll();
+	//m_InitCond.m_EggTransitionDRV.ClearAll();
+	//m_InitCond.m_ForagerLifespanDRV.ClearAll();
+	//m_InitCond.m_AdultLifespanDRV.ClearAll();
+
 	//Set the initial state of the AdultAgingDelayArming.  Set armed if the first date is between Jan and Apr inclusive
 	auto monthnum = m_pSession->GetSimStart().GetMonth();
 	if ((monthnum >= 1) && (monthnum < 3)) SetAdultAgingDelayArmed(true);  // If we start the simulation in Jan or Feb arm Adult Aging Delay

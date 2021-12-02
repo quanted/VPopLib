@@ -89,26 +89,21 @@ bool CDateRangeValues::GetActiveItem(COleDateTime theDate, DR_ITEM& theItem)
         COleDateTimeSpan TimeSinceStart = (COleDateTimeSpan)(theDate - pListItem->StartTime);
         COleDateTimeSpan TimeTillEnd = (COleDateTimeSpan)(pListItem->EndTime - theDate);
         
-        //int month = theDate.GetMonth();
-        //int day = theDate.GetDay();
-        //int year = theDate.GetYear();
+        int month = theDate.GetMonth();
+        int day = theDate.GetDay();
+        int year = theDate.GetYear();
 
-        //CString theStartDate, theEndDate, theCurrentDate;
-        //theStartDate = pListItem->StartTime.Format("%m/%d/%Y");
-        //theEndDate = pListItem->EndTime.Format("%m/%d/%Y");
-        //theCurrentDate = theDate.Format("%m/%d/%Y");
+        CString theStartDate, theEndDate, theCurrentDate;
+        theStartDate = pListItem->StartTime.Format("%m/%d/%Y");
+        theEndDate = pListItem->EndTime.Format("%m/%d/%Y");
+        theCurrentDate = theDate.Format("%m/%d/%Y");
 
-        //
-        //if ((month >= 3) && (day >= 2) && (year == 1999))
-        //{
-        //    int i = 0;
-        //    
-        //}
+  
+        int tss, tte;
+        tss = TimeSinceStart.GetDays();
+        tte = TimeTillEnd.GetDays();
 
-        //int tss, tte;
-        //tss = TimeSinceStart.GetDays();
-        //tte = TimeTillEnd.GetDays();
-        //int bogus = tss + tte;
+        int bogus = tss + tte;
         
         if ((TimeSinceStart.GetDays() > 0) && (TimeTillEnd.GetDays() > 0))
         {

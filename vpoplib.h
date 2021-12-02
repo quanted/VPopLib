@@ -92,7 +92,7 @@ extern "C"
 
 	// This is the c-sytle interface for VPopLib - no vectors or strings
 	bool libvpop_EXPORT SetICVariablesCP(char* NameCP, char* ValueCP);
-	bool libvpop_EXPORT SetICVariablesCPA(char** NVPairsCPA, int Count);
+	bool libvpop_EXPORT SetICVariablesCPA(char** NVPairsCPA, int Count, bool ResetICs = true);
 	bool libvpop_EXPORT SetWeatherCP(char* WeatherEventStringCP);  // Passes in a char* string
 	bool libvpop_EXPORT SetWeatherCPA(char** WeatherEventStringCPA, int count);  // Passes in an array of char* strings and the length of the array
 	bool libvpop_EXPORT SetContaminationTableCPA(char** ContaminationTableListCPA, int Count);

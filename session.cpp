@@ -1420,7 +1420,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 				if (EndDateStg.GetLength() > 0) // Was End Date Found?
 				{
 					CString NumValStg = Value.Tokenize(",", curpos);
-					if (NumValStg.GetLength() > 0) // Was the % of survivors found?
+					if (NumValStg.GetLength() > 0) // Was the lifespan in days found?
 					{
 						NumVal = atof(NumValStg); //  Note that if NumValStg cannot be converted, NumVal will be set to 0.0
 						if ((NumVal >= 7) && (NumVal <= 21))  // Adult bee age constraint
@@ -1450,7 +1450,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 				if (EndDateStg.GetLength() > 0) // Was End Date Found?
 				{
 					CString NumValStg = Value.Tokenize(",", curpos);
-					if (NumValStg.GetLength() > 0) // Was the % of survivors found?
+					if (NumValStg.GetLength() > 0) // Was the lifespan in days found?
 					{
 						NumVal = atof(NumValStg); //  Note that if NumValStg cannot be converted, NumVal will be set to 0.0
 						if ((NumVal >= 0) && (NumVal <= 20))  // Constraint on forager lifespan
