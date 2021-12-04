@@ -1506,6 +1506,21 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		return true;
 	}
 
+	if (Name == "coldstoragestart")
+	{
+		return true;
+	}
+
+	if (Name == "coldstorageend")
+	{
+		return true;
+	}
+
+	if (Name == "coldstorageenable")
+	{
+		return true;
+	}
+
 	//Fall through - no match
 	{
 		//m_Bridge->InputFileUnknownVariable(Name);
