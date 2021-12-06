@@ -416,7 +416,7 @@ void CVarroaPopSession::Simulate()
 		CurSize.Format("     Date   Size    Drones    Wkr     Forgrs  Forgrs    Brood   Brood   Larv   Larv  Eggs   Eggs  Eggs      DD      L      N      P       dd       l       n    Mites  Mites  Mites  /Cell  /Cell  Dying  Dying  Pollen  Pest    Nectar  Pest     DLarv  WLarv  DAdlt  WAdlt  Forgrs  Strength   Temp  Rain    Temp    Temp     Hours     Inc     Day");
 		// Append additional command name if InOut statistics are required
 		//
-		// NOTE:  Bypassing GlobalOptions for now - suspect desire is to have all variables available - Verify
+		
 		if (GlobalOptions::Get().ShouldOutputInOutCounts())
 		{
 			CurSize.Format("%s NewWorkerEggs NewDroneEggs WorkerEggsToLarvae DroneEggsToLarvae WorkerLarvaeToBrood DroneLarvaeToBrood WorkerBroodToAdult DroneBroodToAdult DroneAdultsDying ForagersKilledByPesticides WorkerAdultToForagers WinterMortalityForagersLoss ForagersDying", CurSize);
@@ -1508,16 +1508,23 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 
 	if (Name == "coldstoragestart")
 	{
+		COleDateTime startTime;
+		startTime.ParseDateTime(Value, VAR_DATEVALUEONLY);
+		CColdStorageSimulator::Get().SetStartDate(startTime);
 		return true;
 	}
 
 	if (Name == "coldstorageend")
 	{
+		COleDateTime endTime;
+		endTime.ParseDateTime(Value, VAR_DATEVALUEONLY);
+		CColdStorageSimulator::Get().SetEndDate(endTime);
 		return true;
 	}
 
 	if (Name == "coldstorageenable")
 	{
+		CColdStorageSimulator::Get().SetEnabled(Value == "true");
 		return true;
 	}
 

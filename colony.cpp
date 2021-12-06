@@ -1500,6 +1500,11 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	
 	// Simulate cold storage
 	CColdStorageSimulator& coldStorage = CColdStorageSimulator::Get();
+	bool cse = coldStorage.IsEnabled();
+	if (cse)
+	{
+		int i = 1;
+	}
 	if (coldStorage.IsEnabled())
 	{
 		if (coldStorage.IsAutomatic())

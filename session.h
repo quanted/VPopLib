@@ -6,6 +6,7 @@
 #include "weatherevents.h"
 #include "mitetreatments.h"
 #include "colony.h"
+#include "coldstoragesimulator.h"
 #include "cstring.format.h"
 #include "globaloptions.h"
 
