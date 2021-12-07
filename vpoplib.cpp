@@ -74,7 +74,6 @@ bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightBy
 			theToken = theString.Tokenize(" ,", StrPos);	//Daylight hours
 			pEvent->SetDaylightHours(atof(theToken));
 		}
-		//pEvent->UpdateForageDayState();
 		pEvent->UpdateForageAttributeForEvent(theSession.GetLatitude(), pEvent->GetWindspeed());
 	}
 	return retval;
@@ -184,7 +183,6 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool SetICVariablesCPA(char** NVPairsCPA, int Count, bool ResetICs)
 	{
 		vector<string> NVPairs(NVPairsCPA, NVPairsCPA + Count);
-		// TEST TEST TEST
 		// Need to ready the session to take on a brand new set if ICs.  That will
 		// require the clearing of all DRVs.  May not want to do this all the time
 		// so could add a ClearAll to the vpoplib interface or add an optional parameter in this function to select clear or no clear.
@@ -265,7 +263,6 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (retval)
 		{
 			pEvent->UpdateForageAttributeForEvent(theSession.GetLatitude(), pEvent->GetWindspeed());
-			//pEvent->UpdateForageDayState();
 			pWeatherEvents->AddEvent(pEvent);
 		}
 		else
@@ -286,12 +283,9 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 			string wthstr = WeatherEventStringList[i];
 			retval = SetWeatherS(wthstr);
 			string outstring;
-			//if (retval) outstring = "Adding weather Event: " + WeatherEventStringList[i];
-			//else outstring = "Error in SetWeather for the string inside the asterisks:***" + WeatherEventStringList[i] + "***";
-			//theSession.AddToInfoList(outstring);
 
 		}
-		// For inital testing, assume weather is fully loaded after this string vector is loaded
+
 		if (theSession.GetWeather()->GetTotalEvents() > 0)
 		{
 			theSession.SetSimStart(theSession.GetWeather()->GetBeginningTime());

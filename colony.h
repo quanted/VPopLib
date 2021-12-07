@@ -295,7 +295,6 @@ public:
 
 	// Bee Attributes
 	CQueen queen;
-	//CForagerlist foragers;
 	CForagerlistA foragers;
 	CAdultlist Dadl;
 	CAdultlist Wadl;
@@ -384,14 +383,10 @@ public:
 	void RemoveDiscreteEvent(CString datestg, UINT EventID);
 	void AddDiscreteEvent(CString datestg, UINT EventID);
 	void DoPendingEvents(CEvent* pWeatherEvent, int CurSimDay);
-//	double GetMitesPerDBrood();
-//	double GetMitesPerWBrood();
 	virtual ~CColony();
 	void Clear();
 	CString GetName() {return name;}
 	void SetName(CString stg) {name = stg;}
-	//CColony operator = (CColony col); // Assignment operator
-	//CColony(CColony& col);             // Copy Constructor
 	void InitializeColony();
 	void InitializeBees();
 	void InitializeMites();
@@ -431,27 +426,17 @@ public:
 	void SetSporeTreatment(
 		int StartDayNum,
 		BOOL Enable);
-//	double GetSporeMortality(int TreatmentDayNum);
 	bool IsPollenFeedingDay(CEvent* pEvent);
 	bool IsNectarFeedingDay(CEvent* pEvent);
 	void KillColony();
 	COleDateTime* GetDayNumDate(int theDayNum);
 	void AddEventNotification(CString DateStg, CString Msg);
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CColony)
+
 public:
-	//virtual void Serialize(CArchive& ar, int FileFormatVersion = 0);
-	//}}AFX_VIRTUAL
 
 
-	// Generated message map functions
-	//{{AFX_MSG(CColony)
-		// NOTE - the ClassWizard will add and remove member functions here.
-	//}}AFX_MSG
-
-	DECLARE_MESSAGE_MAP()
+	//DECLARE_MESSAGE_MAP()
 
 	// Colony Resource Management
 	double GetPollenNeeds(CEvent* pEvent);
@@ -485,7 +470,5 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_COLONY_H__8C6C41B4_7899_11D2_8D9A_0020AF233A70__INCLUDED_)

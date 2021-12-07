@@ -18,8 +18,7 @@
 		double m_AI_KOC;
 		double m_AI_HalfLife;
 		double m_AI_ContactFactor;
-		
-		//virtual void Serialize(CArchive& ar, int FileFormatVersion);
+
 
 		AIItem& operator =(const AIItem &rhs);
 
@@ -94,7 +93,6 @@ public:
 	CString m_NecPolFileName;
 
 	// Current Dosage/bee
-	// Note:  This changes daily - doesn't need to be serialized
 	double m_D_L4;				// Current dosage for 4 day old worker larvae
 	double m_D_L5;				// Current dosage for 5 day old worker larvae
 	double m_D_LD;				// Current dosage for drone larvae
@@ -120,7 +118,6 @@ public:
 	//Operations
 public:
 	CEPAData& operator =(const CEPAData &rhs);  // Assignment Operator
-	//virtual void Serialize(CArchive& ar, int FileFormatVersion);
 	void AddAIItem(AIItem* theItem);
 	bool RemoveAIItem(CString theName);
 	BOOL GetAIItem(CString theName, AIItem* pItem);

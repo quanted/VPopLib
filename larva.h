@@ -21,15 +21,10 @@ class CLarva : public CBee  {
 
   public:
 	CLarva();
-//	CLarva(int quantity, bool isFertilized=false,
-//		   int initialMites=0, float infestProb=1.0);
 	CLarva(int quantity) {number = quantity;}
-	//CLarva(CLarva* oldLarva);
 	CLarva operator = (CLarva& larva);
-	//void Serialize(CArchive &ar);
 	virtual ~CLarva();
 	void Reset();
-	//CLarva& operator=(const CLarva& theLarva);
 };
 
 #endif // !defined(AFX_LARVA_H__8C6C41B7_7899_11D2_8D9A_0020AF233A70__INCLUDED_)

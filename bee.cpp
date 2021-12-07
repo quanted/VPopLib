@@ -55,9 +55,9 @@ CBee::CBee(CBee& bee)
 
 
 
-BEGIN_MESSAGE_MAP(CBee, CCmdTarget)
-	//{{AFX_MSG_MAP(CBee)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(CBee, CCmdTarget)
+//	//{{AFX_MSG_MAP(CBee)
+//		// NOTE - the ClassWizard will add and remove mapping macros here.
+//	//}}AFX_MSG_MAP
+//END_MESSAGE_MAP()
 

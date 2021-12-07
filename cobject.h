@@ -16,7 +16,7 @@ protected:
 public:
 	CObject();
 	virtual ~CObject();
-	//virtual void Serialize(CArchive& ar);
+
 };
 
 #endif // COBJECT_CUSTOM_H

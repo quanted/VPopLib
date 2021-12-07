@@ -11,7 +11,6 @@ public:
     UINT Duration;
     double PctMortality; // NOTE: Need to change logic in rest of program to treat this like a double (percentage)
     double PctResistant;
-	//void Serialize(CArchive &ar);
 	bool IsValid();
 
     CMiteTreatmentItem(void);

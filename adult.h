@@ -32,8 +32,6 @@ class CAdult : public CBee  {
 	double GetForageInc() {return m_ForageInc;}
 	virtual ~CAdult();
 
-	//CAdult& operator=(const CAdult& theAdult);
-
 	void SetMites(CMite theMites) {m_Mites = theMites;}
 	CMite GetMites() {return m_Mites;}
 	void Reset();

@@ -33,7 +33,6 @@ class CQueen : public CBee  {
 	double GetPropDroneEggs();
 	CQueen();
 	CQueen(CQueen* oldQueen);
-	//void Serialize(CArchive &ar);
 	void LayEggs(int LayDays, double DegreeDays, double DaylightHours, int NumForagers, 
 		double LarvPerBee);
 	//CEgg* GetWeggs();

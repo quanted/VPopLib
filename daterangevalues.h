@@ -37,7 +37,6 @@ public:
 	void DeleteItem(int Index);
 	int GetCount();
 	void ClearAll();
-	//void Serialize(CArchive& ar, int Version);
 	void Copy(CDateRangeValues* pDestination);
 	bool IsEnabled() {return m_Enabled;}
 	void SetEnabled(bool EnableVal) {m_Enabled = EnableVal;}

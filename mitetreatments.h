@@ -25,7 +25,6 @@ public:
     void DeleteItem(int Index);
     int GetCount() {return pTreatmentItemList->GetCount();}
     void ClearAll();
-    //void Serialize(CArchive& ar);
 };
 
 

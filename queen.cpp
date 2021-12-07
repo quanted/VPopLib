@@ -39,16 +39,6 @@ CQueen::CQueen() {
 	m_InitialSperm = initialSperm;
 	m_Strength = 1;
 
-	// Set up queen strength matrix
-	// For each strength value [1..5], a corresponding MaxEggs and InitialSperm count are given.
-	//int m_Vars[][2] = 
-	//{
-	//	{ 1000,1800000 },
-	//	{ 1500,2720000 },
-	//	{ 2000,3650000 },
-	//	{ 2500,4750000 },
-	//	{ 3000,5500000 }
-	//};
 
 	m_Vars[0][0] = 1000; m_Vars[0][1] = 1800000;
 	m_Vars[1][0] = 1500; m_Vars[1][1] = 2720000;
@@ -88,22 +78,6 @@ CQueen& CQueen::operator=(const CQueen& theQueen) {
 	return *this;
 }
 
-//void CQueen::Serialize(CArchive& ar) 
-//{
-//	if (ar.IsStoring())
-//	{	// storing code
-//		ar << (int)m_InitialSperm;  //FIX - need to convert to double
-//	}
-//	else
-//	{	// loading code
-//		int TEMP;
-//		ar >> TEMP;
-//		m_InitialSperm = TEMP;
-//		//ar >> m_InitialSperm;  // FIX
-//		//m_CurrentSperm = m_InitialSperm;
-//	}
-//	CBee::Serialize(ar);
-//}
 
 double CQueen::ComputeL(const double& DaylightHours) const 
 {
@@ -222,11 +196,6 @@ void CQueen::LayEggs(int LayDays, double DegreeDays, double DaylightHours, int N
 }
 
 
-//CEgg* CQueen::GetDeggs()
-//{
-//	CEgg* theEggs = new CEgg(m_Deggs);
-//	return theEggs;
-//}
 
 int CQueen::GetDeggs()
 {
@@ -238,11 +207,6 @@ int CQueen::GetWeggs()
 	return m_Weggs;
 }
 
-//CEgg* CQueen::GetWeggs()
-//{
-//	CEgg* theEggs = new CEgg(m_Weggs);
-//	return theEggs;
-//}
 
 
 void CQueen::ReQueen(int EggLayingDelay, double QueenStrength, int SimDayNum)
@@ -256,7 +220,6 @@ void CQueen::ReQueen(int EggLayingDelay, double QueenStrength, int SimDayNum)
 double CQueen::GetPropDroneEggs()
 {
 	double PDE;
-//	double propsperm = (double)(5500000-m_CurrentSperm)/(double)5500000.0;  // Fixed this 10/6/16.  Giving too low a number for weak queens
 	if (GetInitialSperm() == 0) return 0.0;  // Prevent Divide by zero
 	double propsperm = (float)(GetInitialSperm()-GetCurrentSperm())/(float)GetInitialSperm();
 
@@ -286,7 +249,7 @@ double CQueen::GetPropDroneEggs()
 
 SetStrength - sets the internal values of the CQueen object based on the input strength
 
-/*****************************************************************************************/
+*****************************************************************************************/
 
 void CQueen::SetStrength(double Strength)
 {

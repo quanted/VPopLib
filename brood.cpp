@@ -29,19 +29,3 @@ void CBrood::Reset()
 {
 	m_Mites = 0;
 }
-
-//void CBrood::Serialize(CArchive& ar) 
-//{
-//	int tempval = 0;
-//	if (ar.IsStoring())
-//	{	// storing code
-//	//	ar << m_Mites;
-//		ar << tempval;  // bogus - fix later by serializing CMite
-//	}
-//	else
-//	{	// loading code
-//	//	ar >> m_Mites;
-//		ar >> tempval;  // bogus - fix later by serializing CMite
-//	}
-//	CBee::Serialize(ar);
-//}

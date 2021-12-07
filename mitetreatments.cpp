@@ -22,36 +22,7 @@ CMiteTreatments::~CMiteTreatments()
     delete pTreatmentItemList;
 }
 
-//void CMiteTreatments::Serialize(CArchive &ar)
-//{
-//    int ItemQuan;
-//    if (ar.IsLoading())
-//    {
-//        ar >> ItemQuan;
-//        ClearAll();
-//        for (int i = 0; i < ItemQuan; i++)
-//        {
-//            CMiteTreatmentItem* ptheItem = new CMiteTreatmentItem;
-//            ptheItem->Serialize(ar);
-//            pTreatmentItemList->AddTail(ptheItem);
-//        }
-//    }
-//    else
-//    {
-//        ItemQuan = (int)pTreatmentItemList->GetCount();
-//        ar << ItemQuan;
-//        CMiteTreatmentItem* ptheItem;
-//        POSITION pos = pTreatmentItemList->GetHeadPosition();
-//        for (int i = 0; i < ItemQuan; i++)
-//        {
-//            ptheItem = (CMiteTreatmentItem*)pTreatmentItemList->GetNext(pos);
-//            ptheItem->Serialize(ar);
-//        }    
-//    }
-//    
-//
-//
-//}
+
 
 bool CMiteTreatments::GetItem(int Index, CMiteTreatmentItem& theItem)
 {

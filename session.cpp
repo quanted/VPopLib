@@ -277,18 +277,6 @@ CMite CVarroaPopSession::GetImmigrationMites(CEvent* pEvent)
 			else answer = 0;  // m_ImmigrationType not valid
 
 
-			// Now calculate the correction factor based on number of days of immigration.
-			// The equations assume 25 days so correction factor is 25/(#days in sim)
-			/*
-			if (!(m_ImmigrationType == "Cosine"))
-			{
-			double CorrFact = (double)25/
-				(double)(GetSimDayNumber(GetImmigrationEnd()) -
-				GetSimDayNumber(GetImmigrationStart()) + 1);
-			answer = answer*CorrFact;
-			}
-			*/
-
 			// Constrain to positive number
 			if (answer < 0.0) answer = 0.0;
 		}
@@ -407,10 +395,8 @@ void CVarroaPopSession::Simulate()
 
 		CString CurSize;
 		CurSize.Format("                                                        Capped  Capped																												              Prop           Conc            Conc                                             ");
-		//m_ResultsFileHeader.AddTail(CurSize);
 		m_ResultsText.AddTail(CurSize);
 		CurSize.Format("            Colony  Adult     Adult           Active    Drone   Wkr     Drone  Wkr   Drone  Wkr   Total                                                         Free   DBrood WBrood DMite  WMite  Mites  Mites  Colony  Pollen  Colony  Nectar   Dead   Dead   Dead   Dead   Dead    Queen      Ave           Min     Max      Daylight  Forage  Forage");
-		//m_ResultsFileHeader.AddTail(CurSize);
 		m_ResultsText.AddTail(CurSize);
 
 		CurSize.Format("     Date   Size    Drones    Wkr     Forgrs  Forgrs    Brood   Brood   Larv   Larv  Eggs   Eggs  Eggs      DD      L      N      P       dd       l       n    Mites  Mites  Mites  /Cell  /Cell  Dying  Dying  Pollen  Pest    Nectar  Pest     DLarv  WLarv  DAdlt  WAdlt  Forgrs  Strength   Temp  Rain    Temp    Temp     Hours     Inc     Day");
@@ -610,9 +596,6 @@ void CVarroaPopSession::Simulate()
 				m_ResultsText.AddTail(CurSize);
 			}
 
-
-			//UpdateResults(DayCount, pEvent);
-
 			if ((DayCount % ResFreq) == 0)
 				theColony.SetStartSamplePeriod(); // Get ready for new accumulation period
 
@@ -625,10 +608,6 @@ void CVarroaPopSession::Simulate()
 		//delete pEvent;
 		m_ResultsReady = true;
 		m_SimulationComplete = true;
-
-
-		//m_Bridge->EndSimulation(*this);
-
 		theColony.Clear();
 		m_SimulationComplete = false;
 	}
@@ -653,9 +632,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		COleDateTime tempDate(theDate.GetYear(), theDate.GetMonth(), theDate.GetDay(), 0, 0, 0);
 		m_SimStartTime = tempDate;
 		SetSimStart(m_SimStartTime);
-		//theColony.m_InitCond.m_SimStart = m_SimStartTime.Format("%m/%d/%Y");  // Have sim start in two places - refactor to just VPDoc
-
-		//m_Bridge->SimulationStartUpdated();
 		return true;
 	}
 	if (Name == "simend")
@@ -665,9 +641,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		COleDateTime tempDate(theDate.GetYear(), theDate.GetMonth(), theDate.GetDay(), 0, 0, 0);
 		m_SimEndTime = tempDate;
 		SetSimEnd(m_SimEndTime);
-		//theColony.m_InitCond.m_SimEnd = m_SimEndTime.Format("%m/%d/%Y");
-
-		//m_Bridge->SimulationEndUpdated();
 		return true;
 	}
 	if (Name == "latitude")
@@ -876,7 +849,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 	{
 		if (Value == "clear")
 		{
-			//theColony.m_MiteTreatmentInfo.ClearAll();
 			m_MiteTreatments.ClearAll();
 		}
 		int curpos = 0;
@@ -898,7 +870,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 						UINT theDuration = atoi(Duration);
 						double thePctMort = atof(PctMort);
 						double thePctRes = atof(PctRes);
-						//theColony.m_MiteTreatmentInfo.AddItem(theDate, theDuration, thePctMort, thePctRes);
 						m_MiteTreatments.AddItem(theDate, theDuration, thePctMort, thePctRes);
 					}
 				}
@@ -914,11 +885,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 	}
 	if (Name == "ainame")
 	{
-		// TEST TEST TEST  Be sure pointers all work and no issue with name not found
-		//AIItem pItem;
-		//AIItem* pEPAItem;
-		//pEPAItem = theColony.m_EPAData.GetAIItemPtr(Value);
-		//theColony.m_EPAData.SetCurrentAIItem(pEPAItem);
 		return true;
 	}
 	if (Name == "aiadultslope")
@@ -1537,131 +1503,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 }
 
 
-//void CVarroaPopSession::StoreResultsFile(CString PathName)
-//{
-//	try
-//	{
-//		CStdioFile theFile(PathName, CFile::modeCreate | CFile::modeWrite | CFile::typeText);
-//
-//		// Write VarroaPop Version
-//		if (m_Version)
-//		{
-//			CString titlestg;
-//			titlestg.Format("Varroa Population Simulation - %s\n", COleDateTime::GetCurrentTime().Format("%b %d,%Y  %I:%M:%S %p"));
-//			theFile.WriteString(titlestg);
-//			theFile.WriteString(m_Bridge->GetVersion() + "\n\n");
-//		}
-//		// Write Header Info to file
-//		if (m_WeatherColony)
-//		{
-//			theFile.WriteString("Weather File: " + GetWeatherFileName() + "\n");
-//			theFile.WriteString("Colony File:  " + GetColonyFileName() + "\n\n");
-//		}
-//
-//		// Write Initial Conditions to file
-//		if (m_InitConds)
-//		{
-//			CString OutStg;
-//			OutStg.Format("Drone Adult Infestation=%4.2f\n", theColony.m_InitCond.m_droneAdultInfestField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Brood Infestation=%4.2f\n", theColony.m_InitCond.m_droneBroodInfestField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Mite Survivorship=%4.2f\n", theColony.m_InitCond.m_droneMiteSurvivorshipField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Mite Offspring=%4.2f\n", theColony.m_InitCond.m_droneMiteOffspringField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Adult Infestation=%4.2f\n", theColony.m_InitCond.m_workerAdultInfestField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Brood Infestation=%4.2f\n", theColony.m_InitCond.m_workerBroodInfestField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Mite Survivorship=%4.2f\n", theColony.m_InitCond.m_workerMiteSurvivorship);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Mite Offspring=%4.2f\n", theColony.m_InitCond.m_workerMiteOffspring);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Adults=%d\n", theColony.m_InitCond.m_droneAdultsField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Brood=%d\n", theColony.m_InitCond.m_droneBroodField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Larvae=%d\n", theColony.m_InitCond.m_droneLarvaeField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Drone Eggs=%d\n", theColony.m_InitCond.m_droneEggsField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Adults=%d\n", theColony.m_InitCond.m_workerAdultsField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Brood=%d\n", theColony.m_InitCond.m_workerBroodField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Larvae=%d\n", theColony.m_InitCond.m_workerLarvaeField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Worker Eggs=%d\n", theColony.m_InitCond.m_workerEggsField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Queen Sperm=%d\n", (int)(theColony.m_InitCond.m_QueenSperm));
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Maximum Eggs per Day=%d\n", (int)(theColony.m_InitCond.m_MaxEggs));
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Forager Lifespan=%d\n", theColony.m_InitCond.m_ForagerLifespan);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Total Eggs=%d\n", theColony.m_InitCond.m_totalEggsField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily DD=%.2f\n", theColony.m_InitCond.m_DDField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily L=%.2f\n", theColony.m_InitCond.m_LField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily N=%.2f\n", theColony.m_InitCond.m_NField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily P=%.2f\n", theColony.m_InitCond.m_PField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily dd=%.2f\n", theColony.m_InitCond.m_ddField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily l=%.2f\n", theColony.m_InitCond.m_lField);
-//			theFile.WriteString(OutStg);
-//			OutStg.Format("Daily n=%.2f\n", theColony.m_InitCond.m_nField);
-//			theFile.WriteString(OutStg);
-//
-//			if (m_ImmigrationEnabled) theFile.WriteString("Immigration Enabled=TRUE\n");
-//			else  theFile.WriteString("Immigration Enabled=FALSE\n");
-//
-//			if (m_RQEnableReQueen) theFile.WriteString("Requeening Enabled=TRUE\n");
-//			else  theFile.WriteString("Requeening Enabled=FALSE\n");
-//
-//			if (m_VTEnable) theFile.WriteString("Varroa Treatment Enabled=TRUE\n");
-//			else  theFile.WriteString("Varroa Treatment Enabled=FALSE\n");
-//
-//			if (m_CombRemoveEnable) theFile.WriteString("Comb Removal Enabled=TRUE\n");
-//			else  theFile.WriteString("Comb Removal Enabled=FALSE\n");
-//
-//			theFile.WriteString("\n");
-//
-//		}
-//
-//
-//
-//		// Write Column Headers to file
-//		POSITION pos = m_ResultsFileHeader.GetHeadPosition();
-//		if (m_ColTitles)
-//		{
-//			while (pos != NULL)
-//			{
-//				theFile.WriteString(m_ResultsFileHeader.GetNext(pos) + "\n");
-//			}
-//		}
-//
-//		// Now write results to the file
-//		pos = m_ResultsText.GetHeadPosition();
-//		while (pos != NULL)
-//		{
-//			theFile.WriteString(m_ResultsText.GetNext(pos) + "\n");
-//		}
-//		theFile.Close();
-//	}
-//	catch (CFileException* e)
-//	{
-//		TCHAR stg[255];
-//		e->GetErrorMessage(stg, 255);
-//		m_Bridge->OutputFileException(stg);
-//	}
-//
-//}
-
 
 int CVarroaPopSession::GetDocumentLength()
 {
@@ -1702,22 +1543,6 @@ bool CVarroaPopSession::CheckDateConsistency(bool ShowWarning)
 		}
 
 
-		// NOTE:  This block needs to be reworked since we use a list of mite treatment items instead of the single m_VTTreatmentStart.
-		//        Fix on c# version.
-		/*
-		if (m_VTEnable && (!DateInRange(m_SimStartTime, m_SimEndTime, m_VTTreatmentStart)))
-		{
-			WarnString += "     Varroa Treatment Start\n";
-			Consistent = false;
-		}
-
-		if (m_VTEnable && (!DateInRange(m_SimStartTime, m_SimEndTime,
-			m_VTTreatmentStart + COleDateTimeSpan(m_VTTreatmentDuration*7,0,0,0))))
-		{
-			WarnString += "     Varroa Treatment End\n";
-			Consistent = false;
-		}
-		*/
 
 		if (m_ImmigrationEnabled && (!DateInRange(m_SimStartTime, m_SimEndTime, ImStart)))
 		{
@@ -1749,16 +1574,3 @@ bool CVarroaPopSession::DateInRange(COleDateTime StartRange, COleDateTime StopRa
 
 }
 
-//void CVarroaPopSession::LoadMiteTreatments(CMiteTreatments* theTreatments)
-//{
-//    if (theTreatments != NULL)
-//    {
-//        CMiteTreatmentItem theItem;
-//        m_MiteTreatments.ClearAll();
-//        for (int i = 0; i<theTreatments->GetCount(); i++)
-//        {
-//            theTreatments->GetItem(i,theItem);
-//            m_MiteTreatments.AddItem(theItem);
-//        }
-//    }
-//}

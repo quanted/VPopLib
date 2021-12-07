@@ -23,7 +23,6 @@ public:
 public:
 	CNutrientContaminationTable(void);
 	~CNutrientContaminationTable(void);
-	bool LoadTable(CString FilePath);
 	void RemoveAll(void) {m_ContDateArray.RemoveAll();}
 	void GetContaminantConc(COleDateTime Date, double &NecConc, double &PolConc);
 	void AddContaminantConc(SNCElement theElement);

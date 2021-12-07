@@ -37,12 +37,11 @@ public:
 	bool IsAlive() {return Alive;}
 	void Reset();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CBee)
-	public:
-	//virtual void Serialize(CArchive& ar);
-	//}}AFX_VIRTUAL
+//// Overrides
+//	// ClassWizard generated virtual function overrides
+//	//{{AFX_VIRTUAL(CBee)
+//	public:
+//	//}}AFX_VIRTUAL
 
 // Implementation
 protected:
@@ -52,7 +51,7 @@ protected:
 		// NOTE - the ClassWizard will add and remove member functions here.
 	//}}AFX_MSG
 
-	DECLARE_MESSAGE_MAP()
+	//DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -545,11 +545,6 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 //
 // When the following are all true (non-foraging day, no brood, no larvae), do not age the adults
 {
-	//ASSERT(theBrood);
-	//int NumberOfNonAdults = theColony->Wlarv.GetQuantity() +  theColony->Dlarv.GetQuantity() + 
-	//	theColony->CapDrn.GetQuantity() + theColony->CapWkr.GetQuantity() + theBrood->GetNumber();
-	//if (Caboose != NULL) Caboose->SetNumber(0); // Initialize the Caboose to zero - will pass 0 Adults to foragers unless aging occurs
-	//if (( theBrood->GetNumber() > 0) || (NumberOfNonAdults > 0) || (theEvent->IsForageDay())) // Age if any of these are true
 	{
 		CAdult* theAdult = new CAdult(theBrood.GetNumber());
 		if (bWorker) WorkerCount++;
@@ -709,7 +704,6 @@ void CBroodlist::Update(CLarva theLarva)
 void CBroodlist::KillAll()
 {
 	CBeelist::KillAll();
-	//Caboose->SetNumber(0);
 }
 
 
@@ -786,7 +780,6 @@ void CLarvalist::Update(CEgg theEggs)
 // If the list is now greater than the specified number of days, the
 // bottom of the list is removed and assigned to the Caboose.
 {
-	//ASSERT(theEggs);
 	CLarva* theLarva = new CLarva((int)theEggs.GetNumber());
 	theEggs.Reset();  // These eggs are now  gone
 	AddHead(theLarva);
@@ -843,7 +836,6 @@ void CEgglist::Update(CEgg theEggs)
 void CEgglist::KillAll()
 {
 	CBeelist::KillAll();
-	//Caboose->SetNumber(0);
 }
 
 
@@ -918,11 +910,11 @@ CColony::~CColony()
 
 
 
-BEGIN_MESSAGE_MAP(CColony, CCmdTarget)
-	//{{AFX_MSG_MAP(CColony)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(CColony, CCmdTarget)
+//	//{{AFX_MSG_MAP(CColony)
+//		// NOTE - the ClassWizard will add and remove mapping macros here.
+//	//}}AFX_MSG_MAP
+//END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CColony 
@@ -936,7 +928,6 @@ END_MESSAGE_MAP()
 //
 void CColony::InitializeColony()
 {
-	//SetDefaultInitConditions();
 	InitializeBees();
 	InitializeMites();
 
@@ -975,16 +966,11 @@ void CColony::InitializeColony()
 	m_DeadForagersPesticide = 0;
 
 	m_ColonyEventList.RemoveAll();
-	//m_NutrientCT.RemoveAll();
-	if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
 
-	// Clear DRVs
-	//m_InitCond.m_AdultLifespanDRV.ClearAll();
-	//m_InitCond.m_AdultTransitionDRV.ClearAll();
-	//m_InitCond.m_BroodTransitionDRV.ClearAll();
-	//m_InitCond.m_EggTransitionDRV.ClearAll();
-	//m_InitCond.m_ForagerLifespanDRV.ClearAll();
-	//m_InitCond.m_AdultLifespanDRV.ClearAll();
+	// NOTE: - Need to implement Loading the Contamination Table when we include the pesticide element
+	//m_NutrientCT.RemoveAll();
+	//if (m_NutrientCT.IsEnabled()) m_NutrientCT.LoadTable(m_NutrientCT.GetFileName());
+
 
 	//Set the initial state of the AdultAgingDelayArming.  Set armed if the first date is between Jan and Apr inclusive
 	auto monthnum = m_pSession->GetSimStart().GetMonth();
@@ -998,7 +984,6 @@ void CColony::InitializeColony()
 void CColony::AddEventNotification(CString DateStg, CString Msg)
 {
 	CString EventString = DateStg + ": " + Msg;
-	//m_ColonyEventList.AddTail(EventString);
 	m_pSession->AddToInfoList(EventString);
 }
 
@@ -1010,7 +995,6 @@ COleDateTime* CColony::GetDayNumDate(int DayNum)
 	COleDateTime* pReturnDate = NULL;
 	COleDateTimeSpan ts((DayNum - 1),0,0,0); // First day is 0 span
 	if( temptime.ParseDateTime(m_InitCond.m_SimStart) )
-	//if( temptime.ParseDateTime(Get) )
 	{
 		pReturnDate = new COleDateTime(temptime.GetYear(), temptime.GetMonth(), temptime.GetDay(), 0,0,0);
 		*pReturnDate = *pReturnDate + ts;
@@ -1046,32 +1030,23 @@ void CColony::Create()
 	//  Set lengths of the various lists
 	Deggs.SetLength(EGGLIFE);
 	Deggs.SetPropTransition(1.0);
-	//Deggs.Create(Deggs.GetLength());
 	Weggs.SetLength(EGGLIFE);
 	Weggs.SetPropTransition(1.0);
-	//Weggs.Create(Weggs.GetLength());
 	Dlarv.SetLength(DLARVLIFE);
 	Dlarv.SetPropTransition(1.0);
-	//Dlarv.Create(Dlarv.GetLength());
 	Wlarv.SetLength(WLARVLIFE);
 	Wlarv.SetPropTransition(1.0);
-	//Wlarv.Create(Wlarv.GetLength());
 	CapDrn.SetLength(DBROODLIFE);
 	CapDrn.SetPropTransition(1.0);
-	//CapDrn.Create(CapDrn.GetLength());
 	CapWkr.SetLength(WBROODLIFE);
 	CapWkr.SetPropTransition(1.0);
-	//CapWkr.Create(CapWkr.GetLength());
 	Dadl.SetLength(DADLLIFE);
 	Dadl.SetPropTransition(1.0);
-	//Dadl.Create(Dadl.GetLength());
 	Wadl.SetLength(WADLLIFE);
 	Wadl.SetPropTransition(1.0);
 	Wadl.SetColony(this);
-	//Wadl.Create(Wadl.GetLength());
 	foragers.SetLength(m_CurrentForagerLifespan);
 	foragers.SetColony(this);
-	//foragers.SetUnemployedForagerQuantity(0);
 
 	//Remove any current list boxcars in preparation for new initialization
 	SetDefaultInitConditions();
@@ -1178,16 +1153,6 @@ bool CColony::IsAdultAgingDelayActive()
 	 //This function can be called every day but must be called at least once prior to egglaying beginning in the spring and needs to keep being called
 	 //daily at least until the delay period has been met.
 
-	//if (queen.GetTeggs() == 0)
-	//{
-	//	m_DaysSinceEggLayingBegan = 0;
-	//}
-	//else
-	//{
-	//	m_DaysSinceEggLayingBegan++;
-	//}
-	//bool theResult = (m_DaysSinceEggLayingBegan < m_AdultAgeDelayLimit);
-	//return theResult;
 
 	if (IsAdultAgingDelayArmed())
 	{
@@ -1198,11 +1163,7 @@ bool CColony::IsAdultAgingDelayActive()
 		}
 	}
 	auto active = (m_DaysSinceEggLayingBegan++ < m_AdultAgeDelayLimit);
-	//Test
-	if (active)
-	{
-		int i = 1;
-	}
+
 	return active;
 }
 
@@ -1254,10 +1215,6 @@ void CColony::InitializeBees()
 
 	foragers.SetLength(m_CurrentForagerLifespan);
 	foragers.SetColony(this);
-	////foragers.SetUnemployedForagerQuantity(0);
-
-	////Remove any current list boxcars in preparation for new initialization
-	//Clear();  //Clear all the lists
 
 	
 	// Distribute bees from initial conditions into age groupings
@@ -1482,16 +1439,6 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		Wadl.SetPropTransition(1.0);
 	}
 
-#define DEBUG_SPECIFIC_DAY
-#ifdef DEBUG_SPECIFIC_DAY
-
-	if (theDate.GetYear() == 2051 && theDate.GetMonth() == 4 && theDate.GetDay() == 1)
-	{
-		// let's see why we age adults
-		int myLocalVar = 2;
-	}
-
-#endif
 
 	// Reset additional output data struct for algorithm intermediate results
 	m_InOutEvent.Reset();
@@ -1523,9 +1470,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		coldStorage.Update(*pEvent, *this);
 	}
 
-	
-	//CEgg l_DEggs = *(queen.GetDeggs());
-	//CEgg l_WEggs = *(queen.GetWeggs());
+
 	CEgg l_DEggs(queen.GetDeggs());
 	CEgg l_WEggs(queen.GetWeggs());
 
@@ -1604,29 +1549,16 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 		// Options of aging Adults based on Laid Eggs
 		// Aging of adults is actually function of DaylightHours
-		// Troubleshooting
-		bool csa;
-		bool saa;
-		double dlh;
-		double l;
-		csa = coldStorage.IsActive();
-		saa = GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs();
-		dlh = pEvent->GetDaylightHours();
-		l = queen.ComputeL(pEvent->GetDaylightHours());
 
 		bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
 		agingAdults = agingAdults && !IsAdultAgingDelayActive();
 		if (agingAdults)
 		{
-			//TRACE("Date: %s\n",pEvent->GetDateStg());
 			Dadl.Update(CapDrn.GetCaboose(), this, pEvent, false);
-			//TRACE("HB Before Update:%s\n",Wadl.Status());
 			int WkrAdlCabooseNumber = Wadl.GetCaboose().GetNumber();
 			Wadl.Update(CapWkr.GetCaboose(), this, pEvent, true);
 			int DrnNumberFromCaboose = CapWkr.GetCaboose().GetNumber();
 			WkrAdlCabooseNumber = Wadl.GetCaboose().GetNumber();
-			//TRACE(" HB After Update:%s\n",Wadl.Statuys());
-			//TRACE("    Worker Caboose Quan: %d\n", Wadl.GetCaboose().number);
 
 			// Update stats for adults becoming foragers
 			m_InOutEvent.m_WAdultToForagers = Wadl.GetCaboose().GetNumber();
@@ -1652,8 +1584,6 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 
 		// Update stats for dead Foragers
 		m_InOutEvent.m_DeadForagers = foragers.GetCaboose().GetNumber() > 0 ? foragers.GetCaboose().GetNumber() : 0;
-
-		//TRACE("Updated Foragers:%s\n",foragers.Status());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1913,11 +1843,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 							NewMitesD.GetTotal()	)/double(RunMite.GetTotal());
 
 	// Kill NonResistant Running Mites if Treatment Enabled
-	/*
-	if ((m_VTEnable) && 
-		(DayNum >= m_VTStart) && 
-		(DayNum <= int(m_VTStart + (7*m_VTDuration))))
-		*/
+
 	if (m_VTEnable)
 	{
 		CMiteTreatmentItem theItem;
@@ -1928,7 +1854,6 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 			RunMite.SetNonResistant(int(double(RunMite.GetNonResistant())*
 												(100.0 - theItem.PctMortality)/100.0));
 			m_MitesDyingToday += (Quan - RunMite.GetTotal());
-			//TRACE("Mite Treatment Made on %s\n",theDate->Format("%m/%d/%Y"));
 		}
 
 		m_MitesDyingThisPeriod += m_MitesDyingToday;
@@ -2259,7 +2184,6 @@ void CColony::ApplyPesticideMortality()
 	//if (m_EPAData.m_D_L4 > m_EPAData.m_D_L4_Max) // IED - only reduce if current dose greater than previous maximum dose
 	{
 		m_DeadWorkerLarvaePesticide = ApplyPesticideToBees(&Wlarv,3,3,m_EPAData.m_D_L4,0,m_EPAData.m_AI_LarvaLD50,m_EPAData.m_AI_LarvaSlope);
-	//	if (m_EPAData.m_D_L4 > 0.0) TRACE("Pesticide to Larva 4: %4.2f\n",m_EPAData.m_D_L4);
 		if (m_EPAData.m_D_L4 > m_EPAData.m_D_L4_Max) m_EPAData.m_D_L4_Max = m_EPAData.m_D_L4;
 	}
 
@@ -2400,7 +2324,6 @@ void CColony::DetermineFoliarDose(int DayNum)
 		// Kris Garber's EFED Training Insect Exposure.pptx for a summary); 
 
 		double Dose = m_EPAData.m_E_AppRate * m_EPAData.m_AI_ContactFactor/1000000.0;  // convert to Grams AI/bee
-		//TRACE("Incoming Foliar Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 
 		// Dose reduced due to active ingredient half-life
 		if (m_EPAData.m_AI_HalfLife > 0)
@@ -2899,13 +2822,11 @@ double CColony::GetIncomingNectarPesticideConcentration(int DayNum)
 				double k = log(2.0)/m_EPAData.m_AI_HalfLife;
 				IncomingConcentration *= exp(-k*DaysSinceApplication);
 			}
-			//TRACE("Incoming Foliar Spray Nectar Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 			AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Foliar Spray Nectar Pesticide");
 		}
 		if ((CurDate >= m_EPAData.m_SeedForageBegin) && (CurDate < m_EPAData.m_SeedForageEnd) && (m_EPAData.m_SeedEnabled))
 		{
 			IncomingConcentration += m_EPAData.m_E_SeedConcentration/1000000.0; // Add Incoming Grams AI/Grams Bectar due to seed concentration
-			//TRACE("Incoming Seed Nectar Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 			AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Seed Nectar Pesticide");
 		}
 		if ((CurDate >= m_EPAData.m_SoilForageBegin) && (CurDate < m_EPAData.m_SoilForageEnd) && (m_EPAData.m_SoilEnabled)) // In soil forage range
@@ -2916,9 +2837,7 @@ double CColony::GetIncomingNectarPesticideConcentration(int DayNum)
 				double TSCF = -0.0648*(LogKOW*LogKOW) + 0.241*LogKOW + 0.5822;
 				double SoilConc = TSCF * (pow(10,(0.95*LogKOW -2.05)) + 0.82) *
 					m_EPAData.m_E_SoilConcentration*(m_EPAData.m_E_SoilP/(m_EPAData.m_E_SoilTheta + m_EPAData.m_E_SoilP*m_EPAData.m_AI_KOC*m_EPAData.m_E_SoilFoc));
-//					m_EPAData.m_E_SoilConcentration*((m_EPAData.m_E_SoilP/m_EPAData.m_E_SoilTheta) + m_EPAData.m_E_SoilP*m_EPAData.m_AI_KOC*m_EPAData.m_E_SoilFoc);
 				IncomingConcentration += SoilConc/1000000; // Add Grams AI/Gram Nectar for soil concentration
-				//TRACE("Incoming Soil Nectar Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 			AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Soil Nectar Pesticide");
 			}
 	}
@@ -2958,13 +2877,11 @@ double CColony::GetIncomingPollenPesticideConcentration(int DayNum)
 				double k = log(2.0)/m_EPAData.m_AI_HalfLife;
 				IncomingConcentration *= exp(-k*DaysSinceApplication);
 			}
-			//TRACE("Incoming Foliar Spray Pollen Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 			AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Foliar Spray Pollen Pesticide");
 		}
 		if ((CurDate >= m_EPAData.m_SeedForageBegin) && (CurDate < m_EPAData.m_SeedForageEnd) && (m_EPAData.m_SeedEnabled))
 		{
 			IncomingConcentration += m_EPAData.m_E_SeedConcentration/1000000.0; // Add Grams AI/Grams Pollen
-			//TRACE("Incoming Seed Pollen Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 			AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Seed Pollen Pesticide");
 
 		}
@@ -2976,9 +2893,7 @@ double CColony::GetIncomingPollenPesticideConcentration(int DayNum)
 				double TSCF = -0.0648*(LogKOW*LogKOW) + 0.241*LogKOW + 0.5822;
 				double SoilConc = TSCF * (pow(10,(0.95*LogKOW -2.05)) + 0.82) *
 					m_EPAData.m_E_SoilConcentration*(m_EPAData.m_E_SoilP/(m_EPAData.m_E_SoilTheta + m_EPAData.m_E_SoilP*m_EPAData.m_AI_KOC*m_EPAData.m_E_SoilFoc));
-//					m_EPAData.m_E_SoilConcentration*((m_EPAData.m_E_SoilP/m_EPAData.m_E_SoilTheta) + m_EPAData.m_E_SoilP*m_EPAData.m_AI_KOC*m_EPAData.m_E_SoilFoc);
 				IncomingConcentration += SoilConc/1000000;  // Add Grams AI/Grams Pollen
-				//TRACE("Incoming Soil Pollen Pesticide on %s\n",CurDate.Format("%m/%d/%Y"));
 				AddEventNotification(CurDate.Format("%m/%d/%Y"), "Incoming Soil Pollen Pesticide");
 			}
 		}

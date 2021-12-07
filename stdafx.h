@@ -25,9 +25,9 @@
 #define DECLARE_SERIAL(Class) // void
 #define IMPLEMENT_SERIAL(Class, BaseClass, Offset) // void
 
-#define DECLARE_MESSAGE_MAP() // void
-#define BEGIN_MESSAGE_MAP(Class, BaseClass) // void
-#define END_MESSAGE_MAP() // void
+//#define DECLARE_MESSAGE_MAP() // void
+//#define BEGIN_MESSAGE_MAP(Class, BaseClass) // void
+//#define END_MESSAGE_MAP() // void
 
 #define DDX_Text(_1, _2, _3) // void
 #define DDV_MinMaxInt(_1, _2, _3, _4) // void

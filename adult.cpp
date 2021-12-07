@@ -63,16 +63,3 @@ CAdult CAdult::operator = (CAdult& adult)
 	return m;
 
 }
-//void CAdult::Serialize(CArchive& ar) 
-//{
-//	CBee::Serialize(ar);
-//	if (ar.IsStoring())
-//	{	// storing code
-//		ar << m_Lifespan;
-//	}
-//	else
-//	{	// loading code
-//		ar >> m_Lifespan;
-//	}
-//	CBee::Serialize(ar);
-//}

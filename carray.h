@@ -31,7 +31,6 @@ public:
 
 	void SetSize(INT_PTR size, INT_PTR growBy = -1);
 
-	//void Serialize(CArchive& ar);
 	
 protected:
 
