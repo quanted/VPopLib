@@ -61,8 +61,8 @@ protected:
 template <> void CArchive::operator<<(const CString &value);
 template <> void CArchive::operator>>(CString &value);
 
-template <> void CArchive::operator<<(const COleDateTime &value);
-template <> void CArchive::operator>>(COleDateTime &value);
+//template <> void CArchive::operator<<(const COleDateTime &value);
+//template <> void CArchive::operator>>(COleDateTime &value);
 
 template <> void CArchive::operator<<(const CTime &value);
 template <> void CArchive::operator>>(CTime &value);

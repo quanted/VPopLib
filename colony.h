@@ -407,6 +407,7 @@ public:
 	double GetddToday();
 	double GetlToday();
 	double GetnToday();
+	double GetDaylightHrsToday(CEvent* pEvent);
 	void ReQueenIfNeeded(
 		int		DayNum,
 		CEvent* theEvent,

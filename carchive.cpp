@@ -118,16 +118,16 @@ void CArchive::operator<<(const CTime& time)
     mStream.write((const char*)&timeInt64, sizeof(std::int64_t));
 }
 
-template<>
-void CArchive::operator>>(COleDateTime& date)
-{
-    int32_t status = 0;
-    mStream.read((char*)&status, sizeof(int32_t));
-    
-    double dt = 0.0;
-    mStream.read((char*)&dt, sizeof(double));
-    date = COleDateTime(dt);
-}
+//template<>
+//void CArchive::operator>>(COleDateTime& date)
+//{
+//    int32_t status = 0;
+//    mStream.read((char*)&status, sizeof(int32_t));
+//    
+//    double dt = 0.0;
+//    mStream.read((char*)&dt, sizeof(double));
+//    date = COleDateTime(dt);
+//}
 
 template<>
 void CArchive::operator>>(CString& str)

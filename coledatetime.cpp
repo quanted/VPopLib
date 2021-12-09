@@ -1,7 +1,5 @@
 #include "coledatetime.h"
 #include "ctime.h"
-
-//#include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <map>

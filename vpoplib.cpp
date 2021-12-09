@@ -31,7 +31,7 @@ CVarroaPopSession theSession;
 * Space or comma delimited
 *
 */
-bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightByLat = false)
+bool WeatherStringToEvent(CString theString, CEvent* pEvent, bool CalcDaylightByLat = true)
 {
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,6 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		pColony->Create();  
 		theSession.ClearErrorList();
 		theSession.ClearInfoList();
-		theSession.SetLatitude(30.0);
 		theSession.AddToInfoList("Model Initialized");
 		return true;
 	}

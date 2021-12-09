@@ -1612,6 +1612,11 @@ double CColony::GetDDToday()
 	return queen.GetDD();
 }
 
+double CColony::GetDaylightHrsToday(CEvent* pEvent)
+{
+	return pEvent->GetDaylightHours();
+}
+
 double CColony::GetLToday()
 {
 	return queen.GetL();

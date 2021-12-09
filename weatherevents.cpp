@@ -196,10 +196,11 @@ double CEvent::CalcTodayDaylightFromLatitude(double Lat)
 
 double CEvent::CalcDaylightFromLatitudeDOY(double Lat, int DayOfYear)
 {
-	// Reference:  Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 
+	// Reference:  CBM model in Ecological Modeling, volume 80 (1995) pp. 87-95, called "A Model 
 	// Comparison for Daylength as a Function of Latitude and Day of the Year."
 	// Lat is in degrees - limited to be between +65 and -65 degrees.  Beyond that, Day is either 24 or 0 hours.
-	// Probably not a lot of honeybee colonies inside the arctic and antarctic circles anyway.
+	// Probably not a lot of honeybee colonies inside the arctic and antarctic circles anyway. Assume time when top of sun is 
+	// apparently even with the horizon (US Govt definition) (i.e. p = 0.8333)
 
 	if ((DayOfYear > 366) || (DayOfYear < 1)) return 0.0;
 
@@ -210,12 +211,14 @@ double CEvent::CalcDaylightFromLatitudeDOY(double Lat, int DayOfYear)
 	}
 	if (Lat > 65.0) Lat = 65.0;
 
-	double PI = 3.14159265358979;
+	const double dl_coeff = 0.8333;
+	const double PI = 3.14159265358979;
 	double DaylightHours = 0;
+	double Theta = 0.2163108 + 2 * atan(0.9671396 * tan(0.0086 * (DayOfYear - 186)));
 
-	double P = asin(0.39795 * cos(0.2163108 + 2 * atan(0.9671396 * tan(0.00860 * (DayOfYear - 186)))));
+	double Psi = asin(0.39795 * cos(Theta));
 	DaylightHours =
-		24 - (24 / PI) * acos((sin(0.833 * PI / 180) + sin(Lat * PI / 180) * sin(P)) / cos(Lat * PI / 180) * cos(P));
+		24 - (24 / PI) * acos((sin((dl_coeff * PI / 180) + sin(Lat * PI / 180) * sin(Psi)) / cos(Lat * PI / 180) * cos(Psi)));
 	return DaylightHours;
 }
 

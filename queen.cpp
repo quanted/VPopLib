@@ -175,8 +175,8 @@ void CQueen::LayEggs(int LayDays, double DegreeDays, double DaylightHours, int N
 		if (Z>1.0) Z = 1.0;
 
 		// Numbers of Drone Eggs and Worker Eggs
-		double DblDeggs = E*Z;
-		double DblWeggs = E - DblDeggs;
+		//double DblDeggs = E*Z;
+		//double DblWeggs = E - DblDeggs;
 
 		m_Deggs = int(E*Z);
 		m_Weggs = int(E - m_Deggs);
