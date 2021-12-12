@@ -22,11 +22,11 @@ CTime::CTime(const SYSTEMTIME& time)
     }
 }
 
-COleDateTime CTime::GetTime() const
-{
-    COleDateTime time (m_time_point);
-    return time;
-}
+//COleDateTime CTime::GetTime() const
+//{
+//    COleDateTime time (m_time_point);
+//    return time;
+//}
 
 void CTime::FromTimeT(const time_t& time)
 {

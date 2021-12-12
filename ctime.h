@@ -15,7 +15,7 @@ public:
 	CTime();
 	CTime(const SYSTEMTIME& time);
 
-	COleDateTime GetTime() const;
+	//COleDateTime GetTime() const;
 
 	void FromTimeT(const time_t& time);
 	time_t GetAsTimeT() const;

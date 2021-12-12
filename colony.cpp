@@ -5,7 +5,6 @@
 #include "coldstoragesimulator.h"
 #include "colony.h"
 #include "globaloptions.h"
-#include "ctime.h"
 #include "cstring.h"
 #include "cstring.format.h"
 #include "coledatetime.h"

@@ -542,11 +542,10 @@ void CVarroaPopSession::Simulate()
 					theColony.Deggs.GetQuantity(),
 					theColony.Weggs.GetQuantity(),
 					theColony.GetEggsToday(),
-					//theColony.GetDDToday(),
-					theColony.GetDaylightHrsToday(pEvent), //Temporaray replacement for GetDDToday
+					theColony.GetDDToday(),
+					//theColony.GetDaylightHrsToday(pEvent), //Temporaray replacement for GetDDToday - Consider adding
 					theColony.GetLToday(),
-					GetLatitude(),  //Temporary replacement for GetNToday
-					//theColony.GetNToday(),
+					theColony.GetNToday(),
 					theColony.GetPToday(),
 					theColony.GetddToday(),
 					theColony.GetlToday(),

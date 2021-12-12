@@ -1,13 +1,10 @@
 #pragma once
 #ifndef COLEDATETIME_CUSTOM_H
 #define COLEDATETIME_CUSTOM_H
-#endif
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
 
+#include "stdafx.h"
 #include "cstring.h"
-#include <boost/date_time/gregorian/gregorian.hpp>
+#include <chrono>
 
 #define GetCurrentTime() GetTickCount()
 
@@ -16,13 +13,11 @@ class COleDateTimeSpan;
 /**
  * Only supports the necessary interface for the good behavior of VarroaPop
  * 
- * Based on the boost date_time library.  
- * Expects date text to be mm/dd/yyyy 
- * 
- * Only deals with dates, no times.
- * 
+ * TODO: Current implemenation uses std::chrono which has the disavantage of not supporting
+ * dates before January 1st 1970 which is not the case with the COleDateTime of MFC. We should
+ * refactor to another library that does.
  */
-class COleDateTime
+class NO_LIBEXPORT COleDateTime
 {
 public:
 	enum DateTimeStatus
@@ -33,8 +28,13 @@ public:
 		null = 2,       // Literally has no value
 	};
 
+	static COleDateTime GetTickCount();
+
+	friend class CTime;
 
 	COleDateTime();
+	
+	COleDateTime(DATE dateSrc);
 
 	COleDateTime(int32_t nYear,
 		int32_t nMonth,
@@ -42,6 +42,12 @@ public:
 		int32_t nHour,
 		int32_t nMin,
 		int32_t nSec);
+
+protected:
+
+	COleDateTime(const std::chrono::system_clock::time_point& timePoint);
+
+public:
 
 	int32_t GetYear() const;
 	int32_t GetMonth() const;
@@ -59,11 +65,14 @@ public:
 	bool operator <= (const COleDateTime& other) const;
 
 	CString Format(const char* format) const;
-	bool ParseDateTime(const CString& dateTimeStr, DWORD dwFlags = VAR_DATEVALUEONLY);
+	bool ParseDateTime(const CString& dateTimeStr, DWORD dwFlags = 0);
 
 	// returns 0 if successful, 1 otherwise
 	int SetDate(int32_t year, int32_t month, int32_t day);
 
+	bool GetAsSystemTime(SYSTEMTIME& time) const;
+	bool GetAsUDATE(UDATE& date) const;
+	bool GetAsDATE(DATE& date) const;
 
 	COleDateTime operator+(const COleDateTimeSpan& span) const;
 	COleDateTime operator-(const COleDateTimeSpan& span) const;
@@ -73,12 +82,11 @@ public:
 
 	COleDateTimeSpan operator-(const COleDateTime& date) const;
 
-	static COleDateTime GetCurrentTime();
-
 protected:
 
+	// here we use a time point to get milliseconds precision
+	std::chrono::system_clock::time_point m_time_point;
 	DateTimeStatus m_status;
-	boost::gregorian::date m_date;  //The actual date for this class
 };
 
 /**
@@ -91,10 +99,18 @@ public:
 
 	COleDateTimeSpan();
 
+	COleDateTimeSpan(double dblSpanSrc);
+
 	COleDateTimeSpan(size_t lDays,
 		int32_t nHours,
 		int32_t nMins,
 		int32_t nSecs);
+
+protected:
+
+	COleDateTimeSpan(const std::chrono::seconds& span);
+
+public:
 
 	int32_t GetDays();
 
@@ -102,7 +118,7 @@ public:
 
 protected:
 
-	boost::gregorian::date_duration m_day_span;  // number of days between dates.
+	std::chrono::seconds m_span;
 };
 
-//#endif // COLEDATETIME_CUSTOM_H
+#endif // COLEDATETIME_CUSTOM_H
