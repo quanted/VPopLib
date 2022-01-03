@@ -182,9 +182,8 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool SetICVariablesCPA(char** NVPairsCPA, int Count, bool ResetICs)
 	{
 		vector<string> NVPairs(NVPairsCPA, NVPairsCPA + Count);
-		// Need to ready the session to take on a brand new set if ICs.  That will
-		// require the clearing of all DRVs.  May not want to do this all the time
-		// so could add a ClearAll to the vpoplib interface or add an optional parameter in this function to select clear or no clear.
+		// Need to ready the session to take on a brand new set of ICs.  That will
+		// require the clearing of all DRVs.  The default parameter ResetICs is set to true.
 		//
 		if (ResetICs)  // Need to clear the date range value lists before each new load of ICs if ResetICs is true
 		{
@@ -208,8 +207,8 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		CString CSValue(Value.c_str());
 		if (theSession.UpdateColonyParameters(Name, Value))
 		{
-			info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
-			theSession.AddToInfoList(info);
+			//info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
+			//theSession.AddToInfoList(info);
 			RetVal = true;
 		}
 		else
@@ -222,8 +221,22 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		return RetVal;
 	}
 	
-	bool SetICVariablesV(vector<string>& NVPairs)
+	bool SetICVariablesV(vector<string>& NVPairs, bool ResetICs)
 	{
+		// Need to ready the session to take on a brand new set of ICs.  That will
+		// require the clearing of all DRVs.  The default parameter ResetICs is set to true.
+		//
+		if (ResetICs)  
+		{
+			theSession.GetColony()->m_InitCond.m_AdultLifespanDRV.ClearAll();
+			theSession.GetColony()->m_InitCond.m_ForagerLifespanDRV.ClearAll();
+			theSession.GetColony()->m_InitCond.m_EggTransitionDRV.ClearAll();
+			theSession.GetColony()->m_InitCond.m_BroodTransitionDRV.ClearAll();
+			theSession.GetColony()->m_InitCond.m_LarvaeTransitionDRV.ClearAll();
+			theSession.GetColony()->m_InitCond.m_AdultTransitionDRV.ClearAll();
+			theSession.GetColony()->m_MiteTreatmentInfo.ClearAll();
+		}
+
 		std::string stgName;
 		std::string stgValue;
 		for (size_t i = 0; i < NVPairs.size(); i++)

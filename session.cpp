@@ -90,7 +90,7 @@ CVarroaPopSession::CVarroaPopSession()
 
 CVarroaPopSession::~CVarroaPopSession()
 {
-	m_MiteTreatments.ClearAll();
+	//m_MiteTreatments.ClearAll();
 	m_pWeather->ClearAllEvents();
 	delete m_pWeather;
 }
@@ -301,7 +301,7 @@ void CVarroaPopSession::InitializeSimulation()
 	m_IncImmigratingMites = 0;
 
 	theColony.InitializeColony();  
-	theColony.SetMiticideTreatment(m_MiteTreatments, m_VTEnable);
+	//theColony.SetMiticideTreatment(theColony.m_MiteTreatmentInfo, m_VTEnable);
 	theColony.SetMitePctResistance(m_InitMitePctResistant);
 
 	m_CumImmigratingMites = int(0);
@@ -810,7 +810,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		// Thus rqqueenstrength doesn't overwrite the previous value if supplied more than once
 	{
 		m_RQQueenStrength = atof(Value);
-		theColony.m_RQQueenStrengthArray.Add(m_RQQueenStrength);
+		theColony.m_RQQueenStrengthArray.Add(m_RQQueenStrength);  //DEBUG - commented out looking for memory leaks
 		return true;
 	}
 	if (Name == "rqonce")
@@ -842,7 +842,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 
 	if (Name == "vtenable")
 	{
-		m_VTEnable = (Value == "true") ? TRUE : FALSE;
+		theColony.SetVTEnable(Value == "true");
 		return true;
 	}
 
@@ -850,7 +850,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 	{
 		if (Value == "clear")
 		{
-			m_MiteTreatments.ClearAll();
+			theColony.m_MiteTreatmentInfo.ClearAll();
 		}
 		int curpos = 0;
 		double NumVal = 0.0;
@@ -871,7 +871,8 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 						UINT theDuration = atoi(Duration);
 						double thePctMort = atof(PctMort);
 						double thePctRes = atof(PctRes);
-						m_MiteTreatments.AddItem(theDate, theDuration, thePctMort, thePctRes);
+						//m_MiteTreatments.AddItem(theDate, theDuration, thePctMort, thePctRes);
+						theColony.m_MiteTreatmentInfo.AddItem(theDate, theDuration, thePctMort, thePctRes);
 					}
 				}
 			}

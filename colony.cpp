@@ -1947,40 +1947,40 @@ ReQueenIfNeeded(
 
 }
 
-void CColony::SetMiticideTreatment(int StartDayNum, UINT Duration, UINT Mortality, BOOL Enable)
-{
-	if (Enable)
-	{
-		m_VTStart = StartDayNum; 
-		m_VTDuration = Duration; 
-		m_VTMortality = Mortality;
-		m_VTEnable = true;
-	}
-	else m_VTEnable = false;
-	m_VTTreatmentActive = false;
-}
-
-void CColony::SetMiticideTreatment(CMiteTreatments& theTreatments, BOOL Enable)
-{
-	if (Enable)
-	{
-		m_VTEnable = true;
-		CMiteTreatmentItem DestItem;
-		CMiteTreatmentItem SourceItem;
-		m_MiteTreatmentInfo.ClearAll();
-		for (int i = 0; i < theTreatments.GetCount(); i++)
-		{
-			theTreatments.GetItem(i, SourceItem);
-			DestItem.theStartTime = SourceItem.theStartTime;
-			DestItem.Duration = SourceItem.Duration;
-			DestItem.PctMortality = SourceItem.PctMortality;
-			DestItem.PctResistant = SourceItem.PctResistant;
-			m_MiteTreatmentInfo.AddItem(DestItem);
-		}	    
-	}
-	else m_VTEnable = false;
-	m_VTTreatmentActive = false;    
-}
+//void CColony::SetMiticideTreatment(int StartDayNum, UINT Duration, UINT Mortality, BOOL Enable)
+//{
+//	if (Enable)
+//	{
+//		m_VTStart = StartDayNum; 
+//		m_VTDuration = Duration; 
+//		m_VTMortality = Mortality;
+//		m_VTEnable = true;
+//	}
+//	else m_VTEnable = false;
+//	m_VTTreatmentActive = false;
+//}
+//
+//void CColony::SetMiticideTreatment(CMiteTreatments& theTreatments, BOOL Enable)
+//{
+//	if (Enable)
+//	{
+//		m_VTEnable = true;
+//		CMiteTreatmentItem DestItem;
+//		CMiteTreatmentItem SourceItem;
+//		m_MiteTreatmentInfo.ClearAll();
+//		for (int i = 0; i < theTreatments.GetCount(); i++)
+//		{
+//			theTreatments.GetItem(i, SourceItem);
+//			DestItem.theStartTime = SourceItem.theStartTime;
+//			DestItem.Duration = SourceItem.Duration;
+//			DestItem.PctMortality = SourceItem.PctMortality;
+//			DestItem.PctResistant = SourceItem.PctResistant;
+//			m_MiteTreatmentInfo.AddItem(DestItem);
+//		}	    
+//	}
+//	else m_VTEnable = false;
+//	m_VTTreatmentActive = false;    
+//}
 
 
 void CColony::SetSporeTreatment(int StartDayNum, BOOL Enable)

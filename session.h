@@ -84,7 +84,7 @@ public:
 
 	// Varroa Miticide Treatment Data;
 	// NOTE:  Need to change this to a list to support multiple treatments
-	CMiteTreatments m_MiteTreatments;
+	//CMiteTreatments m_MiteTreatments;
 
 	COleDateTime	m_VTTreatmentStart;
 	UINT	m_VTTreatmentDuration;

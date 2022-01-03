@@ -293,6 +293,7 @@ public:
 	CStringList m_ColonyEventList;
 
 
+
 	// Bee Attributes
 	CQueen queen;
 	CForagerlistA foragers;
@@ -418,12 +419,13 @@ public:
 		double		QueenStrength,
 		int		Once,
 		COleDateTime	ReQueenDate);
-	void SetMiticideTreatment(
-		int StartDayNum, 
-		UINT Duration, 
-		UINT Mortality, 
-		BOOL Enable);
-	void SetMiticideTreatment(CMiteTreatments& theTreatments, BOOL Enable);
+	//void SetMiticideTreatment(
+	//	int StartDayNum, 
+	//	UINT Duration, 
+	//	UINT Mortality, 
+	//	BOOL Enable);
+	//void SetMiticideTreatment(CMiteTreatments& theTreatments, BOOL Enable);
+	void SetVTEnable(bool Value) { m_VTEnable = Value; }
 	void SetSporeTreatment(
 		int StartDayNum,
 		BOOL Enable);

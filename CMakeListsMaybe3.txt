@@ -1,4 +1,4 @@
-# CMakeList.txt : CMake project for libvpop, include source and define
+﻿# CMakeList.txt : CMake project for libvpop, include source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.10)
@@ -11,7 +11,6 @@ set (CMAKE_DEBUG_POSTFIX "")
 set (BUILD_SHARED_LIBS TRUE)
 #set (PORTCODE_PATH "${PROJECT_BINARY_DIR}/libportcode.lib")
 
-
 include("HunterGate.cmake")
 
 HunterGate(
@@ -21,10 +20,11 @@ HunterGate(
 
 project ("libvpop")
 
-set (Boost_USE_STATIC_LIBS ON)
+set (Boost_USE_STATIC_LIBS OFF)
 #Add the fmt library to get access to string formatting.  part of vcpkg
-find_package(fmt CONFIG REQUIRED)  #cannot use this for linux.  Need to figure out how to make something work for both
 HUNTER_ADD_PACKAGE(fmt)
+find_package(fmt CONFIG REQUIRED)  #cannot use this for linux.  Need to figure out how to make something work for both
+#HUNTER_ADD_PACKAGE(fmt)
 
 #Boost framework
 #find_package(Boost CONFIG REQUIRED system filesystem)
@@ -33,6 +33,9 @@ HUNTER_ADD_PACKAGE(fmt)
 #set(BOOST_ROOT "C:/soft/boost_1_71_0")
 HUNTER_ADD_PACKAGE(Boost COMPONENTS system )
 find_package(Boost CONFIG REQUIRED system )
+
+HUNTER_ADD_PACKAGE(Boost COMPONENTS date_time)
+find_package(Boost CONFIG REQUIRED date_time)
 
 include_directories(CMAKE_INCLUDE_DIRECTORIES_BEFORE .)
 include_directories(${PROJECT_BINARY_DIR})
@@ -79,7 +82,6 @@ set (PORT_SOURCES
                 carray.cpp)
 
 
-
 include(GenerateExportHeader)
 
 add_library(libvpop SHARED ${SOURCES} ${PORT_SOURCES})
@@ -95,7 +97,8 @@ GENERATE_EXPORT_HEADER( libvpop
 target_include_directories(libvpop PUBLIC  ${PROJECT_SOURCE_DIR})
 
 target_link_libraries(libvpop PRIVATE fmt::fmt)
-target_link_libraries(libvpop PRIVATE Boost::system)
+target_link_libraries(libvpop PRIVATE Boost::system )
+target_link_libraries(libvpop PRIVATE Boost::date_time)
 #target_link_libraries(libvpop PRIVATE Boost::system Boost::filesystem)
 #target_link_libraries(libvpop PRIVATE libportcode)
 #target_precompile_headers(libportcode PRIVATE ${VarroaPopPCH})

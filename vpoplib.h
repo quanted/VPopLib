@@ -75,7 +75,7 @@ extern "C"
 	// This is the c++ style interface - did not use parameter signature overloading of functions.
 	bool libvpop_EXPORT InitializeModel();
 	bool libvpop_EXPORT SetICVariablesS(string Name, string Value);
-	bool libvpop_EXPORT SetICVariablesV(vector<string>& NVPairs);
+	bool libvpop_EXPORT SetICVariablesV(vector<string>& NVPairs, bool ResetICs = true);
 	bool libvpop_EXPORT SetWeatherS(string WeatherEventString);
 	bool libvpop_EXPORT SetWeatherV(vector<string>& WeatherEventStringList);
 	bool libvpop_EXPORT SetContaminationTable(vector<string>& ContaminationTableList);

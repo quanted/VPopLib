@@ -150,9 +150,14 @@ void CMiteTreatments::DeleteItem(int Index)
 
 void CMiteTreatments::ClearAll()
 {
-    while (pTreatmentItemList->GetCount() > 0)
+    CMiteTreatmentItem* pItem;
+    if (pTreatmentItemList != NULL)
     {
-        delete(pTreatmentItemList->RemoveTail());
+        while (pTreatmentItemList->GetCount() > 0)
+        {
+            pItem = (CMiteTreatmentItem*)pTreatmentItemList->RemoveTail();
+            delete pItem;
+        }
     }
 }
 
