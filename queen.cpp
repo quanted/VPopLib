@@ -39,6 +39,7 @@ CQueen::CQueen() {
 	m_InitialSperm = initialSperm;
 	m_Strength = 1;
 
+	//m_Vars contains Max Eggs and Initial Sperm in each row
 
 	m_Vars[0][0] = 1000; m_Vars[0][1] = 1800000;
 	m_Vars[1][0] = 1500; m_Vars[1][1] = 2720000;

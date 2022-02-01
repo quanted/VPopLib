@@ -71,6 +71,11 @@
           "name": "CMAKE_CXX_FLAGS",
           "value": "-D_GLIBCXX_USE_CXX11_ABI=0",
           "type": "STRING"
+        },
+        {
+          "name": "CMAKE_VERBOSE_MAKEFILE",
+          "value": "True",
+          "type": "BOOL"
         }
       ]
     }

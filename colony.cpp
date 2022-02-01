@@ -1152,16 +1152,24 @@ bool CColony::IsAdultAgingDelayActive()
 	 //This function can be called every day but must be called at least once prior to egglaying beginning in the spring and needs to keep being called
 	 //daily at least until the delay period has been met.
 
+	// The logic for adult aging delay is as follows:
+	// At the end of winter (Jan 1) AdultAgingDelayArmed is set to true meaning we are waiting
+	// for the trigger condition:  Total eggs in colony >= 500;
+	// Once the trigger condition is set, we set AdultAgingDelayArmed to false indicating we are no longer waiting for the trigger
+	// but are in the active delay period during which we don't age adults.
+	// Once we have delayed a number of days equal to the limit, this function returns false
+	// Indicating we are not in the aging delay state any more.
+
 
 	if (IsAdultAgingDelayArmed())
 	{
-		if (queen.GetTeggs() > 0)
+		if (queen.GetTeggs() > 500)
 		{
 			SetAdultAgingDelayArmed(false);
 			m_DaysSinceEggLayingBegan = 0;
 		}
 	}
-	auto active = (m_DaysSinceEggLayingBegan++ < m_AdultAgeDelayLimit);
+	auto active = ((m_DaysSinceEggLayingBegan++ < m_AdultAgeDelayLimit) && !IsAdultAgingDelayArmed());
 
 	return active;
 }
@@ -1550,7 +1558,12 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		// Aging of adults is actually function of DaylightHours
 
 		bool agingAdults = !coldStorage.IsActive() && (!GlobalOptions::Get().ShouldAdultsAgeBasedLaidEggs() || queen.ComputeL(pEvent->GetDaylightHours()) > 0);
-		agingAdults = agingAdults && !IsAdultAgingDelayActive();
+
+		if (IsAdultAgingDelayActive())
+		{
+			CString stgDate = pEvent->GetDateStg();
+		}
+		agingAdults = agingAdults && !IsAdultAgingDelayActive() && !IsAdultAgingDelayArmed();
 		if (agingAdults)
 		{
 			Dadl.Update(CapDrn.GetCaboose(), this, pEvent, false);
