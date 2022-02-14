@@ -40,6 +40,13 @@ CMite::~CMite()
 
 }
 
+void CMite::Zero()
+{
+	SetNonResistant(0);
+	SetResistant(0);
+}
+
+
 CMite& CMite::operator=(const CMite& mite)
 {
 	if (this != &mite)

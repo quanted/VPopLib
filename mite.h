@@ -28,6 +28,7 @@ public:
 	int GetNonResistant() {return int(m_NonResistant + 0.5);}
 	void SetResistant(int num) {m_Resistant = double(num);}
 	void SetNonResistant(int num) {m_NonResistant = double(num);}
+	void Zero();
 
 	int GetTotal() {return int(m_Resistant + m_NonResistant);}
 	double GetPctResistant() {return (GetTotal()>0) ? 

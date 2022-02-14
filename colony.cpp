@@ -1154,16 +1154,17 @@ bool CColony::IsAdultAgingDelayActive()
 
 	// The logic for adult aging delay is as follows:
 	// At the end of winter (Jan 1) AdultAgingDelayArmed is set to true meaning we are waiting
-	// for the trigger condition:  Total eggs in colony >= 500;
+	// for the trigger condition:  Total eggs in colony >= 50;
 	// Once the trigger condition is set, we set AdultAgingDelayArmed to false indicating we are no longer waiting for the trigger
 	// but are in the active delay period during which we don't age adults.
 	// Once we have delayed a number of days equal to the limit, this function returns false
 	// Indicating we are not in the aging delay state any more.
 
+	const double EggQuantThreshold = GlobalOptions::Get().AdultAgingDelayEggThreshold();
 
 	if (IsAdultAgingDelayArmed())
 	{
-		if (queen.GetTeggs() > 500)
+		if (queen.GetTeggs() > EggQuantThreshold)
 		{
 			SetAdultAgingDelayArmed(false);
 			m_DaysSinceEggLayingBegan = 0;
@@ -1702,6 +1703,13 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 		first boxcar in the appropriate Adult list.
 	*/
 
+	/*  New 2/10/22
+	 *	Based on recently changed aging logic, the bees in the first adult boxcar may not be new this day.  
+	 *	Logic needs to have only new mites emerging and after they are accounted for, set the
+	 *	set the mite count in the first adult boxcar to zero.
+	 *	i.e. Mites keep emerging every day even if adults don't age.
+	 */
+
 	/*  
 		Initial step is to infest the larval cells with the free mites just
 		before they are capped.  
@@ -1800,6 +1808,10 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	DrnEmerge.number = ((CAdult*)Dadl.GetHead())->GetNumber();
 	DrnEmerge.m_Mites = ((CAdult*)Dadl.GetHead())->GetMites();
 	DrnEmerge.m_PropVirgins = ((CAdult*)Dadl.GetHead())->GetPropVirgins();
+
+	//Now clear the newly emerged mites in the first adult boxcars
+	((CAdult*)Wadl.GetHead())->GetMites().Zero();
+	((CAdult*)Dadl.GetHead())->GetMites().Zero();
 
 
 

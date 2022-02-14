@@ -93,6 +93,11 @@ public:
 	typedef bool ForagerAgingBasedHourlyTemperatureEstimate;
 
 
+	// This option determines how many eggs must be present in the colony after January 1 before the adult aging
+	// delay begins.  Threshold needed to ignore small, intermittent egg laying day
+	Option<double> AdultAgingDelayEggThreshold = 50;
+
+
 	//AggregateOption<ForagerAgingBasedHourlyTemperatureEstimate> ShouldForagerAgingBasedOnHourlyTemperatureEstimate;
 	
 	// Weather file options
