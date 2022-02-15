@@ -454,7 +454,7 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 		{
 			theForager = (CAdult*)GetNext(pos);
 			Number = theForager->GetNumber();
-			int NewNumber = Number * (1 - WINTER_MORTALITY_PER_DAY);
+			int NewNumber = static_cast<int>(Number * (1 - WINTER_MORTALITY_PER_DAY));
 
 			// Update stats for Foragers killed due to winter mortality
 			theColony->m_InOutEvent.m_WinterMortalityForagersLoss += Number - NewNumber;

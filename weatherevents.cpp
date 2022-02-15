@@ -314,8 +314,8 @@ double CEvent::CalcFlightDaylight(double daylength, double MinTempThreshold, dou
 	From:  New algorithm for generating hourly temperaturevalues using daily maximum, minimum and average values 
 	rom climate modelsDHC Chow BSc BEng PhD MCIBSE MASHRAEand Geoff J Levermore BSc ARCS PhD DIC CEng DMSFCIBSE MASHRAE
 	*/
-	int Sunrise = 12 - (daylength / 2);  //  Sunrise is half the daylight period before noon
-	int Sunset = Sunrise + daylength;
+	int Sunrise = static_cast<int>(12 - (daylength / 2));  //  Sunrise is half the daylight period before noon
+	int Sunset = static_cast<int>(Sunrise + daylength);
 	int TimeTMin = Sunrise - 1;  // Typically
 	int TimeTMax = 14;  // Two hours after noon
 	double TMax = m_MaxTemp;

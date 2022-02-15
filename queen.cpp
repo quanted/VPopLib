@@ -25,10 +25,14 @@ const int initialSperm = 5500000;
 CQueen::CQueen() {
 	number = 1;
 	age = 0;  // days
+	Alive = true;
 	CumWeggs = 0;
 	m_CurQueenDay_1 = 1;
 	m_EggLayingDelay = 0;
+	m_Weggs = 0;
+	m_Deggs = 0;
 	m_Teggs = 0;
+	m_MaxEggs = 0;
 	m_DD = 0;
 	m_L = 0;
 	m_N = 0;
@@ -36,8 +40,10 @@ CQueen::CQueen() {
 	m_dd = 0;
 	m_l = 0;
 	m_n = 0;
+	m_CurrentSperm = 0;
 	m_InitialSperm = initialSperm;
 	m_Strength = 1;
+
 
 	//m_Vars contains Max Eggs and Initial Sperm in each row
 
