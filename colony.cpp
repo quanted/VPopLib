@@ -1717,7 +1717,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	*/
 	#define PROPINFSTW 0.08
 	#define PROPINFSTD 0.92
-	#define MAXMITES_PER_DRONE_CELL 3
+	#define MAXMITES_PER_DRONE_CELL 7
 	#define MAXMITES_PER_WORKER_CELL 4
 
 	m_MitesDyingToday = 0;
@@ -1885,9 +1885,9 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 			m_MitesDyingToday += (Quan - RunMite.GetTotal());
 		}
 
-		m_MitesDyingThisPeriod += m_MitesDyingToday;
 		delete theDate;
 	}
+	m_MitesDyingThisPeriod += m_MitesDyingToday;
 }
 	
 
