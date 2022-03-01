@@ -1673,19 +1673,19 @@ void CColony::AddMites(CMite NewMites)
 void CColony::InitializeMites()
 {
 	// Initial condition infestation of capped brood
-	WMites = CMite(0,int((CapWkr.GetQuantity()*m_InitCond.m_workerBroodInfestField)/float(100)));
-	DMites = CMite(0,int((CapDrn.GetQuantity()*m_InitCond.m_droneBroodInfestField)/float(100)));
+	CMite WMites = CMite(0,int((CapWkr.GetQuantity()*m_InitCond.m_workerBroodInfestField)/float(100)));
+	CMite DMites = CMite(0,int((CapDrn.GetQuantity()*m_InitCond.m_droneBroodInfestField)/float(100)));
 	CapWkr.DistributeMites(WMites);
 	CapDrn.DistributeMites(DMites);
 
 	// Initial condition mites on adult bees i.e. Running Mites
-	RunMiteW = CMite(0,int((Wadl.GetQuantity()*m_InitCond.m_workerAdultInfestField+
+	CMite RunMiteW = CMite(0,int((Wadl.GetQuantity()*m_InitCond.m_workerAdultInfestField+
 							foragers.GetQuantity()*m_InitCond.m_workerAdultInfestField)/float(100)));
-	RunMiteD = CMite(0,int((Dadl.GetQuantity()*m_InitCond.m_droneAdultInfestField)/float(100)));
+	CMite RunMiteD = CMite(0,int((Dadl.GetQuantity()*m_InitCond.m_droneAdultInfestField)/float(100)));
 	
 	RunMite = RunMiteD + RunMiteW;
 
-	PrevEmergMite = CMite(0,0);
+	//PrevEmergMite = CMite(0,0);
 	PropRMVirgins = 1.0;
 
 	m_MitesDyingToday = 0;
@@ -1703,6 +1703,11 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 		first boxcar in the appropriate Adult list.
 	*/
 
+	/*
+	 * The proportion of running mites that have not infested before (PropVirgins) is maintained and updated each day.
+	 * The mites with that proportion infest each day and the proportion is updated at the end of this function 
+	 */
+
 	/*  New 2/10/22
 	 *	Based on recently changed aging logic, the bees in the first adult boxcar may not be new this day.  
 	 *	Logic needs to have only new mites emerging and after they are accounted for, set the
@@ -1719,6 +1724,12 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	#define PROPINFSTD 0.92
 	#define MAXMITES_PER_DRONE_CELL 7
 	#define MAXMITES_PER_WORKER_CELL 4
+	int i = 1;
+	CString datetoday = pEvent->GetDateStg();
+	if(pEvent->GetDateStg() == "01/01/1964")
+	{
+		m_MitesDyingToday = 10;
+	}
 
 	m_MitesDyingToday = 0;
 
@@ -1741,9 +1752,9 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	}
 
 
-	WMites = RunMite * (I * PROPINFSTW); // Mites going into worker brood cells
+	CMite WMites = RunMite * (I * PROPINFSTW); // Mites going into worker brood cells
 
-	// Modify potential Drone Mite infestation rate by factoring in liklihood of finding a drone target cell in all the cells
+	// Modify potential Drone Mite infestation rate by factoring in likelihood of finding a drone target cell in all the cells
 	double Likelihood = 1.0;
 	if (WkrBrood->GetNumber() > 0) // Prevent divide by zero
 	{
@@ -1753,7 +1764,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 
 	CMite OverflowMax;
 	CMite OverflowLikelihood;
-	DMites = RunMite * (I * PROPINFSTD * Likelihood); // Mites going into drone brood cells
+	CMite DMites = RunMite * (I * PROPINFSTD * Likelihood); // Mites going into drone brood cells
 
 	// Capture the number of mites targeted to drone brood but filtered out due to liklihood function
 	OverflowLikelihood = RunMite * (I * PROPINFSTD * (1.0 - Likelihood));
@@ -1786,12 +1797,6 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	DrnBrood->m_PropVirgins = PropRMVirgins;
 
 
-	// Calculate proportion of infestation for worker brood cells
-	PropInfstW = CapWkr.GetPropInfest();
-
-	// Calculate proportion of infestation for drone brood cells
-	PropInfstD = (float)CapDrn.GetPropInfest();
-
 	/*
 		Now we determine the emerging mites from the first boxcar in
 		the adult lists
@@ -1810,8 +1815,9 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	DrnEmerge.m_PropVirgins = ((CAdult*)Dadl.GetHead())->GetPropVirgins();
 
 	//Now clear the newly emerged mites in the first adult boxcars
-	((CAdult*)Wadl.GetHead())->GetMites().Zero();
-	((CAdult*)Dadl.GetHead())->GetMites().Zero();
+	((CAdult*)Wadl.GetHead())->SetMites(CMite(0,0));
+	((CAdult*)Dadl.GetHead())->SetMites(CMite(0,0));
+
 
 
 
@@ -1844,32 +1850,38 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 			double(1.11 + (0.151*MitesPerCellD) - (0.3*MitesPerCellD*MitesPerCellD));
 	if (ReproMitePerCellD < 0) ReproMitePerCellD = 0;
  
-	// Calculate the number of new running mites at the end of this cycle
+	// Calculate the number of newly emerging mites consisting of survivors from infestation and new offspring
 	#define PROPRUNMITE2 0.6
 
 	CMite SurviveMitesW = WkrEmerge.m_Mites * PropSurviveMiteW;
 	CMite SurviveMitesD = DrnEmerge.m_Mites * PropSurviveMiteD;
 
-	int NumEmergingMites = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();
+	int NumEmergingMites = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();  
 	
 	CMite NewMitesW = SurviveMitesW * ReproMitePerCellW;
 	CMite NewMitesD = SurviveMitesD * ReproMitePerCellD;
 
+	// Only mites which hadn't previously infested can survive to infest again.
 	SurviveMitesW = SurviveMitesW * WkrEmerge.m_PropVirgins;
 	SurviveMitesD = SurviveMitesD * DrnEmerge.m_PropVirgins;
 
 	int NumVirgins = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();
 
-	m_MitesDyingToday = int(NumEmergingMites - NumVirgins + NumVirgins*(1-PROPRUNMITE2));
-	m_MitesDyingToday = (m_MitesDyingToday >= 0) ? m_MitesDyingToday : 0; // Constrain positive 
 
 	CMite RunMiteVirgins = RunMite*PropRMVirgins;
-	RunMite = RunMite + NewMitesW + NewMitesD +
-		(SurviveMitesW + SurviveMitesD)*PROPRUNMITE2;
+	CMite RunMiteW = NewMitesW + SurviveMitesW * PROPRUNMITE2;
+	CMite RunMiteD = NewMitesD + SurviveMitesD * PROPRUNMITE2;
+
+	// Mites dying today are the number which originally emerged from brood minus the ones that eventually became running mites
+	m_MitesDyingToday = int(WkrEmerge.m_Mites.GetTotal() + DrnEmerge.m_Mites.GetTotal());
+	m_MitesDyingToday = (m_MitesDyingToday >= 0) ? m_MitesDyingToday : 0; // Constrain positive 
+
+	RunMite = RunMite + RunMiteD + RunMiteW;
 	if (RunMite.GetTotal()<=0) PropRMVirgins = 1.0;
-	else PropRMVirgins = double(	RunMiteVirgins.GetTotal() + 
-							NewMitesW.GetTotal() + 
-							NewMitesD.GetTotal()	)/double(RunMite.GetTotal());
+	else
+	{
+		PropRMVirgins = (double(RunMiteVirgins.GetTotal()) + double(NewMitesW.GetTotal()) + double(NewMitesD.GetTotal())) / double(RunMite.GetTotal());
+	}
 
 	// Kill NonResistant Running Mites if Treatment Enabled
 

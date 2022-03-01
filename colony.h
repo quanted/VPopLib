@@ -306,18 +306,11 @@ public:
 	CEgglist Weggs;
 	CEgglist Deggs;
 
-	// Mite Attributes
-	CMite WMites;			// # of mites under capped worker cells
-	CMite DMites;			// # of mites under capped drone cells
-	CMite NewMitesW;		// # of mated female mites emerging from worker cells in 1st step
-	CMite NewMitesD;		// # of mated female mites emerging from drone cells in 1st step
-	CMite RunMiteW;		// # of mites on adult workers
-	CMite RunMiteD;		// # of mites on adult drones
-	CMite PrevEmergMite;	// # of mites that emerged from previous day
+	// Free Running Mite state
 	CMite RunMite;		// Total # of mites outside of cells
-	double PropRMVirgins;// Proportion of Free Mites that have not yet infested
-	float PropInfstW;	// Proportion of infested workers
-	float PropInfstD;	// Proportion of infested drones
+	double PropRMVirgins;// Proportion of current Free Mites that have not yet infested
+
+
 	CSpores m_Spores;	// The spore population for in the colony.
 
 	CMiteTreatments m_MiteTreatmentInfo;  // This is public since CVarroaPopDoc will serialize it based on file version
