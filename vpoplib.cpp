@@ -16,6 +16,27 @@ CVarroaPopSession theSession;
 
 // Define the local functions to VPopLib.  The interface implementations are at the bottom of this file
 
+bool GetLibVersionCP(char* version, int bufsize)
+{
+	bool retval = false;
+	string strversion = VPOPLIB_VERSION;
+	if (strversion.size() + 1 <= bufsize)
+	{
+		size_t length = strversion.copy(version, strversion.size());
+		version[length] = '\0';
+		retval = true;
+	}
+	return retval;
+}
+
+bool GetLibVersion(string& version)
+{
+	version = VPOPLIB_VERSION;
+	return true;
+}
+
+
+
 //**************************************************************************
 // WeatherStringToEvent
 //
@@ -154,14 +175,14 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		pColony->Create();  
 		theSession.ClearErrorList();
 		theSession.ClearInfoList();
-		theSession.AddToInfoList("Model Initialized");
+		//theSession.AddToInfoList("Model Initialized");
 		return true;
 	}
 
 	bool ClearResultsBuffer()
 	{
 		theSession.m_ResultsText.RemoveAll();
-		theSession.AddToInfoList("Results Buffer Cleared");
+		//theSession.AddToInfoList("Results Buffer Cleared");
 		return true;
 	}
 

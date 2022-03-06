@@ -310,6 +310,14 @@ public:
 	CMite RunMite;		// Total # of mites outside of cells
 	double PropRMVirgins;// Proportion of current Free Mites that have not yet infested
 
+	//Emerging Mites
+	CMite EmergingMitesW;  //Mites which have emerged from worker brood and are ready to be processed
+	double PropEmergingVirginsW; //Proportion of emerged mites that have only infested once
+	int NumEmergingBroodW; //Number of emerging worker brood on one day
+	CMite EmergingMitesD;  //Mites which have emerged from brood and are ready to be processed
+	double PropEmergingVirginsD; //Proportion of emerged mites that have only infested once
+	int NumEmergingBroodD; //Number of emerging brood on one day
+
 
 	CSpores m_Spores;	// The spore population for in the colony.
 
@@ -352,6 +360,7 @@ public:
 		int m_WAdultToForagers = -1;  //!< worker adult moving to forager
 		int m_WinterMortalityForagersLoss = -1; //!< forager dying to due winter mortality
 		int m_DeadForagers = -1; //!< forager dying
+		double m_PropRedux = -1; // Debug for a double
 	};
 	InOutEvent m_InOutEvent;
 

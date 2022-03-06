@@ -67,6 +67,7 @@
 
 //#endif
 
+#define VPOPLIB_VERSION "3/1/2022"
 
 using namespace std;
 
@@ -89,6 +90,7 @@ extern "C"
 	bool libvpop_EXPORT GetResults(vector<string>& ResultsList);
 	bool libvpop_EXPORT ClearResultsBuffer();
 	bool libvpop_EXPORT SetLatitude(double Lat);
+	bool libvpop_EXPORT GetLibVersion(string& version);
 
 	// This is the c-sytle interface for VPopLib - no vectors or strings
 	bool libvpop_EXPORT SetICVariablesCP(char* NameCP, char* ValueCP);
@@ -99,4 +101,5 @@ extern "C"
 	bool libvpop_EXPORT GetErrorListCPA(char*** ErrListCPA, int* pCount);
 	bool libvpop_EXPORT GetInfoListCPA(char*** InfoListCPA, int* pCount);
 	bool libvpop_EXPORT GetResultsCPA(char*** ResultsListCPA, int* pCount);
+	bool libvpop_EXPORT GetLibVersionCP(char* version, int bufsize);  // Calling routine responsible for allocating version char[] and passing the size.  Must be large enough to hold VPOPLIB_VERSION
 }

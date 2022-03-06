@@ -314,6 +314,13 @@ void CVarroaPopSession::Simulate()
 	if (ReadyToSimulate())
 	{
 		if (!CheckDateConsistency(IsShowWarnings())) return;
+		
+		//if (!((DateInRange(m_pWeather->GetBeginningTime(),m_pWeather->GetEndingTime(), GetSimStart())) && 
+		//	(DateInRange(m_pWeather->GetBeginningTime(), m_pWeather->GetEndingTime(), GetSimEnd()))))
+		//{
+		//	AddToErrorList("Simulation Start or End Date not contained in loaded weather for this simulation run");
+		//	return;
+		//}
 
 
 		//  Set results frequency 
@@ -593,6 +600,7 @@ void CVarroaPopSession::Simulate()
 						, theColony.m_InOutEvent.m_WAdultToForagers
 						, theColony.m_InOutEvent.m_WinterMortalityForagersLoss
 						, theColony.m_InOutEvent.m_DeadForagers);
+
 				}
 				m_ResultsText.AddTail(CurSize);
 			}

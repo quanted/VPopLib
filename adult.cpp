@@ -43,6 +43,7 @@ CAdult::~CAdult()
 
 void CAdult::Reset()
 {
+	CBee::Reset();
 	m_Lifespan = 0;
 	m_CurrentAge = 0;
 	m_Mites = 0;
@@ -60,6 +61,7 @@ CAdult CAdult::operator = (CAdult& adult)
 	m.m_Virgins = adult.m_Virgins;
 	m.m_ForageInc = adult.m_ForageInc;
 	m.number = adult.number;
+	m.Alive = adult.Alive;
 	return m;
 
 }

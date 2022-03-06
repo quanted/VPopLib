@@ -26,6 +26,7 @@ CLarva::~CLarva()
 
 void CLarva::Reset()
 {
+	CBee::Reset();
 	infested = false;
 	fertilized = false;
 	mites = 0;

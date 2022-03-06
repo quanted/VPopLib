@@ -27,5 +27,6 @@ CBrood::~CBrood()
 
 void CBrood::Reset()
 {
+	CBee::Reset();
 	m_Mites = 0;
 }

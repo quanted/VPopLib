@@ -291,6 +291,7 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 	theAdult.SetLifespan(GetColony()->m_CurrentForagerLifespan);
 	theAdult.SetCurrentAge(0.0);
 
+	
 	const bool pendingForagersFirst = GlobalOptions::Get().ShouldForagersAlwaysAgeBasedOnForageInc();
 	if (pendingForagersFirst)
 	{
@@ -421,21 +422,27 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 		}
 	}
 
-	// Check for lifespan reduction
+	// Check for lifespan reduction due to mite infestation
 	if (true) // Turn on or off
 	{
 		CAdult* ListAdult;
 		double PropRedux;
 		POSITION pos = GetHeadPosition();
 		int day = WADLLIFE + 1;
+		theColony->m_InOutEvent.m_PropRedux = 0;
+		
 		while (pos != NULL)
 		{
 			ListAdult = (CAdult*)GetNext(pos);
 			if (ListAdult->IsAlive()) // If already killed, don't kill again
 			{
-				if (ListAdult->GetNumber() <= 0) PropRedux = m_pColony->LongRedux[0];
-				else PropRedux = m_pColony->LongRedux[int(ListAdult->GetMites() / ListAdult->GetNumber())];
-				if (day>(1 - PropRedux)*(WADLLIFE + GetColony()->m_CurrentForagerLifespan))
+				if (ListAdult->GetNumber() <= 0) PropRedux = theColony->LongRedux[0];
+				else PropRedux = theColony->LongRedux[int(ListAdult->GetMites().GetTotal() / ListAdult->GetNumber())];
+				if (PropRedux > 0)
+				{
+					theColony->m_InOutEvent.m_PropRedux = ListAdult->GetMites().GetTotal() / ListAdult->GetNumber();  //DEBUG STATEMENT
+				}
+			if (day>(1 - PropRedux)*(WADLLIFE + theColony->m_CurrentForagerLifespan))
 				{
 					ListAdult->Kill();
 				}
@@ -538,7 +545,7 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 // bottom of the list is deleted for drones.  We retain the number of mites from
 // the Brood so they can be retrieved and released back into the colony.  We also
 // establish the maximum lifetime for the new adult worker and see if any other
-// workers in the list have extended beyone their lifetime as reduced by varroa infestation
+// workers in the list have extended beyond their lifetime as reduced by varroa infestation
 //
 // TODO:
 //
@@ -551,6 +558,21 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 		theAdult->SetMites(theBrood.m_Mites);
 		theAdult->SetPropVirgins(theBrood.m_PropVirgins);
 		theAdult->SetLifespan(WADLLIFE);
+
+		// Save the emerging mites for use when UpdateMites is called
+		if (bWorker)
+		{
+			theColony->EmergingMitesW = theBrood.m_Mites;
+			theColony->PropEmergingVirginsW = theBrood.m_PropVirgins;
+			theColony->NumEmergingBroodW = theBrood.GetNumber();
+		}
+		else
+		{
+			theColony->EmergingMitesD = theBrood.m_Mites;
+			theColony->PropEmergingVirginsD = theBrood.m_PropVirgins;
+			theColony->NumEmergingBroodD = theBrood.GetNumber();
+		}
+
 		theBrood.Reset();  // These brood are now  gone
 		AddHead(theAdult);
 		int count = GetCount();
@@ -575,7 +597,7 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 			Caboose.Reset();
 		}
 
-		// Check for age beyond reduced lifespan in workers
+		// Check for age beyond reduced lifespan in workers due to mite infestation
 		if ((true) && bWorker) // Turn on or off
 		{
 			double PropRedux;
@@ -591,7 +613,7 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 				// If already killed, don't kill again, if no mites, ignore
 				{
 					index = NumMites/theAdult->GetNumber();
-					PropRedux = m_pColony->LongRedux[int(index)];
+					PropRedux = theColony->LongRedux[int(index)];
 					if (day>(1-PropRedux)*(theAdult->GetLifespan() + GetColony()->m_CurrentForagerLifespan)) theAdult->Kill();
 				}
 				day++;
@@ -859,7 +881,7 @@ CColony::CColony()
 	LongRedux[1] = 0.02;
 	LongRedux[2] = 0.1;
 	LongRedux[3] = 0.2;
-	LongRedux[4] = 0.4;			// Old Redux Table
+	LongRedux[4] = 0.4;			
 	LongRedux[5] = 0.8;
 	LongRedux[6] = 0.9;
 	LongRedux[7] = 0.9;
@@ -1722,14 +1744,14 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	*/
 	#define PROPINFSTW 0.08
 	#define PROPINFSTD 0.92
-	#define MAXMITES_PER_DRONE_CELL 7
+	#define MAXMITES_PER_DRONE_CELL 3
 	#define MAXMITES_PER_WORKER_CELL 4
-	int i = 1;
-	CString datetoday = pEvent->GetDateStg();
-	if(pEvent->GetDateStg() == "01/01/1964")
-	{
-		m_MitesDyingToday = 10;
-	}
+	//int i = 1;
+	//CString datetoday = pEvent->GetDateStg();
+	//if(pEvent->GetDateStg() == "01/01/1964")
+	//{
+	//	m_MitesDyingToday = 10;
+	//}
 
 	m_MitesDyingToday = 0;
 
@@ -1766,7 +1788,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	CMite OverflowLikelihood;
 	CMite DMites = RunMite * (I * PROPINFSTD * Likelihood); // Mites going into drone brood cells
 
-	// Capture the number of mites targeted to drone brood but filtered out due to liklihood function
+	// Capture the number of mites targeted to drone brood but filtered out due to likelihood function
 	OverflowLikelihood = RunMite * (I * PROPINFSTD * (1.0 - Likelihood));
 	OverflowLikelihood.SetPctResistant(DMites.GetPctResistant());
 
@@ -1803,6 +1825,8 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 
 	*/
 
+
+
 	// Set the correct values for numbers of cells and numbers of mites
 	// emerging this time
 	CBrood WkrEmerge;
@@ -1814,9 +1838,6 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	DrnEmerge.m_Mites = ((CAdult*)Dadl.GetHead())->GetMites();
 	DrnEmerge.m_PropVirgins = ((CAdult*)Dadl.GetHead())->GetPropVirgins();
 
-	//Now clear the newly emerged mites in the first adult boxcars
-	((CAdult*)Wadl.GetHead())->SetMites(CMite(0,0));
-	((CAdult*)Dadl.GetHead())->SetMites(CMite(0,0));
 
 
 
@@ -1825,6 +1846,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	double MitesPerCellD;
 	if (WkrEmerge.GetNumber() == 0) MitesPerCellW = 0;
 	else MitesPerCellW = (double)WkrEmerge.m_Mites.GetTotal()/WkrEmerge.GetNumber();
+
 	if (DrnEmerge.GetNumber() == 0) MitesPerCellD = 0;
 	else MitesPerCellD = (double)DrnEmerge.m_Mites.GetTotal()/DrnEmerge.GetNumber();
 
@@ -2481,8 +2503,6 @@ void CColony::ConsumeFood(CEvent* pEvent, int DayNum)
 		// Calculate resultant concentration [C1*Q1 + C2*Q2]/[Q1 + Q2]
 		C_Actual_P = ((C_AI_P * InP) + (m_Resources.GetPollenPesticideConcentration() * Shortfall))/(InP + Shortfall);
 
-		/// TEST - Disable Killing Colony
-		//if (false)
 		if (m_Resources.GetPollenQuantity() < Shortfall) //&& pEvent->IsWinterDay()) 
 		{
 			if (m_NoResourceKillsColony)

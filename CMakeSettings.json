@@ -20,7 +20,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ]
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "CMAKE_CXX_FLAGS_RELWITHDEBINFO",
+          "value": "/MD /Zi /Od /Ob1 /DNDEBUG",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "Linux-GCC-Debug",
