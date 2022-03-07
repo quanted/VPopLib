@@ -62,7 +62,7 @@ set (SOURCES
 set (PORT_SOURCES  
                 position.cpp
                 cuintarray.cpp
-                ctime.cpp
+                #ctime.cpp
                 cstringarray.cpp
                 cstring.cpp
                 cptrlist.cpp

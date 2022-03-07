@@ -51,7 +51,7 @@
 /**
  * Make the TRACE method to work using the fmt dependency
  */
-#include "fmt/printf.h"
+//#include "fmt/printf.h"
 #ifdef TRACE
 #define TRACE(...) fmt::printf(__VA_ARGS__)
 #else 
@@ -144,7 +144,7 @@ typedef struct {
 /**
  * Make CString serializable in fmt formater
  */
-#include "fmt/format.h"
+//#include "fmt/format.h"
 //#include "cstring.h"
 //#include "cstring.format.h"
 
@@ -157,7 +157,7 @@ typedef struct {
 //    template<typename FormatContext>
 //    auto format(CString const& number, FormatContext& ctx);
 //};
-#include "fmt/ostream.h"
+//#include "fmt/ostream.h"
 //std::ostream &operator<<(std::ostream &stream, const CString& string);
 
 
