@@ -884,7 +884,7 @@ CColony::CColony()
 	LongRedux[4] = 0.4;
 	LongRedux[5] = 0.8;
 	LongRedux[6] = 0.9;
-	LongRedux[7] = 0.9*/;
+	LongRedux[7] = 0.9;*/
 
 	LongRedux[0] = 0.0;
 	LongRedux[1] = 0.1;
