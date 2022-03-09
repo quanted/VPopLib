@@ -1,7 +1,5 @@
 #include "cstring.h"
 
-#include "compat.h"
-
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>

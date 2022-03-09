@@ -222,7 +222,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 
 	bool SetICVariablesS(std::string Name, std::string Value)
 	{
-		bool RetVal = false;
+		bool RetVal = true;
 		CString info;
 		CString CSName(Name.c_str());
 		CString CSValue(Value.c_str());
@@ -232,7 +232,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 			//theSession.AddToInfoList(info);
 			RetVal = true;
 		}
-		else
+		else 
 		{
 			CString err;
 			err.Format("Failed to set %s to %s", Name , Value);

@@ -1751,10 +1751,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 		before they are capped.  
 
 	*/
-	#define PROPINFSTW 0.08
-	#define PROPINFSTD 0.92
-	#define MAXMITES_PER_DRONE_CELL 3
-	#define MAXMITES_PER_WORKER_CELL 4
+
 	//int i = 1;
 	//CString datetoday = pEvent->GetDateStg();
 	//if(pEvent->GetDateStg() == "01/01/1964")
@@ -1875,10 +1872,10 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	if (ReproMitePerCellW < 0) ReproMitePerCellW = 0;
 
 
-	if (MitesPerCellD <= 1.0) ReproMitePerCellD = 
+	if (MitesPerCellD <= 2.0) ReproMitePerCellD = // Updated from 1.0 to 2.0 mites per cell use initial conditions - 3/8/2022 per Gloria
 		m_InitCond.m_droneMiteOffspringField;
 	else ReproMitePerCellD = 
-			double(1.11 + (0.151*MitesPerCellD) - (0.3*MitesPerCellD*MitesPerCellD));
+			double(1.734 - (0.0755*MitesPerCellD) - (0.0069*MitesPerCellD*MitesPerCellD));  // Updated equation 3/8/2022 per Gloria
 	if (ReproMitePerCellD < 0) ReproMitePerCellD = 0;
  
 	// Calculate the number of newly emerging mites consisting of survivors from infestation and new offspring

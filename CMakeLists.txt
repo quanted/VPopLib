@@ -56,13 +56,11 @@ set (SOURCES
                 session.cpp
                 spores.cpp
                 vpoplib.cpp
-                weatherevents.cpp
-                weathergriddata.cpp)
+                weatherevents.cpp)
 
 set (PORT_SOURCES  
                 position.cpp
                 cuintarray.cpp
-                #ctime.cpp
                 cstringarray.cpp
                 cstring.cpp
                 cptrlist.cpp

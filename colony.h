@@ -243,6 +243,12 @@ struct SupplementalFeedingResource
 #define DADLLIFE 21
 #define WADLLIFE 21
 
+// Mite attributes
+#define PROPINFSTW 0.08
+#define PROPINFSTD 0.92
+#define MAXMITES_PER_DRONE_CELL 7  //Per Gloria 3/8/2022 changed from 3
+#define MAXMITES_PER_WORKER_CELL 4
+
 //  Discrete Events
 #define DE_NONE 1
 #define DE_SWARM 2

@@ -4,7 +4,6 @@
 
 #include "stdafx.h"
 #include "weatherevents.h"
-#include "weathergriddata.h"
 #include "coldstoragesimulator.h"
 #include "globaloptions.h"
 #include "math.h"
@@ -37,7 +36,7 @@ struct call_if_not_calling
 //  Free Functions
 int CountChars(CString instg, TCHAR testchar)
 {
-	//  Returns the number of occurences of testchar in instg
+	//  Returns the number of occurrences of testchar in instg
 
 	int count = 0;
 	int len = instg.GetLength();
