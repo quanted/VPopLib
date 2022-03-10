@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include <string>
+#include <algorithm>
 
 /**
  * Only supports the necessary interface for the good behavior of VarroaPop
@@ -80,11 +81,13 @@ public:
 
 	CString Tokenize(const char* delimiter, int& startPosition) const;
 
-	CString SpanExcluding(const char* delimiter) const;
+	//CString SpanExcluding(const char* delimiter) const;
 
 protected:
 
 	std::string m_data;
+
+	const char* whitespace = " \t\n\r\f\v";  // Whitespace characters used in trim functions
 }; 
 
 CString operator+(const CString& str1, const CString& str2);

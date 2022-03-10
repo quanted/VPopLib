@@ -1,15 +1,15 @@
 #include "cstring.h"
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/replace.hpp>
+//#include <boost/algorithm/string/case_conv.hpp>
+//#include <boost/algorithm/string/trim.hpp>
+//#include <boost/algorithm/string/replace.hpp>
 
-#include <boost/tokenizer.hpp>
+//#include <boost/tokenizer.hpp>
 
 #include <cassert>
 #include <limits>
 
-namespace ba = boost::algorithm;
+//namespace ba = boost::algorithm;
 
 CString::CString() : m_data()
 {
@@ -99,29 +99,35 @@ int CString::GetLength() const
 
 CString& CString::MakeLower()
 {
-	ba::to_lower(m_data);
+	//ba::to_lower(m_data);  // Trying to get rid of boost here
+	std::transform(m_data.begin(), m_data.end(), m_data.begin(), ::tolower);
 	return *this;
 }
 
 CString& CString::MakeUpper()
 {
-	ba::to_upper(m_data);
+	//ba::to_upper(m_data);  // Trying to get rid of boost here
+	std::transform(m_data.begin(), m_data.end(), m_data.begin(), ::toupper);
 	return *this;
 }
 
 void CString::Trim()
 {
-	ba::trim(m_data);
+	//ba::trim(m_data);  //Trying to get rid of boost here
+	m_data.erase(m_data.find_last_not_of(whitespace) + 1);
+	m_data.erase(0, m_data.find_first_not_of(whitespace));
 }
 
 void CString::TrimLeft()
 {
-	ba::trim_left(m_data);
+	//ba::trim_left(m_data);  //Trying to get rid of boost here
+	m_data.erase(0, m_data.find_first_not_of(whitespace));
 }
 
 void CString::TrimRight()
 {
-	ba::trim_right(m_data);
+	//ba::trim_right(m_data);  //Trying to get rid of boost here
+	m_data.erase(m_data.find_last_not_of(whitespace) + 1);
 }
 
 int CString::Find(char element) const
@@ -152,7 +158,13 @@ void CString::Replace(const CString& toReplace, const CString& with)
 {
 	std::string search = toReplace.ToString();
 	std::string format = with.ToString();
-	ba::replace_all(m_data, search, format);
+	//ba::replace_all(m_data, search, format);  //Trying to get rid of boost here
+	size_t pos = m_data.find(search);
+	if (pos != std::string::npos)  // Substring found
+	{
+		size_t len = search.size();
+		m_data.replace(pos, len, format);
+	}
 }
 
 CString CString::Left(int count) const
@@ -199,35 +211,52 @@ CString CString::Mid(int first, int count) const
 CString CString::Tokenize(const char* delimiter, int& startPosition) const
 {
     CString cResult;
-    std::string toTokenize = m_data.substr(startPosition);
-    boost::char_separator<char> sep(delimiter);
-    boost::tokenizer<boost::char_separator<char>> tokens(toTokenize, sep);
-    if (tokens.begin() != tokens.end())
-    {
-        std::string result = *tokens.begin();
-
-        // update startPosition
-        auto positionInToTokenize = toTokenize.find(result);
-        startPosition += positionInToTokenize + result.length();
-
-        cResult = result;
-    }
+	int P1 = m_data.find_first_not_of(delimiter, startPosition);
+	int P2 = m_data.find_first_of(delimiter, P1);
+	std::string result = m_data.substr(P1, P2 - P1);
+	startPosition = P2;
+	cResult = result;
     return cResult;
 }
 
-CString CString::SpanExcluding(const char* delimiter) const
-{
+//CString CString::Tokenize(const char* delimiter, int& startPosition) const
+//{
+//	CString cResult;
+//	std::string toTokenize = m_data.substr(startPosition);
+//	boost::char_separator<char> sep(delimiter);
+//	boost::tokenizer<boost::char_separator<char>> tokens(toTokenize, sep);
+//	//std::string candidateToken = m_data.substr(startPosition);
+//	//size_t tokend = candidateToken.find_first_of(delimiter);
+//	//if (tokend!=std::string::npos)
+//	//{
+//	//	
+//	//}
+//	if (tokens.begin() != tokens.end())
+//	{
+//		std::string result = *tokens.begin();
+//
+//		// update startPosition
+//		auto positionInToTokenize = toTokenize.find(result);
+//		startPosition += positionInToTokenize + result.length();
+//
+//		cResult = result;
+//	}
+//	return cResult;
+//}
 
-    CString cResult;
-    boost::char_separator<char> sep(delimiter);
-    boost::tokenizer<boost::char_separator<char>> tokens(m_data, sep);
-    if (tokens.begin() != tokens.end())
-    {
-        std::string result = *tokens.begin();
-        cResult = result;
-    }
-    return cResult;
-}
+//CString CString::SpanExcluding(const char* delimiter) const
+//{
+//
+//    CString cResult;
+//    boost::char_separator<char> sep(delimiter);
+//    boost::tokenizer<boost::char_separator<char>> tokens(m_data, sep);
+//    if (tokens.begin() != tokens.end())
+//    {
+//        std::string result = *tokens.begin();
+//        cResult = result;
+//    }
+//    return cResult;
+//}
 
 CString operator+(const CString& str1, const CString& str2)
 {
