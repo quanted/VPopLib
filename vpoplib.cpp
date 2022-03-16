@@ -316,6 +316,11 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 			string wthstr = WeatherEventStringList[i];
 			retval = SetWeatherS(wthstr);
 			string outstring;
+			if (!retval)
+			{
+				outstring = "Bad SetWeatherS";
+				retval = SetWeatherS(wthstr);
+			}
 
 		}
 

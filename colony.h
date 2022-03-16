@@ -26,6 +26,7 @@
 #include "cstring.h"
 #include "cuintarray.h"
 #include "cmapstringtoob.h"
+#include <cstring>
 
 
 

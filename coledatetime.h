@@ -7,16 +7,18 @@
 #endif
 
 #include "cstring.h"
-#include <boost/date_time/gregorian/gregorian.hpp>
+//#include <boost/date_time/gregorian/gregorian.hpp>
 
 #define GetCurrentTime() GetTickCount()
+#define VAR_DATEVALUEONLY ((DWORD)0x00000002) /* return date value */
+
+typedef unsigned long DWORD;
 
 class COleDateTimeSpan;
 
 /**
  * Only supports the necessary interface for the good behavior of VarroaPop
- * 
- * Based on the boost date_time library.  
+ *   
  * Expects date text to be mm/dd/yyyy 
  * 
  * Only deals with dates, no times.
@@ -61,7 +63,6 @@ public:
 	CString Format(const char* format) const;
 	bool ParseDateTime(const CString& dateTimeStr, DWORD dwFlags = VAR_DATEVALUEONLY);
 
-	// returns 0 if successful, 1 otherwise
 	int SetDate(int32_t year, int32_t month, int32_t day);
 
 
@@ -75,10 +76,15 @@ public:
 
 	static COleDateTime GetCurrentTime();
 
-protected:
-
+private:
+//public:
+	int YearShift = 400;  // This is used to shift the m_Tm year back and forth so it can represent dates between 1570 and 2600.
+	bool IsLeapYear() const;
+	static bool IsYearLeapYear(int32_t year);
+	bool IsValidDate() const;
 	DateTimeStatus m_status;
-	boost::gregorian::date m_date;  //The actual date for this class
+	tm m_Tm;
+
 };
 
 /**
@@ -92,9 +98,9 @@ public:
 	COleDateTimeSpan();
 
 	COleDateTimeSpan(size_t lDays,
-		int32_t nHours,
-		int32_t nMins,
-		int32_t nSecs);
+		int32_t nHours = 0,
+		int32_t nMins = 0,
+		int32_t nSecs  = 0);
 
 	int32_t GetDays();
 
@@ -102,7 +108,6 @@ public:
 
 protected:
 
-	boost::gregorian::date_duration m_day_span;  // number of days between dates.
+	int m_day_span;  // number of days between dates.
 };
 
-//#endif // COLEDATETIME_CUSTOM_H

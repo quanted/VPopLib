@@ -3,6 +3,7 @@
 #ifndef STDAFX_CUSTOM_H
 #define STDAFX_CUSTOM_H
 #include "libvpop_export.h"
+#include <math.h>
 #ifdef WIN32
 	#ifdef libvpop_EXPORT // 
 	#   define LIBEXPORT   __declspec(dllexport)

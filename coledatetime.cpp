@@ -1,7 +1,7 @@
 #include "coledatetime.h"
 #include <sstream>
 
-using namespace boost::gregorian;
+//using namespace boost::gregorian;
 
 /**
  * COleDateTime
@@ -24,7 +24,13 @@ COleDateTime::COleDateTime(int32_t nYear,
 
     try
     {
-        m_date = boost::gregorian::date(nYear, nMonth, nDay);
+        m_status = valid;
+        m_Tm.tm_year = nYear - 1900;
+        m_Tm.tm_mon = nMonth - 1;
+        m_Tm.tm_mday = nDay;
+        m_Tm.tm_hour = 0;
+        m_Tm.tm_min = 0;
+        m_Tm.tm_sec = 0;
         m_status = valid;
     }
     catch (...)
@@ -35,12 +41,12 @@ COleDateTime::COleDateTime(int32_t nYear,
 
 COleDateTime COleDateTime::GetCurrentTime()
 {
-	//return date.current_date(boost::gregorian::day_clock::local_day());
-    boost::gregorian::date current_date(boost::gregorian::day_clock::local_day());
+    time_t t = time(0);
+    struct tm* timeStruct = localtime(&t);
     int32_t year, month, day;
-    year = current_date.year();
-    month = current_date.month();
-    day = current_date.day();
+    year = timeStruct->tm_year + 1900;
+    month = timeStruct->tm_mon + 1;
+    day = timeStruct->tm_mday;
 
     COleDateTime retDate = COleDateTime(year, month, day,0,0,0);
     return retDate;
@@ -48,17 +54,17 @@ COleDateTime COleDateTime::GetCurrentTime()
 
 int32_t COleDateTime::GetYear() const
 {
-    return m_date.year();
+    return m_Tm.tm_year + 1900;
 }
 
 int32_t COleDateTime::GetMonth() const
 {
-    return m_date.month();
+    return m_Tm.tm_mon + 1;
 }
 
 int32_t COleDateTime::GetDay() const
 {
-    return m_date.day();
+    return m_Tm.tm_mday;
 }
 
 int32_t COleDateTime::GetHour() const
@@ -74,7 +80,14 @@ int32_t COleDateTime::GetMinute() const
 
 int32_t COleDateTime::GetDayOfYear() const
 {
-    return m_date.day_of_year();
+    int32_t dayofyear;
+    struct tm myTM = m_Tm;
+    myTM.tm_year += YearShift;  //  Shift year to perform time.h functions
+    time_t mytime = mktime(&myTM);
+    struct tm* p_myTM = localtime(&mytime);
+    myTM = *p_myTM;
+    dayofyear = myTM.tm_yday;
+    return dayofyear;
 }
 
 COleDateTime::DateTimeStatus COleDateTime::GetStatus() const
@@ -84,95 +97,193 @@ COleDateTime::DateTimeStatus COleDateTime::GetStatus() const
 
 bool COleDateTime::operator < (const COleDateTime& other) const
 {
-    return m_date < other.m_date;
+    struct tm thisTime = m_Tm;
+    struct tm otherTime = other.m_Tm;
+    thisTime.tm_year += YearShift;
+    otherTime.tm_year += YearShift;
+    return mktime(&thisTime) < mktime(&otherTime);
 }
 
 bool COleDateTime::operator > (const COleDateTime& other) const
 {
-    return m_date > other.m_date;
+    struct tm thisTime = m_Tm;
+    struct tm otherTime = other.m_Tm;
+    thisTime.tm_year += YearShift;
+    otherTime.tm_year += YearShift;
+    return mktime(&thisTime) > mktime(&otherTime);
 }
 
 bool COleDateTime::operator >= (const COleDateTime& other) const
 {
-    return m_date >= other.m_date;
+    struct tm thisTime = m_Tm;
+    struct tm otherTime = other.m_Tm;
+    thisTime.tm_year += YearShift;
+    otherTime.tm_year += YearShift;
+    return mktime(&thisTime) >= mktime(&otherTime);
 }
 
 bool COleDateTime::operator <= (const COleDateTime& other) const
 {
-    return m_date <= other.m_date;
+    struct tm thisTime = m_Tm;
+    struct tm otherTime = other.m_Tm;
+    thisTime.tm_year += YearShift;
+    otherTime.tm_year += YearShift;
+    return mktime(&thisTime) <= mktime(&otherTime);
 }
 
 CString COleDateTime::Format(const char* format) const
 {
-    CString string;
-    date_facet* df = new  date_facet{ format };
+    //Note - only formats mm/dd/yyyy
+
+    CString datestring;
     std::stringstream ss;
-    ss.imbue(std::locale{ std::cout.getloc(), df });
-    ss << m_date;
-    string = ss.str();
-    return string;
+    ss << m_Tm.tm_mon + 1 << "/" << m_Tm.tm_mday << "/" << m_Tm.tm_year + 1900;
+    return datestring = ss.str();
 }
 
 bool COleDateTime::ParseDateTime(const CString& dateTimeStr, DWORD dwFlags)
 {
-    try
-    {
-        m_date = from_us_string(dateTimeStr.ToString());
-        return m_status == valid;
-    }
-    catch (...)
-    {
-        return m_status == error;
-    }
+   //Note:  Only parses mm/dd/yyyy or m/d/yyyy
+    std::string month_stg, day_stg, year_stg;
+    int pos = 0;
+    month_stg = dateTimeStr.Tokenize("/", pos);
+    day_stg = dateTimeStr.Tokenize("/", pos);
+    year_stg = dateTimeStr.Tokenize("/", pos);
+    m_Tm.tm_mon = strtol(month_stg.c_str(), NULL, 10) - 1;
+    m_Tm.tm_mday = strtol(day_stg.c_str(), NULL, 10);
+    m_Tm.tm_year = strtol(year_stg.c_str(), NULL, 10) - 1900;
+    if (IsValidDate()) m_status = valid;
+    else m_status = error;
+    return (m_status == valid);
 }
 
 int COleDateTime::SetDate(int32_t year, int32_t month, int32_t day)
 {
-    try
+    if ((year > 1570) && ((month >0)&&(month<=12)) && ((day >0) && (day <32)))
     {
-        m_date = date(year, month, day);
+        m_Tm.tm_year = year - 1900;
+        m_Tm.tm_mon = month - 1;
+        m_Tm.tm_mday = day;
+        m_Tm.tm_hour = 0;
+        m_Tm.tm_min = 0;
+        m_Tm.tm_sec = 0;
         m_status = valid;
     }
-    catch (...)
+    else
     {
         m_status = error;
     }
-
     return (m_status == valid);
 }
 
+bool COleDateTime::IsLeapYear() const
+{
+    bool leapyear = false;
+    if ((m_Tm.tm_year + 1900) % 4 == 0)
+    {
+        leapyear = true;
+        if (((m_Tm.tm_year + 1900) % 100 == 0) && ((m_Tm.tm_year + 1900) % 400 != 0)) leapyear = false;
+    }
+    return leapyear;
+}
+
+bool COleDateTime::IsYearLeapYear(int32_t year)
+{
+    bool leapyear = false;
+    if (year % 4 == 0)
+    {
+        leapyear = true; 
+        if ((year % 100 == 0) && (year % 400 != 0)) leapyear = false;
+    }
+    return leapyear;
+}
+
+
+bool COleDateTime::IsValidDate() const
+{
+    bool status = false;
+    // Check to see if date is a valid one
+    if ((m_Tm.tm_year + 1900 > 1570))
+    {
+        if ((m_Tm.tm_mon + 1 == 1) || (m_Tm.tm_mon + 1 == 3)  || (m_Tm.tm_mon + 1 == 5) || (m_Tm.tm_mon + 1 == 7) || (m_Tm.tm_mon + 1 == 8) || (m_Tm.tm_mon + 1 == 10) || (m_Tm.tm_mon + 1 == 12)) // 31 day month
+        {
+            status = ((m_Tm.tm_mday > 0) && (m_Tm.tm_mday < 32));
+        }
+        else if (m_Tm.tm_mon + 1 == 2) //February
+        {
+            if (IsLeapYear()) status = (m_Tm.tm_mday > 0) && (m_Tm.tm_mday < 30);
+            else status = (m_Tm.tm_mday > 0) && (m_Tm.tm_mday < 29);
+        }
+        else status = (m_Tm.tm_mday > 0) && (m_Tm.tm_mday < 31);  // Thirty day month
+    }
+    return status;
+}
 
 
 COleDateTime COleDateTime::operator+(const COleDateTimeSpan& span) const
 {
-    COleDateTime dt;
-    dt.m_date = m_date + span.m_day_span;
-    return COleDateTime(dt);
+    COleDateTime dt = *this;
+
+    dt.m_Tm.tm_mday += span.m_day_span;
+    dt.m_Tm.tm_year += YearShift;
+    time_t temptime = mktime(&dt.m_Tm);
+    struct tm* outtm = localtime(&temptime);
+    dt.m_Tm = *outtm;
+    dt.m_Tm.tm_year -= YearShift;
+    return dt;
 }
 
 COleDateTime COleDateTime::operator-(const COleDateTimeSpan& span) const
 {
-    COleDateTime dt;
-    dt.m_date = m_date - span.m_day_span;
-    return COleDateTime(dt);
+    COleDateTime dt = *this;
+    dt.m_Tm.tm_mday -= span.m_day_span;
+    dt.m_Tm.tm_year += YearShift;
+    time_t temptime = mktime(&dt.m_Tm);
+    struct tm* outtm = localtime(&temptime);
+    dt.m_Tm = *outtm;
+    dt.m_Tm.tm_year -= YearShift;
+    return dt;
 }
 
 COleDateTime& COleDateTime::operator+=(const COleDateTimeSpan& span)
 {
-    m_date += span.m_day_span;
+    struct tm thisTM = m_Tm;
+    thisTM.tm_year += YearShift;
+    thisTM.tm_mday += span.m_day_span;
+    time_t temptime = mktime(&thisTM);
+    struct tm* outtm = localtime(&temptime);
+    m_Tm = *outtm;
+    m_Tm.tm_year -= YearShift;
     return *this;
 }
 
 COleDateTime& COleDateTime::operator-=(const COleDateTimeSpan& span)
 {
-    m_date -= span.m_day_span;;
+    struct tm thisTM = m_Tm;
+    thisTM.tm_year += YearShift;
+    thisTM.tm_mday -= span.m_day_span;
+    time_t temptime = mktime(&thisTM);
+    struct tm* outtm = localtime(&temptime);
+    m_Tm = *outtm;
+    m_Tm.tm_year -= YearShift;
     return *this;
 }
 
 COleDateTimeSpan COleDateTime::operator-(const COleDateTime& date) const
 {
     COleDateTimeSpan dts;
-    dts.m_day_span = m_date - date.m_date;   
+    time_t timeA, timeB;
+    double difference;
+    struct tm TMA, TMB;
+    TMA = m_Tm;
+    TMB = date.m_Tm;
+    TMA.tm_year += YearShift;
+    TMB.tm_year += YearShift;
+    timeA = mktime(&TMA);
+    timeB = mktime(&TMB);
+    difference = difftime(timeA, timeB);
+    dts.m_day_span = static_cast<int>(difference / 86400);
+
     return dts;
 }
 
@@ -186,17 +297,17 @@ COleDateTimeSpan::COleDateTimeSpan()
 }
 
 COleDateTimeSpan::COleDateTimeSpan(size_t lDays,
-    int32_t nHours = 0,
-    int32_t nMins = 0,
-    int32_t nSecs = 0)
+    int32_t nHours,
+    int32_t nMins,
+    int32_t nSecs)
 {
-    m_day_span = date_duration(lDays);
+    m_day_span = lDays;
 }
 
 
 int32_t COleDateTimeSpan::GetDays()
 {
-    return m_day_span.days();
+    return m_day_span;
 }
 
 bool COleDateTimeSpan::operator!=(const COleDateTimeSpan& other) const
