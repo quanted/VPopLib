@@ -23,7 +23,7 @@ CMite::CMite()
 
 }
 
-CMite::CMite(int Res, int NonRes)
+CMite::CMite(double Res, double NonRes)
 {
 	m_Resistant = Res;
 	m_NonResistant = NonRes;
@@ -78,7 +78,7 @@ void CMite::operator+=(CMite theMite)
 	m_NonResistant += theMite.m_NonResistant;
 }
 
-void CMite::operator +=(int value)
+void CMite::operator +=(double value)
 {
 	double pctres = 0;
 	if ((m_Resistant + m_NonResistant) > 0) 
@@ -95,7 +95,7 @@ void CMite::operator -= (CMite theMite)
 	m_NonResistant -= theMite.m_NonResistant;
 }
 
-void CMite::operator -= (int value)
+void CMite::operator -= (double value)
 {
 	double pctres = m_Resistant*100/(m_Resistant+m_NonResistant);
 	double subfromres = value*pctres/100.0;
@@ -118,7 +118,7 @@ CMite CMite::operator-(CMite theMite)
 	double nres = m_NonResistant - theMite.m_NonResistant;
 	if (res < 0) res = 0;
 	if (nres < 0) nres = 0;
-	return CMite(int(res), int(nres));
+	return CMite(res, nres);
 }
 
 CMite::operator int()
@@ -127,13 +127,13 @@ CMite::operator int()
 }
 
 
-CMite CMite::operator=(int value)
+CMite CMite::operator=(double value)
 {
 	// An integer assignment will set the NonResistant quantity of mites the the 
 	// integer value and set the Resistant quantity to 0
 	m_Resistant = 0;
 	m_NonResistant = double(value);
-	return CMite(int(m_Resistant), int(m_NonResistant));
+	return CMite(m_Resistant, m_NonResistant);
 }
 
 
@@ -141,21 +141,16 @@ CMite CMite::operator=(CMite& theMite)
 {
 	m_Resistant = theMite.m_Resistant;
 	m_NonResistant = theMite.m_NonResistant;
-	return CMite(int(m_Resistant), int(m_NonResistant));
+	return CMite(m_Resistant, m_NonResistant);
 }
 
 
-CMite CMite::operator *(int value)
-{
-	int res = int(m_Resistant*value + 0.5);
-	int nonres = int(m_NonResistant*value + 0.5);
-	return CMite(res,nonres);
-}
+
 
 CMite CMite::operator *(double value)
 {
-	int res = int(m_Resistant*value + 0.5);
-	int nonres = int(m_NonResistant*value + 0.5);
+	double res = m_Resistant*value;
+	double nonres = m_NonResistant*value;
 	return CMite(res,nonres);
 
 }

@@ -282,13 +282,13 @@ CMite CVarroaPopSession::GetImmigrationMites(CEvent* pEvent)
 		}
 
 		// Increment the running total of mites that have immigrated
-		int ResistantMites = int((answer * m_ImmMitePctResistant) / 100 + 0.5);
-		m_CumImmigratingMites += CMite(ResistantMites, int(answer - ResistantMites + 0.5));
+		double ResistantMites = answer * m_ImmMitePctResistant / 100;
+		m_CumImmigratingMites += CMite(ResistantMites, answer - ResistantMites);
 	}
 	else answer = 0;
 	CMite theImms;
-	theImms.SetResistant(int((answer * m_ImmMitePctResistant) / 100 + 0.5));
-	theImms.SetNonResistant(int(answer - theImms.GetResistant() + 0.5));
+	theImms.SetResistant(answer * m_ImmMitePctResistant / 100);
+	theImms.SetNonResistant(answer - theImms.GetResistant());
 	return theImms;
 }
 
@@ -347,13 +347,13 @@ void CVarroaPopSession::Simulate()
 			"%7.2f", // dd 
 			"%6.2f", // l 
 			"%8.2f", // n 
-			"%6d", // Free Mites
-			"%6d", // DBrood Mites
-			"%6d", // WBrood Mites
+			"%6.2f", // Free Mites
+			"%6.2f", // DBrood Mites
+			"%6.2f", // WBrood Mites
 			"%6.2f", // DMite / Cell
 			"%6.2f", // WMite / Cell
-			"%6d", // Mites Dying
-			"%6.2f", // Prop Mites Dying
+			"%6.0f", // Mites Dying
+			"%6.0f", // Prop Mites Dying
 			"%8.1f", // Colony Pollen
 			"%6.3f", // Conc Pollen Pest
 			"%8.1f", // Colony Nectar

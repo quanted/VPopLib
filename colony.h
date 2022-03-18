@@ -140,7 +140,7 @@ protected:
 public:
 	double GetMitesPerCell();
 	void Update(CLarva theLarva);
-	int GetMiteCount();
+	double GetMiteCount();
 	void KillAll();
 	void DistributeMites(CMite theMites);
 	float GetPropInfest();
@@ -279,7 +279,7 @@ protected:
 	bool m_VTTreatmentActive;
 	bool m_SPTreatmentActive;
 	double  m_InitMitePctResistant;
-	int m_MitesDyingToday;
+	double m_MitesDyingToday;
 	int	m_AdultAgeDelayLimit = 24;
 	int m_DaysSinceEggLayingBegan = m_AdultAgeDelayLimit;  //Reset to 0 when eggs laid == 0 and incremented each day when eggs laid != 0;
 	bool m_PollenFeedingDay;  // Specifies this is a day when man-made feed is available.
@@ -379,11 +379,11 @@ protected:
 public:
 	void Create();
 	void SetSession(CVarroaPopSession* pSession) { m_pSession = pSession; }
-	int m_MitesDyingThisPeriod;
-	int GetMitesDyingThisPeriod();
+	double m_MitesDyingThisPeriod;
+	double GetMitesDyingThisPeriod();
 	void SetStartSamplePeriod();
-	int GetTotalMiteCount();
-	int GetMitesDyingToday();
+	double GetTotalMiteCount();
+	double GetMitesDyingToday();
 	int GetNurseBees();
 	int GetAdultAgingDelay() { return m_AdultAgeDelayLimit; }
 	void SetAdultAgingDelay(int delay) { m_AdultAgeDelayLimit = delay; }

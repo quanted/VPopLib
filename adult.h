@@ -15,6 +15,7 @@ class CAdult : public CBee  {
 	float m_CurrentAge;
 	CMite m_Mites;
 	double m_Virgins;
+	bool m_MitesCounted;
 	double m_ForageInc;
 
   public:
@@ -34,6 +35,8 @@ class CAdult : public CBee  {
 
 	void SetMites(CMite theMites) {m_Mites = theMites;}
 	CMite GetMites() {return m_Mites;}
+	bool HaveMitesBeenCounted() { return m_MitesCounted; }
+	void SetMitesCounted(bool value) { m_MitesCounted = value; }
 	void Reset();
 
 };

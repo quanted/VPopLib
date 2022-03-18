@@ -18,33 +18,33 @@ protected:
 
 public:
 	CMite();
-	CMite(int Res, int NonRes);
+	CMite(double Res, double NonRes);
 	CMite(const CMite& mite);	// Copy Constructor
 	virtual ~CMite();
 
 	CMite& operator=(const CMite& mite);
 
-	int GetResistant() {return int(m_Resistant + 0.5);}
-	int GetNonResistant() {return int(m_NonResistant + 0.5);}
-	void SetResistant(int num) {m_Resistant = double(num);}
-	void SetNonResistant(int num) {m_NonResistant = double(num);}
+	double GetResistant() {return m_Resistant;}
+	double GetNonResistant() {return m_NonResistant;}
+	void SetResistant(double num) {m_Resistant = num;}
+	void SetNonResistant(double num) {m_NonResistant = num;}
 	void Zero();
 
-	int GetTotal() {return int(m_Resistant + m_NonResistant);}
+	double GetTotal() {return (m_Resistant + m_NonResistant);}
 	double GetPctResistant() {return (GetTotal()>0) ? 
 						(100.0*m_Resistant/(m_Resistant+m_NonResistant)) : 0;}
 	void SetPctResistant(double pct);
 
 	void operator += (CMite mite);
 	void operator -= (CMite mite);
-	void operator += (int value);
-	void operator -= (int value);
+	void operator += (double value);
+	void operator -= (double value);
 	CMite operator + (CMite mite);
 	CMite operator - (CMite mite);
-	CMite operator = (int value); // Assign an integer to a CMite
+	CMite operator = (double value); // Assign quantity to a CMite
 	CMite operator = (CMite& theMite);
-	CMite operator * (int value);
 	CMite operator * (double value);
+	//CMite operator * (double value);
 	operator int();
 
 };

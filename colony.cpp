@@ -729,9 +729,9 @@ void CBroodlist::KillAll()
 
 
 
-int CBroodlist::GetMiteCount()
+double CBroodlist::GetMiteCount()
 {
-	int TotalCount=0;
+	double TotalCount=0;
 
 	POSITION pos = GetHeadPosition();
 	while (pos != NULL) 
@@ -745,7 +745,7 @@ int CBroodlist::GetMiteCount()
 
 float CBroodlist::GetPropInfest()
 {
-	int TotalUninfested=0, Uninfested = 0;
+	double TotalUninfested=0, Uninfested = 0;
 	int TotalCells = 0;
 	float PropInfest;
 
@@ -776,7 +776,7 @@ void CBroodlist::DistributeMites(CMite theMites)
 	// Scan thru all the brood boxcars and set mite number
 	int Len = GetLength();
 	if (Len <= 0) return;
-	int MitesPerBoxcar = theMites.GetTotal()/Len;
+	double MitesPerBoxcar = theMites.GetTotal()/Len;
 	double PercentRes = theMites.GetPctResistant();
 	POSITION pos;
 	CBrood* pBrood;
@@ -786,7 +786,6 @@ void CBroodlist::DistributeMites(CMite theMites)
 		pBrood = (CBrood*)GetNext(pos);
 		pBrood->m_Mites = MitesPerBoxcar;
 		pBrood->m_Mites.SetPctResistant(PercentRes);
-		pBrood->m_PropVirgins = 1.0;
 	}
 }
 
@@ -1694,7 +1693,7 @@ double CColony::GetnToday()
 void CColony::AddMites(CMite NewMites)
 {
 	//Assume new mites are "virgins"
-	CMite virgins = RunMite*int(PropRMVirgins) + NewMites;
+	CMite virgins = RunMite*PropRMVirgins + NewMites;
 	RunMite += NewMites;
 	if (RunMite.GetTotal() <=0) PropRMVirgins = 1.0;
 	else PropRMVirgins = virgins.GetTotal()/RunMite.GetTotal();
@@ -1837,12 +1836,37 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	// emerging this time
 	CBrood WkrEmerge;
 	CBrood DrnEmerge;
+	bool WMitesCounted = ((CAdult*)Wadl.GetHead())->HaveMitesBeenCounted();
+	bool DMitesCounted = ((CAdult*)Dadl.GetHead())->HaveMitesBeenCounted();
 	WkrEmerge.number = ((CAdult*)Wadl.GetHead())->GetNumber();
 	WkrEmerge.m_Mites = ((CAdult*)Wadl.GetHead())->GetMites();
 	WkrEmerge.m_PropVirgins = ((CAdult*)Wadl.GetHead())->GetPropVirgins();
 	DrnEmerge.number = ((CAdult*)Dadl.GetHead())->GetNumber();
 	DrnEmerge.m_Mites = ((CAdult*)Dadl.GetHead())->GetMites();
 	DrnEmerge.m_PropVirgins = ((CAdult*)Dadl.GetHead())->GetPropVirgins();
+	if (WMitesCounted)
+	{
+		// Don't count them again
+		WkrEmerge.m_Mites = CMite(0, 0);
+	}
+	else
+	{
+		// Count them and mark as counted
+		WkrEmerge.m_Mites = ((CAdult*)Wadl.GetHead())->GetMites();
+		((CAdult*)Wadl.GetHead())->SetMitesCounted(true);
+	}
+
+	if (DMitesCounted)
+	{
+		// Don't count them again
+		DrnEmerge.m_Mites = CMite(0, 0);
+	}
+	else
+	{
+		// Count them and mark as counted
+		DrnEmerge.m_Mites = ((CAdult*)Dadl.GetHead())->GetMites();
+		((CAdult*)Dadl.GetHead())->SetMitesCounted(true);
+	}
 
 
 
@@ -1851,10 +1875,10 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	double MitesPerCellW;
 	double MitesPerCellD;
 	if (WkrEmerge.GetNumber() == 0) MitesPerCellW = 0;
-	else MitesPerCellW = (double)WkrEmerge.m_Mites.GetTotal()/WkrEmerge.GetNumber();
+	else MitesPerCellW = WkrEmerge.m_Mites.GetTotal()/WkrEmerge.GetNumber();
 
 	if (DrnEmerge.GetNumber() == 0) MitesPerCellD = 0;
-	else MitesPerCellD = (double)DrnEmerge.m_Mites.GetTotal()/DrnEmerge.GetNumber();
+	else MitesPerCellD = DrnEmerge.m_Mites.GetTotal()/DrnEmerge.GetNumber();
 
 	// Calculate survivorship
 	double PropSurviveMiteW = m_InitCond.m_workerMiteSurvivorship/100;  
@@ -1884,7 +1908,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	CMite SurviveMitesW = WkrEmerge.m_Mites * PropSurviveMiteW;
 	CMite SurviveMitesD = DrnEmerge.m_Mites * PropSurviveMiteD;
 
-	int NumEmergingMites = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();  
+	double NumEmergingMites = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();  
 	
 	CMite NewMitesW = SurviveMitesW * ReproMitePerCellW;
 	CMite NewMitesD = SurviveMitesD * ReproMitePerCellD;
@@ -1893,7 +1917,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	SurviveMitesW = SurviveMitesW * WkrEmerge.m_PropVirgins;
 	SurviveMitesD = SurviveMitesD * DrnEmerge.m_PropVirgins;
 
-	int NumVirgins = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();
+	double NumVirgins = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();
 
 
 	CMite RunMiteVirgins = RunMite*PropRMVirgins;
@@ -1901,14 +1925,14 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	CMite RunMiteD = NewMitesD + SurviveMitesD * PROPRUNMITE2;
 
 	// Mites dying today are the number which originally emerged from brood minus the ones that eventually became running mites
-	m_MitesDyingToday = int(WkrEmerge.m_Mites.GetTotal() + DrnEmerge.m_Mites.GetTotal());
+	m_MitesDyingToday = WkrEmerge.m_Mites.GetTotal() + DrnEmerge.m_Mites.GetTotal();
 	m_MitesDyingToday = (m_MitesDyingToday >= 0) ? m_MitesDyingToday : 0; // Constrain positive 
 
 	RunMite = RunMite + RunMiteD + RunMiteW;
 	if (RunMite.GetTotal()<=0) PropRMVirgins = 1.0;
 	else
 	{
-		PropRMVirgins = (double(RunMiteVirgins.GetTotal()) + double(NewMitesW.GetTotal()) + double(NewMitesD.GetTotal())) / double(RunMite.GetTotal());
+		PropRMVirgins = (RunMiteVirgins.GetTotal() + NewMitesW.GetTotal() + NewMitesD.GetTotal()) / RunMite.GetTotal();
 	}
 
 	// Kill NonResistant Running Mites if Treatment Enabled
@@ -1919,9 +1943,9 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 		COleDateTime* theDate = GetDayNumDate(DayNum);
 		if (m_MiteTreatmentInfo.GetActiveItem(*theDate,theItem))
 		{
-			int Quan = RunMite.GetTotal();
-			RunMite.SetNonResistant(int(double(RunMite.GetNonResistant())*
-												(100.0 - theItem.PctMortality)/100.0));
+			double Quan = RunMite.GetTotal();
+			RunMite.SetNonResistant(RunMite.GetNonResistant()*
+												(100.0 - theItem.PctMortality)/100.0);
 			m_MitesDyingToday += (Quan - RunMite.GetTotal());
 		}
 
@@ -2200,7 +2224,7 @@ void CColony::DoPendingEvents(CEvent* pWeatherEvent, int CurrentSimDay)
 
 
 
-int CColony::GetMitesDyingToday()
+double CColony::GetMitesDyingToday()
 {
 	return m_MitesDyingToday;
 }
@@ -2212,7 +2236,7 @@ int CColony::GetNurseBees()
 	return TotalLarvae/2;
 }
 
-int CColony::GetTotalMiteCount()
+double CColony::GetTotalMiteCount()
 {
 	return ( RunMite.GetTotal() + CapDrn.GetMiteCount() + CapWkr.GetMiteCount() );
 
@@ -2225,7 +2249,7 @@ void CColony::SetStartSamplePeriod()
 	m_MitesDyingThisPeriod = 0;
 }
 
-int CColony::GetMitesDyingThisPeriod()
+double CColony::GetMitesDyingThisPeriod()
 {
 	return m_MitesDyingThisPeriod;
 }

@@ -158,10 +158,10 @@ public:
 	CString GetImmigrationType() { return m_ImmigrationType; }
 	void SetNumImmigrationMites(int mites)
 	{
-		m_TotImmigratingMites.SetResistant(int(mites * m_ImmMitePctResistant / 100));
+		m_TotImmigratingMites.SetResistant(mites * m_ImmMitePctResistant / 100);
 		m_TotImmigratingMites.SetNonResistant(mites - m_TotImmigratingMites.GetResistant());
 	}
-	int GetNumImmigrationMites() { return m_TotImmigratingMites.GetTotal(); }
+	double GetNumImmigrationMites() { return m_TotImmigratingMites.GetTotal(); }
 	void SetImmigrationStart(COleDateTime start) { m_ImmigrationStartDate = start; }
 	COleDateTime GetImmigrationStart() { return m_ImmigrationStartDate; }
 	void SetImmigrationEnd(COleDateTime end) { m_ImmigrationEndDate = end; }

@@ -24,6 +24,7 @@ CAdult::CAdult()
 	m_Virgins = 0.0;
 	m_ForageInc = 0.0;
 	number = 0;
+	m_MitesCounted = false;
 }
 
 CAdult::CAdult(int theNumber)
@@ -34,6 +35,8 @@ CAdult::CAdult(int theNumber)
 	m_Virgins = 0.0;
 	m_ForageInc = 0.0;
 	number = theNumber;
+	m_MitesCounted = false;
+
 }
 
 
@@ -50,6 +53,8 @@ void CAdult::Reset()
 	m_Virgins = 0.0;
 	m_ForageInc = 0.0;
 	number = 0;
+	m_MitesCounted = false;
+
 }
 
 CAdult CAdult::operator = (CAdult& adult)
@@ -62,6 +67,7 @@ CAdult CAdult::operator = (CAdult& adult)
 	m.m_ForageInc = adult.m_ForageInc;
 	m.number = adult.number;
 	m.Alive = adult.Alive;
+	m.m_MitesCounted = adult.m_MitesCounted;
 	return m;
 
 }
