@@ -1779,7 +1779,7 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	}
 
 
-	CMite WMites = RunMite * (I * PROPINFSTW); // Mites going into worker brood cells
+	CMite WMites = RunMite * (I * PROPINFSTW); // Mite candidates going into worker brood cells
 
 	// Modify potential Drone Mite infestation rate by factoring in likelihood of finding a drone target cell in all the cells
 	double Likelihood = 1.0;
@@ -1792,6 +1792,13 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	CMite OverflowMax;
 	CMite OverflowLikelihood;
 	CMite DMites = RunMite * (I * PROPINFSTD * Likelihood); // Mites going into drone brood cells
+	if (WkrBrood->GetNumber() == 0)
+	{
+		// Send the WMites to become Drone mite candidates since no worker targets
+		DMites += WMites;
+		WMites.SetResistant(0);
+		WMites.SetNonResistant(0);
+	}
 
 	// Capture the number of mites targeted to drone brood but filtered out due to likelihood function
 	OverflowLikelihood = RunMite * (I * PROPINFSTD * (1.0 - Likelihood));
