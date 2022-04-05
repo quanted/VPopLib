@@ -352,8 +352,8 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 			CColony* pColony = theSession.GetColony();
 			pColony->m_NutrientCT.RemoveAll();
 			COleDateTime theTime;
-			double theNecConc;
-			double thePolConc;
+			double theNecConc = 0.0;
+			double thePolConc = 0.0;
 			string CTRecord;
 			SNCElement theElement;
 			for (int i = 0; i < ContaminationTableList.size(); i++)

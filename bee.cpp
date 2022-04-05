@@ -45,12 +45,15 @@ CBee CBee::operator = (CBee& bee)
 CBee::CBee(int Num)
 {
 	number = Num;
+	age = 0;
+	Alive = true;
 }
 
 CBee::CBee(CBee& bee)
 {
 	Alive = bee.Alive;
 	number = bee.number;
+	age = bee.age;
 }
 
 

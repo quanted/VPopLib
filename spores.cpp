@@ -37,6 +37,7 @@ CSpores::CSpores()
 	m_SporeVitalityPtCount = 6;
 
 	m_MortFunctPtCount = 0;
+	m_InitialSporeCount = 0;
 
 }
 

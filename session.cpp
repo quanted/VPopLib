@@ -167,7 +167,7 @@ void CVarroaPopSession::SetLatitude(double lat)
 
 double CVarroaPopSession::GetLatitude()
 {
-	double lat;
+	double lat = 30.0;  // Set the default latitude value
 	if (m_pWeather != NULL) lat = m_pWeather->GetLatitude();
 	return lat;
 }

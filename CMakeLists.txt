@@ -9,13 +9,13 @@ set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 set (CMAKE_DEBUG_POSTFIX "")
 set (BUILD_SHARED_LIBS TRUE)
+#set (CMAKE_CXX_FLAGS "-fPIC")
 
 project ("libvpop")
 
 
 include_directories(CMAKE_INCLUDE_DIRECTORIES_BEFORE .)
 include_directories(${PROJECT_BINARY_DIR})
-
 
 set (SOURCES    
                 stdafx.cpp
@@ -51,7 +51,6 @@ set (PORT_SOURCES
                 coblist.cpp
                 cobject.cpp
                 cmapstringtoob.cpp
-
                 ccmdtarget.cpp
                 carray.cpp)
 
