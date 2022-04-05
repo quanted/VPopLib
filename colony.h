@@ -57,11 +57,11 @@ public:
 	void SetLength(int len) {m_ListLength = len;}
 	int GetLength() {return m_ListLength;}
 	int GetQuantity();
-	int GetQuantityAt(int index);
-	int GetQuantityAt(int from, int to);
-	void SetQuantityAt(int index, int Quan);
-	void SetQuantityAt(int from, int to, int Quan);
-	void SetQuantityAtProportional(int from, int to, double Proportion);
+	int GetQuantityAt(size_t index);
+	int GetQuantityAt(size_t from, size_t to);
+	void SetQuantityAt(size_t index, int Quan);
+	void SetQuantityAt(size_t from, size_t to, int Quan);
+	void SetQuantityAtProportional(size_t from, size_t to, double Proportion);
 	void KillAll();
 	void RemoveListElements();
 	void SetColony(CColony* pCol) {m_pColony = pCol;}
@@ -187,14 +187,14 @@ public:
 
 struct ColonyInitCond
 {
-	float	m_droneAdultInfestField = 0.0;
-	float	m_droneBroodInfestField = 0.0;
-	float	m_droneMiteOffspringField = 0.0;
-	float	m_droneMiteSurvivorshipField = 0.0;
-	float	m_workerAdultInfestField = 0.0;
-	float	m_workerBroodInfestField = 0.0;
-	float	m_workerMiteOffspring = 0.0;
-	float	m_workerMiteSurvivorship = 0.0;
+	double	m_droneAdultInfestField = 0.0;
+	double	m_droneBroodInfestField = 0.0;
+	double	m_droneMiteOffspringField = 0.0;
+	double	m_droneMiteSurvivorshipField = 0.0;
+	double	m_workerAdultInfestField = 0.0;
+	double	m_workerBroodInfestField = 0.0;
+	double	m_workerMiteOffspring = 0.0;
+	double	m_workerMiteSurvivorship = 0.0;
 	int		m_droneAdultsField = 0;
 	int		m_droneBroodField = 0;
 	int		m_droneEggsField = 0;

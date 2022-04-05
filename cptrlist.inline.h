@@ -15,7 +15,8 @@ BOOL CTypedPtrList<BASE_CLASS, TYPE>::IsEmpty() const
 }
 
 template<class BASE_CLASS, class TYPE>
-INT_PTR CTypedPtrList<BASE_CLASS, TYPE>::GetCount() const
+//INT_PTR CTypedPtrList<BASE_CLASS, TYPE>::GetCount() const
+size_t CTypedPtrList<BASE_CLASS, TYPE>::GetCount() const
 {
     return m_data.size();
 }

@@ -89,6 +89,7 @@ CEvent::CEvent()
 	m_MinTemp = 0;
 	m_Rainfall = 0;
 	m_DaylightHours = 0;
+	m_Windspeed = 0;
 }
 
 CEvent::~CEvent()
@@ -116,6 +117,8 @@ CEvent::CEvent(CEvent& event)  // Copy Constructor
 	m_ForageDay = event.m_ForageDay;
 	m_ForageInc = event.m_ForageInc;
 	m_DaylightHours = event.m_DaylightHours;
+	m_Temp = event.m_Temp;
+	m_Windspeed = event.m_Windspeed;
 }
 
 double CEvent::GetTemp()
@@ -410,26 +413,26 @@ bool CWeatherEvents::RemoveCurrentEvent()
 }
 
 
-int CWeatherEvents::CheckInterval()
-{
-	//  Verifies that the time interval between each event in m_EventList is equal
-	//  to the time interval between the first two events in m_EventList.  If an error
-	//  occurs the line number is returned.  If no error, 0 is returned
-
-	ASSERT(!m_EventList.IsEmpty());
-	pos = m_EventList.GetHeadPosition();
-	CEvent* start = m_EventList.GetHead();
-	CEvent* temp = m_EventList.GetNext(pos);
-	COleDateTimeSpan diff = temp->m_Time - start->m_Time;
-	CEvent* lastEvent = temp;
-	while (pos!=NULL)
-	{
-		temp = m_EventList.GetNext(pos);
-		if (diff != (temp->m_Time - lastEvent->m_Time)) return temp->GetLineNum(); 
-		else lastEvent = temp;
-	}
-	return 0;
-}
+//int CWeatherEvents::CheckInterval()
+//{
+//	//  Verifies that the time interval between each event in m_EventList is equal
+//	//  to the time interval between the first two events in m_EventList.  If an error
+//	//  occurs the line number is returned.  If no error, 0 is returned
+//
+//	ASSERT(!m_EventList.IsEmpty());
+//	pos = m_EventList.GetHeadPosition();
+//	CEvent* start = m_EventList.GetHead();
+//	CEvent* temp = m_EventList.GetNext(pos);
+//	COleDateTimeSpan diff = temp->m_Time - start->m_Time;
+//	CEvent* lastEvent = temp;
+//	while (pos!=NULL)
+//	{
+//		temp = m_EventList.GetNext(pos);
+//		if (diff != (temp->m_Time - lastEvent->m_Time)) return temp->GetLineNum(); 
+//		else lastEvent = temp;
+//	}
+//	return 0;
+//}
 
 COleDateTime CWeatherEvents::GetBeginningTime()
 {
@@ -460,17 +463,17 @@ COleDateTime CWeatherEvents::GetCurrentTime()
 }
 
 
-int CWeatherEvents::GetCurrentLineNumber()
-{
-	ASSERT(!m_EventList.IsEmpty());
-	CEvent* event = m_EventList.GetAt(pos);
-	return event->GetLineNum();
-}
+//int CWeatherEvents::GetCurrentLineNumber()
+//{
+//	ASSERT(!m_EventList.IsEmpty());
+//	CEvent* event = m_EventList.GetAt(pos);
+//	return event->GetLineNum();
+//}
 
 
 int CWeatherEvents::GetTotalEvents()
 {
-	return m_EventList.GetCount();
+	return static_cast<int>(m_EventList.GetCount());
 }
 
 

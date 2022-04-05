@@ -4,8 +4,8 @@
 
 struct SResourceItem
 {
-	double m_ResourseQuantity;
-	double m_PesticideQuantity;
+	double m_ResourseQuantity = 0;
+	double m_PesticideQuantity = 0;
 };
 
 

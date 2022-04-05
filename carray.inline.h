@@ -5,7 +5,8 @@ BOOL CArray<TYPE, ARG_TYPE>::IsEmpty() const
 }
 
 template<class TYPE, class ARG_TYPE>
-INT_PTR CArray<TYPE, ARG_TYPE>::GetCount() const
+//INT_PTR CArray<TYPE, ARG_TYPE>::GetCount() const
+size_t CArray<TYPE, ARG_TYPE>::GetCount() const
 {
     return m_data.size();
 }

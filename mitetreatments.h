@@ -23,7 +23,7 @@ public:
     void AddItem(CMiteTreatmentItem& theItem);
     void AddItem(COleDateTime theTime, UINT theDuration, double thePctMortality, double thePctResistant);
     void DeleteItem(int Index);
-    int GetCount() {return pTreatmentItemList->GetCount();}
+    int GetCount() {return static_cast<int>(pTreatmentItemList->GetCount());}
     void ClearAll();
 };
 

@@ -202,10 +202,10 @@ CString CString::Tokenize(const char* delimiter, int& startPosition) const
 	std::string result = "";
 	if (startPosition >= 0)
 	{
-		int P1 = m_data.find_first_not_of(delimiter, startPosition);
-		int P2 = m_data.find_first_of(delimiter, P1);
+		size_t P1 = m_data.find_first_not_of(delimiter, startPosition);
+		size_t P2 = m_data.find_first_of(delimiter, P1);
 		if (P1 != -1) result = m_data.substr(P1, P2 - P1);
-		startPosition = P2;
+		startPosition = static_cast<int>(P2);
 		cResult = result;
 	}
     return cResult;

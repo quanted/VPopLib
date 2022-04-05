@@ -147,7 +147,7 @@ vector<string> CStringList2StringVector(CStringList& CSList)
 char** StringVector2CharStringArray(vector<string> stringvector)
 {
 	// Note - the calling function is responsible for freeing the memory created with this
-	int VectorLength = stringvector.size();
+	size_t VectorLength = stringvector.size();
 	char** CPArray = new char* [VectorLength]();
 	for (int i = 0; i < VectorLength; i++)
 	{
@@ -396,7 +396,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (GetErrorList(ErrList))
 		{
 			*ErrListCPA = StringVector2CharStringArray(ErrList);
-			*pCount = ErrList.size();
+			*pCount = static_cast<int>(ErrList.size());
 			return true;
 		}
 		else return false;
@@ -428,7 +428,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (GetErrorList(InfoList))
 		{
 			*InfoListCPA = StringVector2CharStringArray(InfoList);
-			*pCount = InfoList.size();
+			*pCount = static_cast<int>(InfoList.size());
 			return true;
 		}
 		else return false;
@@ -454,7 +454,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		if (GetResults(ResultsList))
 		{
 			*ResultsListCPA = StringVector2CharStringArray(ResultsList);
-			*pCount = ResultsList.size();
+			*pCount = static_cast<int>(ResultsList.size());
 			return true;
 		}
 		else return false;

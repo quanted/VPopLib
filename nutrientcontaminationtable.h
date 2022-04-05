@@ -9,8 +9,8 @@
 struct SNCElement 
 {
 	COleDateTime m_NCDate;
-	double m_NCPollenCont;
-	double m_NCNectarCont;
+	double m_NCPollenCont=0;
+	double m_NCNectarCont=0;
 };
 
 class CNutrientContaminationTable :

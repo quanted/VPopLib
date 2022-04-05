@@ -301,7 +301,7 @@ COleDateTimeSpan::COleDateTimeSpan(size_t lDays,
     int32_t nMins,
     int32_t nSecs)
 {
-    m_day_span = lDays;
+    m_day_span = static_cast<int>(lDays);
 }
 
 

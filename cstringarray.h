@@ -15,8 +15,8 @@ class NO_LIBEXPORT CStringArray : public CObject
 {
 public:
 
-	INT_PTR GetSize() const;
-	INT_PTR GetCount() const;
+	size_t GetSize() const;
+	size_t GetCount() const;
 	BOOL IsEmpty() const;
 	INT_PTR GetUpperBound() const;
 	void SetSize(INT_PTR nNewSize, INT_PTR nGrowBy = -1);

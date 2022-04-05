@@ -149,7 +149,7 @@ public:
 	bool ReadyToSimulate();
 	bool IsSimulationComplete() { return m_SimulationComplete; }
 	bool AreResultsReady() { return m_ResultsReady; }
-	int GetResultsLength() { return m_ResultsText.GetCount(); }
+	int GetResultsLength() { return static_cast<int>(m_ResultsText.GetCount()); }
 	void Simulate();
 	//void UpdateResults(int Day, CEvent* pEvent = NULL);
 

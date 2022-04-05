@@ -122,7 +122,7 @@ public:
 	bool RemoveAIItem(CString theName);
 	BOOL GetAIItem(CString theName, AIItem* pItem);
 	AIItem* GetAIItemPtr(CString Name);
-	int GetAIItemCount(){return m_AIItemList.GetCount();}
+	int GetAIItemCount(){return static_cast<int>(m_AIItemList.GetCount());}
 	void SetCurrentAIItem(AIItem* pItem);
 	double DoseResponse(double Dose, double LD50, double Slope);
 };

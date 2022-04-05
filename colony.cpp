@@ -47,7 +47,7 @@ int CBeelist::GetQuantity()
 	POSITION pos = GetHeadPosition();
 
 	BOOL mt = IsEmpty();
-	int count = GetCount();
+	//size_t count = GetCount();
 
 	while (pos != NULL) 
 	{
@@ -75,23 +75,23 @@ void CBeelist::RemoveListElements()
 }
 
 // Returns the quantity of bees in this boxcar.  Note this is zero-based so the first boxcar is index = 0
-int CBeelist::GetQuantityAt(int index)
+int CBeelist::GetQuantityAt(size_t index)
 {
 	int Count = 0;
 	if ((index < GetCount()) && (index >= 0))
 	{
-		CBee* theBee = (CBee*)GetAt(FindIndex(index));
+		CBee* theBee = (CBee*)GetAt(FindIndex(static_cast<INT_PTR>(index)));
 		Count = theBee->GetNumber();
 	}
 
 	return Count;
 }
 
-void CBeelist::SetQuantityAt(int index, int Quan)
+void CBeelist::SetQuantityAt(size_t index, int Quan)
 {
 	if ((index < GetCount()) && (index >= 0))
 	{
-		CBee* theBee = (CBee*)GetAt(FindIndex(index));
+		CBee* theBee = (CBee*)GetAt(FindIndex(static_cast<INT_PTR>(index)));
 		theBee->SetNumber(Quan);
 	}
 
@@ -100,14 +100,14 @@ void CBeelist::SetQuantityAt(int index, int Quan)
 
 // Returns the sum of quantity of bees in the "from" boxcar thru the "to" boxcar, inclusive.  If "to" is greater than the length
 // of the list, the sum stops at the end of the list (last boxcar).  If from == to, the quantity at that point is returned.
-int CBeelist::GetQuantityAt(int from, int to)
+int CBeelist::GetQuantityAt(size_t from, size_t to)
 {
 	int Count = 0;
-	int ListLength = GetCount();
+	size_t ListLength = GetCount();
 
 	if ((from >= 0) && (from < ListLength))
 	{
-		for (int i = from; i <= to; i++)
+		for (size_t i = from; i <= to; i++)
 		{
 			if (i >= ListLength) break;  // Exceeded the length of the list
 			Count += GetQuantityAt(i);
@@ -117,30 +117,30 @@ int CBeelist::GetQuantityAt(int from, int to)
 }
 
 // Evenly divides Quan bees between boxcars from -> to inclusive
-void CBeelist::SetQuantityAt(int from, int to, int Quan)
+void CBeelist::SetQuantityAt(size_t from, size_t to, int Quan)
 {
 	ASSERT(from <= to);
-	int ListLength = GetCount();
+	size_t ListLength = GetCount();
 	if (to > ListLength - 1) to = ListLength - 1;
-	int QuanPerBoxcar = Quan/(1 + (to-from));  // divide by number of boxcars
+	int QuanPerBoxcar = static_cast<int>(Quan/(1 + (to-from)));  // divide by number of boxcars
 
 	if ((from >= 0) && (from <= to))
 	{
-		for (int i = from; i <= to; i++) SetQuantityAt(i, QuanPerBoxcar);
+		for (size_t i = from; i <= to; i++) SetQuantityAt(i, QuanPerBoxcar);
 	}
 
 }
 // Sets the quantity of bees in boxcars between from -> to = Number*Proportion.
-void CBeelist::SetQuantityAtProportional(int from, int to, double Proportion)
+void CBeelist::SetQuantityAtProportional(size_t from, size_t to, double Proportion)
 {
 	ASSERT(from <= to);
-	int ListLength = GetCount();
+	size_t ListLength = GetCount();
 	if (to > ListLength - 1) to = ListLength - 1;
 
 	if ((from >= 0) && (from <= to))
 	{
 		int BoxcarQuant = 0;
-		for (int i = from; i <= to; i++) 
+		for (size_t i = from; i <= to; i++) 
 		{
 			BoxcarQuant = GetQuantityAt(i);
 			SetQuantityAt(i, (int)(BoxcarQuant * Proportion));
@@ -388,7 +388,7 @@ void CForagerlistA::Update(CAdult theAdult, CColony* theColony, CEvent* theDay)
 			delete (RemoveTail());
 		}
 		else delete foragersHead;
-		// If the foragers list is full let's remove the oldest hive
+		// If the foragers list is full let's remove the oldest cohort
 		if (GetCount() >= m_ListLength + 1)
 		{
 			Caboose = *((CAdult*)RemoveTail());
@@ -575,7 +575,7 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 
 		theBrood.Reset();  // These brood are now  gone
 		AddHead(theAdult);
-		int count = GetCount();
+		size_t count = GetCount();
 		if (GetCount() >= m_ListLength + (int)1) // All Boxcars are full - put workers in caboose, drones die off
 		{
 			CAdult* pAdult = (CAdult*)RemoveTail();
@@ -640,7 +640,7 @@ void CAdultlist::UpdateLength(int len, bool bWorker)
 	if (bWorker)
 	{
 		CAdult* pAdult;
-		int count = GetCount();
+		//int count = GetCount();
 		if (len < GetCount())
 		{
 			int AdultsToForagers = 0;
@@ -687,7 +687,7 @@ int CAdultlist::MoveToEnd(int QuantityToMove, int MinAge)
 		}
 		SetQuantityAt(EndIndex, CurrentlyMoving + GetQuantityAt(EndIndex));  // Add CurrentlyMoving to the end boxcar
 		SetQuantityAt(index, GetQuantityAt(index) -  CurrentlyMoving);  // Remove them from the current boxcar
-		 if (CurrentlyMoving > 0) TRACE("Moving Adults to End: %d\n", CurrentlyMoving);
+		// if (CurrentlyMoving > 0) TRACE("Moving Adults to End: %d\n", CurrentlyMoving);
 		TotalMoved += CurrentlyMoving;
 		index --;
 	}
@@ -924,7 +924,7 @@ CColony::~CColony()
 	if (!m_EventMap.IsEmpty())
 	{
 		POSITION pos = m_EventMap.GetStartPosition();
-		CUIntArray* pArray;
+		CUIntArray* pArray=NULL;
 		CString datestg;
 		while (pos != NULL)
 		{
@@ -2132,7 +2132,7 @@ void CColony::RemoveDroneComb(double pct)
 
 void CColony::AddDiscreteEvent(CString datestg, UINT EventID)
 {
-	CUIntArray* pEventArray;
+	CUIntArray* pEventArray = NULL;
 	if (m_EventMap.Lookup(datestg,(CObject*&)pEventArray))
 	{
 		// Date already exists, add a new event to the array
@@ -2149,7 +2149,7 @@ void CColony::AddDiscreteEvent(CString datestg, UINT EventID)
 
 void CColony::RemoveDiscreteEvent(CString datestg, UINT EventID)
 {
-	CUIntArray* pEventArray;
+	CUIntArray* pEventArray=NULL;
 	if (m_EventMap.Lookup(datestg,(CObject*&)pEventArray))
 	{
 		// Date exists
@@ -2223,7 +2223,8 @@ void CColony::DoPendingEvents(CEvent* pWeatherEvent, int CurrentSimDay)
 			foragers.FactorQuantity(0.75);
 			break;
 
-		default:;
+		default:
+			break;
 		}
 	}
 }
@@ -2395,7 +2396,7 @@ int CColony::ApplyPesticideToBees(CBeelist* pList, int from, int to, double Curr
 		NewBeeQuant = (int)(BeeQuant * ( 1 - (reduxcurrent - reduxmax)));
 		double PropRedux = (double)NewBeeQuant/(double)BeeQuant;
 		//pList->SetQuantityAt(from,to,NewBeeQuant);
-		pList->SetQuantityAtProportional(from,to,PropRedux);
+		pList->SetQuantityAtProportional(static_cast<size_t>(from),static_cast<size_t>(to),PropRedux);
 		return BeeQuant - NewBeeQuant;  // This is the number killed by pesticide
 }
 
@@ -2721,11 +2722,11 @@ double CColony::GetPollenNeeds(CEvent* pEvent)
 		// Nurse bees have different consumption rates in winter than other adults so need to calculate separately
 		// Nurse bees are the youngest of the age groups so determine how many of the youngest bees are nurse bees and
 		// compute need based on that
-		int WadlAG[3];  // Worker Adult Age Groups for consumption rates
+		int WadlAG[3] = {0,0,0};  // Worker Adult Age Groups for consumption rates
 		WadlAG[0]= Wadl.GetQuantityAt(0, 2);
 		WadlAG[1] = Wadl.GetQuantityAt(3, 9);
 		WadlAG[2] = Wadl.GetQuantityAt(10, 19);
-		double Consumption[3];  // Consumption rates for each of the Adult Age Groups in grams
+		double Consumption[3] = {0,0,0};  // Consumption rates for each of the Adult Age Groups in grams
 		Consumption[0] = m_EPAData.m_C_A13_Pollen/1000.0;
 		Consumption[1] = m_EPAData.m_C_A410_Pollen/1000.0;
 		Consumption[2] = m_EPAData.m_C_A1120_Pollen/1000.0;

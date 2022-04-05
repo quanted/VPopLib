@@ -46,6 +46,7 @@ CQueen::CQueen() {
 
 
 	//m_Vars contains Max Eggs and Initial Sperm in each row
+	//          Max Eggs per day		Initial Sperm
 
 	m_Vars[0][0] = 1000; m_Vars[0][1] = 1800000;
 	m_Vars[1][0] = 1500; m_Vars[1][1] = 2720000;
@@ -58,32 +59,7 @@ CQueen::~CQueen()
 {
 }
 
-// copy constructor
-CQueen::CQueen(CQueen* oldQueen) {
-	number = 1;
-	age = oldQueen->age;
-	m_InitialSperm = oldQueen->m_InitialSperm;
-	m_CurrentSperm = oldQueen->m_CurrentSperm;
-	m_MaxEggs = oldQueen->m_MaxEggs;
-	m_Strength = oldQueen->m_Strength;
-}
 
-// assignment operator
-CQueen& CQueen::operator=(const CQueen& theQueen) {
-	if(this == &theQueen) {
-		return *this;
-	}
-
-	// copy variables
-	number = theQueen.number;
-	age = theQueen.age;
-	m_InitialSperm = theQueen.m_InitialSperm;
-	m_CurrentSperm = theQueen.m_CurrentSperm;
-	m_MaxEggs = theQueen.m_MaxEggs;
-	m_Strength = theQueen.m_Strength;
-
-	return *this;
-}
 
 
 double CQueen::ComputeL(const double& DaylightHours) const 

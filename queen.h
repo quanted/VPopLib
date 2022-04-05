@@ -32,7 +32,6 @@ class CQueen : public CBee  {
   public:
 	double GetPropDroneEggs();
 	CQueen();
-	CQueen(CQueen* oldQueen);
 	void LayEggs(int LayDays, double DegreeDays, double DaylightHours, int NumForagers, 
 		double LarvPerBee);
 	//CEgg* GetWeggs();
@@ -60,7 +59,6 @@ class CQueen : public CBee  {
 	void ReQueen(int EggLayingDelay, double QueenStrength, int SimDayNum);
 	virtual ~CQueen();
 
-	CQueen& operator=(const CQueen& theQueen);
 
 	// Return the value of L which is the DaylightHours based component
 	// to the computation of laid eggs.

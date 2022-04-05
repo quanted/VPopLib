@@ -15,7 +15,8 @@ class NO_LIBEXPORT CArray : public CObject
 public:
 	BOOL IsEmpty() const;
 
-	INT_PTR GetCount() const;
+	//INT_PTR GetCount() const;
+	size_t GetCount() const;
 
 	void RemoveAll();
 

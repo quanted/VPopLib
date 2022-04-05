@@ -34,7 +34,7 @@ private:
 	bool m_ForageDay;
 	double m_ForageInc;	//  Increment of a Forage Day
 	double m_DaylightHours;
-	int m_LineNum;
+	//int m_LineNum;
 public:
 	CEvent();
 	~CEvent();
@@ -51,7 +51,7 @@ public:
 	void UpdateForageAttributeForEvent( double Latitude, double windSpeed = -1 );
 	bool IsForageDay();
 	bool IsWinterDay();
-	int GetLineNum() {return m_LineNum;}
+	//int GetLineNum() {return m_LineNum;}
 	double GetDaylightHours();
 	void SetTime(COleDateTime time) {m_Time = time;}
 	void SetTemp(double temp) {m_Temp = temp;}
@@ -64,7 +64,7 @@ public:
 	void SetForageInc(double TThresh, double TMax, double TAve);
 	void SetHourlyForageInc(double Latitude);
 	double GetForageInc();
-	void SetLineNum(int line) {m_LineNum = line;}
+	//void SetLineNum(int line) {m_LineNum = line;}
 	void SetDaylightHours(double hrs) {m_DaylightHours = hrs;}
 	double CalcTodayDaylightFromLatitude(double Lat);
 	double CalcDaylightFromLatitudeDOY(double Lat, int DayOfYear);

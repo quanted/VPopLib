@@ -1,6 +1,7 @@
 #include "cuintarray.h"
 
-INT_PTR CUIntArray::GetSize() const
+//INT_PTR CUIntArray::GetSize() const
+size_t CUIntArray::GetSize() const
 {
     return m_data.size();
 }

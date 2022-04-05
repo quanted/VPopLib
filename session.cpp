@@ -1517,7 +1517,7 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 int CVarroaPopSession::GetDocumentLength()
 {
 	if (m_ResultsText.IsEmpty()) return 0;
-	else return(m_ResultsText.GetCount());
+	else return static_cast<int>(m_ResultsText.GetCount());
 }
 
 bool CVarroaPopSession::CheckDateConsistency(bool ShowWarning)

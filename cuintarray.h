@@ -13,7 +13,8 @@
 class NO_LIBEXPORT CUIntArray : public CObject
 {
 public:
-    INT_PTR GetSize() const;
+    //INT_PTR GetSize() const;
+    size_t GetSize() const;
     UINT GetAt(INT_PTR index) const;
 
     void Add(UINT eventId);

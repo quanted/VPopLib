@@ -37,7 +37,7 @@ public:
 	CObList();
 	virtual ~CObList();
 
-	/*INT_PTR*/ int GetCount() const;
+	/*INT_PTR*/ size_t GetCount() const;
 	BOOL IsEmpty() const;
 
 	// In the MFC framework we use the index to go through the linked list and return
@@ -84,7 +84,8 @@ public:
 	CStringList();
 	~CStringList();
 
-	INT_PTR GetCount() const;
+	//INT_PTR GetCount() const;
+	size_t GetCount() const;
 	BOOL IsEmpty() const;
 
 	const CString& GetNext(POSITION& position) const;

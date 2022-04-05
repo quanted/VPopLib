@@ -48,7 +48,7 @@ void CDateRangeValues::Copy(CDateRangeValues* pDestination)
 int CDateRangeValues::GetCount()
 {
     if (!pItemList) return 0;
-    else return pItemList->GetCount();
+    else return static_cast<int>(pItemList->GetCount());
 }
 
 

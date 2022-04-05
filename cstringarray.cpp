@@ -1,11 +1,11 @@
 #include "cstringarray.h"
 
-INT_PTR CStringArray::GetSize() const
+size_t CStringArray::GetSize() const
 {
     return m_data.size();
 }
 
-INT_PTR CStringArray::GetCount() const
+size_t CStringArray::GetCount() const
 {
     return m_data.size();
 }
@@ -20,7 +20,7 @@ INT_PTR CStringArray::GetUpperBound() const
     INT_PTR upperBound = -1;
     if (m_data.size() > 0)
     {
-        upperBound = m_data.size() - 1;
+        upperBound = static_cast<INT_PTR>(m_data.size()) - 1;
     }
     return upperBound;
 }

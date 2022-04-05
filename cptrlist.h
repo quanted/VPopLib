@@ -40,7 +40,8 @@ public:
 	~CTypedPtrList();
 
 	BOOL IsEmpty() const;
-	INT_PTR GetCount() const;
+	//INT_PTR GetCount() const;
+	size_t GetCount() const;
 	TYPE GetAt(POSITION position) const;
 	POSITION AddTail(TYPE object);
 	void RemoveAt(POSITION position);

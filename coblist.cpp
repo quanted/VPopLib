@@ -8,7 +8,7 @@ CObList::~CObList()
 {
 }
 
-/*INT_PTR*/ int CObList::GetCount() const
+/*INT_PTR*/ size_t CObList::GetCount() const
 {
     return m_data.size();   
 }
@@ -138,7 +138,8 @@ CStringList::~CStringList()
 {
 }
 
-INT_PTR CStringList::GetCount() const
+//INT_PTR CStringList::GetCount() const
+size_t CStringList::GetCount() const
 {
     return m_data.size();   
 }
