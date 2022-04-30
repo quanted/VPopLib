@@ -425,7 +425,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool GetInfoListCPA(char*** InfoListCPA, int* pCount)
 	{
 		vector<string> InfoList;
-		if (GetErrorList(InfoList))
+		if (GetInfoList(InfoList))
 		{
 			*InfoListCPA = StringVector2CharStringArray(InfoList);
 			*pCount = static_cast<int>(InfoList.size());
