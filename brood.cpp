@@ -19,6 +19,7 @@ static char THIS_FILE[]=__FILE__;
 CBrood::CBrood()
 {
 	m_Mites = 0;
+	m_PropVirgins = 0;
 }
 
 CBrood::~CBrood()
@@ -29,4 +30,19 @@ void CBrood::Reset()
 {
 	CBee::Reset();
 	m_Mites = 0;
+	m_PropVirgins = 0;
 }
+
+void CBrood::SetPropVirgins(double prop)
+{
+	if (prop < 0) m_PropVirgins = 0;
+	else if (prop > 1) m_PropVirgins = 1;
+	else m_PropVirgins = prop;
+}
+
+double CBrood::GetPropVirgins()
+{
+	return m_PropVirgins;
+}
+
+

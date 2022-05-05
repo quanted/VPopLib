@@ -519,7 +519,7 @@ void CAdultlist::Add(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool
 		if (bWorker) WorkerCount++;
 		else DroneCount++;
 		theAdult->SetMites(theBrood.m_Mites);
-		theAdult->SetPropVirgins(theBrood.m_PropVirgins);
+		theAdult->SetPropVirgins(theBrood.GetPropVirgins());
 		theAdult->SetLifespan(WADLLIFE);
 		theBrood.Reset();  // These brood are now  gone
 
@@ -528,8 +528,11 @@ void CAdultlist::Add(CBrood theBrood, CColony* theColony, CEvent* theEvent, bool
 		if (adult != NULL) // Add the incoming brood to the first boxcar
 		{
 			adult->SetNumber(adult->GetNumber() + theAdult->GetNumber());
+			// Calculate the sum of mites that are virgins
+			double v_mites = adult->GetMites().GetTotal() * adult->GetPropVirgins() + theAdult->GetMites().GetTotal() * theAdult->GetPropVirgins();
 			adult->SetMites(adult->GetMites() + theAdult->GetMites());
-			adult->SetPropVirgins(adult->GetPropVirgins() * theAdult->GetPropVirgins());
+			double propv = (adult->GetMites().GetTotal() > 0) ? adult->GetMites().GetTotal() : 0;
+			adult->SetPropVirgins(propv);
 			delete theAdult;
 		}
 		else
@@ -556,20 +559,20 @@ void CAdultlist::Update(CBrood theBrood, CColony* theColony, CEvent* theEvent, b
 		if (bWorker) WorkerCount++;
 		else DroneCount++;
 		theAdult->SetMites(theBrood.m_Mites);
-		theAdult->SetPropVirgins(theBrood.m_PropVirgins);
+		theAdult->SetPropVirgins(theBrood.GetPropVirgins());
 		theAdult->SetLifespan(WADLLIFE);
 
 		// Save the emerging mites for use when UpdateMites is called
 		if (bWorker)
 		{
 			theColony->EmergingMitesW = theBrood.m_Mites;
-			theColony->PropEmergingVirginsW = theBrood.m_PropVirgins;
+			theColony->PropEmergingVirginsW = theBrood.GetPropVirgins();
 			theColony->NumEmergingBroodW = theBrood.GetNumber();
 		}
 		else
 		{
 			theColony->EmergingMitesD = theBrood.m_Mites;
-			theColony->PropEmergingVirginsD = theBrood.m_PropVirgins;
+			theColony->PropEmergingVirginsD = theBrood.GetPropVirgins();
 			theColony->NumEmergingBroodD = theBrood.GetNumber();
 		}
 
@@ -714,7 +717,7 @@ void CBroodlist::Update(CLarva theLarva)
 		Caboose.age = tail->age;
 		Caboose.Alive = tail->Alive;
 		Caboose.m_Mites = tail->m_Mites;
-		Caboose.m_PropVirgins = tail->m_PropVirgins;
+		Caboose.SetPropVirgins(tail->GetPropVirgins());
 		Caboose.number = int(tail->number * GetPropTransition());
 		delete(tail);
 	}
@@ -1697,6 +1700,10 @@ void CColony::AddMites(CMite NewMites)
 	RunMite += NewMites;
 	if (RunMite.GetTotal() <=0) PropRMVirgins = 1.0;
 	else PropRMVirgins = virgins.GetTotal()/RunMite.GetTotal();
+	// Constrain proportion to be [0..1]
+	PropRMVirgins = PropRMVirgins > 1 ? 1 : PropRMVirgins;
+	PropRMVirgins = PropRMVirgins < 0 ? 0 : PropRMVirgins;
+
 }
 
 
@@ -1826,9 +1833,9 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	if (RunMite.GetTotal()<0) RunMite = 0;
 
 	WkrBrood->m_Mites = WMites;
-	WkrBrood->m_PropVirgins = PropRMVirgins;
+	WkrBrood->SetPropVirgins(PropRMVirgins);
 	DrnBrood->m_Mites = DMites;
-	DrnBrood->m_PropVirgins = PropRMVirgins;
+	DrnBrood->SetPropVirgins(PropRMVirgins);
 
 
 	/*
@@ -1847,10 +1854,10 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	bool DMitesCounted = ((CAdult*)Dadl.GetHead())->HaveMitesBeenCounted();
 	WkrEmerge.number = ((CAdult*)Wadl.GetHead())->GetNumber();
 	WkrEmerge.m_Mites = ((CAdult*)Wadl.GetHead())->GetMites();
-	WkrEmerge.m_PropVirgins = ((CAdult*)Wadl.GetHead())->GetPropVirgins();
+	WkrEmerge.SetPropVirgins(((CAdult*)Wadl.GetHead())->GetPropVirgins());
 	DrnEmerge.number = ((CAdult*)Dadl.GetHead())->GetNumber();
 	DrnEmerge.m_Mites = ((CAdult*)Dadl.GetHead())->GetMites();
-	DrnEmerge.m_PropVirgins = ((CAdult*)Dadl.GetHead())->GetPropVirgins();
+	DrnEmerge.SetPropVirgins(((CAdult*)Dadl.GetHead())->GetPropVirgins()); //Sometimes this is -nan
 	if (WMitesCounted)
 	{
 		// Don't count them again
@@ -1921,8 +1928,8 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	CMite NewMitesD = SurviveMitesD * ReproMitePerCellD;
 
 	// Only mites which hadn't previously infested can survive to infest again.
-	SurviveMitesW = SurviveMitesW * WkrEmerge.m_PropVirgins;
-	SurviveMitesD = SurviveMitesD * DrnEmerge.m_PropVirgins;
+	SurviveMitesW = SurviveMitesW * WkrEmerge.GetPropVirgins();
+	SurviveMitesD = SurviveMitesD * DrnEmerge.GetPropVirgins();
 
 	double NumVirgins = SurviveMitesW.GetTotal() + SurviveMitesD.GetTotal();
 
@@ -1936,10 +1943,16 @@ void CColony::UpdateMites(CEvent* pEvent, int DayNum)
 	m_MitesDyingToday = (m_MitesDyingToday >= 0) ? m_MitesDyingToday : 0; // Constrain positive 
 
 	RunMite = RunMite + RunMiteD + RunMiteW;
-	if (RunMite.GetTotal()<=0) PropRMVirgins = 1.0;
+	if (RunMite.GetTotal() <= 0)
+	{
+		PropRMVirgins = 1.0;
+	}
 	else
 	{
 		PropRMVirgins = (RunMiteVirgins.GetTotal() + NewMitesW.GetTotal() + NewMitesD.GetTotal()) / RunMite.GetTotal();
+		// Constrain proportion to be [0..1]
+		PropRMVirgins = PropRMVirgins > 1 ? 1 : PropRMVirgins;
+		PropRMVirgins = PropRMVirgins < 0 ? 0 : PropRMVirgins;
 	}
 
 	// Kill NonResistant Running Mites if Treatment Enabled
@@ -2125,7 +2138,7 @@ void CColony::RemoveDroneComb(double pct)
 		theBrood = (CBrood*)CapDrn.GetNext(pos);
 		theBrood->number *= (int)(100.0-pct);
 		theBrood->m_Mites = theBrood->m_Mites * (100.0 - pct);
-		theBrood->m_PropVirgins = 0;
+		theBrood->SetPropVirgins(0.0);
 	}
 }
 

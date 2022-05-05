@@ -97,7 +97,8 @@ void CMite::operator -= (CMite theMite)
 
 void CMite::operator -= (double value)
 {
-	double pctres = m_Resistant*100/(m_Resistant+m_NonResistant);
+	double pctres = 0;
+	if (GetTotal() > 0) pctres = m_Resistant * 100 / (m_Resistant + m_NonResistant);
 	double subfromres = value*pctres/100.0;
 	m_Resistant = m_Resistant - subfromres;
 	m_NonResistant = m_NonResistant - (value - subfromres);

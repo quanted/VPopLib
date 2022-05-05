@@ -16,14 +16,18 @@ class CBrood : public CBee
 {
 public:
 	CMite m_Mites;			// Mites infesting this group
+
+private:
 	double m_PropVirgins;   // Proportion of infesting mites that
 							// have never infested before
 
 public:
 	CBrood();
-	CBrood(int Num) {number = Num; m_Mites = 0;}
+	CBrood(int Num) { number = Num; m_Mites = 0; m_PropVirgins = 0; }
 	virtual ~CBrood();
 	void Reset();
+	void SetPropVirgins(double prop);
+	double GetPropVirgins();
 
 };
 

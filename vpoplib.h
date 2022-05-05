@@ -67,7 +67,7 @@
 
 //#endif
 
-#define VPOPLIB_VERSION "3/1/2022"
+#define VPOPLIB_VERSION "5/1/2022"
 
 using namespace std;
 
