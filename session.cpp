@@ -1267,10 +1267,6 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 		return true;
 
 	}
-
-
-
-
 	if (Name == "etolxition")
 	{
 		if (Value == "clear")
@@ -1479,6 +1475,12 @@ bool CVarroaPopSession::UpdateColonyParameters(CString theName, CString theVal)
 	if (Name == "adultagedelay")
 	{
 		theColony.SetAdultAgingDelay(atoi(Value));
+		return true;
+	}
+
+	if (Name == "adultagedelayeggthreshold")
+	{
+		theColony.SetAdultAgingDelayEggThreshold(atoi(Value));
 		return true;
 	}
 

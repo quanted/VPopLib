@@ -1193,7 +1193,8 @@ bool CColony::IsAdultAgingDelayActive()
 	// Once we have delayed a number of days equal to the limit, this function returns false
 	// Indicating we are not in the aging delay state any more.
 
-	const double EggQuantThreshold = GlobalOptions::Get().AdultAgingDelayEggThreshold();
+	//const double EggQuantThreshold = GlobalOptions::Get().AdultAgingDelayEggThreshold();
+	const double EggQuantThreshold = GetAdultAgingDelayEggThreshold();
 
 	if (IsAdultAgingDelayArmed())
 	{
