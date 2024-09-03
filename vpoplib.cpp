@@ -7,6 +7,8 @@
 #include "stdafx.h"
 #include "weatherevents.h"
 
+#define VPOPLIB_VERSION "8/10/2022"
+
 using namespace std;
 
 // Initialize  the session 
@@ -15,25 +17,6 @@ CVarroaPopSession theSession;
 
 
 // Define the local functions to VPopLib.  The interface implementations are at the bottom of this file
-
-bool GetLibVersionCP(char* version, int bufsize)
-{
-	bool retval = false;
-	string strversion = VPOPLIB_VERSION;
-	if (strversion.size() + 1 <= bufsize)
-	{
-		size_t length = strversion.copy(version, strversion.size());
-		version[length] = '\0';
-		retval = true;
-	}
-	return retval;
-}
-
-bool GetLibVersion(string& version)
-{
-	version = VPOPLIB_VERSION;
-	return true;
-}
 
 
 
@@ -471,5 +454,24 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 			ResVal = true;
 		}
 		return ResVal;
+	}
+
+	bool GetLibVersionCP(char* version, int bufsize)
+	{
+		bool retval = false;
+		string strversion = VPOPLIB_VERSION;
+		if (strversion.size() + 1 <= bufsize)
+		{
+			size_t length = strversion.copy(version, strversion.size());
+			version[length] = '\0';
+			retval = true;
+		}
+		return retval;
+	}
+
+	bool GetLibVersion(string& version)
+	{
+		version = VPOPLIB_VERSION;
+		return true;
 	}
 

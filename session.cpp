@@ -536,7 +536,7 @@ void CVarroaPopSession::Simulate()
 				double PollenPesticideConc = theColony.m_Resources.GetPollenPesticideConcentration() * 1000000;  // convert from g/g to ug/g
 
 				CurSize.Format(m_ResultsFileFormatStg,
-					pEvent->GetDateStg("%m/%d/%Y"),
+					pEvent->GetDateStg("%m/%d/%Y").c_str(),
 					theColony.GetColonySize(),
 					theColony.Dadl.GetQuantity(),
 					theColony.Wadl.GetQuantity(),

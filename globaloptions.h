@@ -60,7 +60,7 @@ public:
 	// Adult aging options
 
 	// This option changes the way adult are aged. Adults will be aging only during the time frame where the
-	// Queen is laying eggs if this is set to true.
+	// Queen is laying eggs if this is set to true.  If false, adults will age only if valid f(DaylightHours)
 	Option<bool> ShouldAdultsAgeBasedLaidEggs = true;
 
 	// Forager aging options

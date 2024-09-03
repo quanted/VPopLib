@@ -134,11 +134,13 @@ bool COleDateTime::operator <= (const COleDateTime& other) const
 CString COleDateTime::Format(const char* format) const
 {
     //Note - only formats mm/dd/yyyy
-
-    CString datestring;
     std::stringstream ss;
-    ss << m_Tm.tm_mon + 1 << "/" << m_Tm.tm_mday << "/" << m_Tm.tm_year + 1900;
-    return datestring = ss.str();
+    std::string leadZMon, leadZDay;
+    leadZMon = (m_Tm.tm_mon + 1 < 10) ? "0" : "";
+    leadZDay = (m_Tm.tm_mday < 10) ? "0" : "";
+    ss << leadZMon << m_Tm.tm_mon + 1 << '/' << leadZDay << m_Tm.tm_mday << '/' << m_Tm.tm_year + 1900;
+    CString datestring(ss.str());
+    return datestring;
 }
 
 bool COleDateTime::ParseDateTime(const CString& dateTimeStr, DWORD dwFlags)

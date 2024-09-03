@@ -1494,9 +1494,13 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	{
 		int i = 1;
 	}
+	CString today = pEvent->GetDateStg();
 	if (coldStorage.IsEnabled())
 	{
-		if (coldStorage.IsAutomatic())
+		CString CSStateStg = "On " + today + " Cold Storage is ENABLED";
+		//m_pSession->AddToInfoList("On " + today + " Cold Storage is ENABLED");
+		//if (coldStorage.IsAutomatic())  // This was triggered if the start and stop dates were empty.  I have temporarily bypassed this case
+		if (false)
 		{
 			if (queen.ComputeL(pEvent->GetDaylightHours()) == 0)
 			{
@@ -1510,6 +1514,12 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 			}
 		}
 		coldStorage.Update(*pEvent, *this);
+		if (coldStorage.IsActive()) CSStateStg += " and ACTIVE";
+		if (coldStorage.IsStarting()) CSStateStg += " and STARTING";
+		if (coldStorage.IsEnding()) CSStateStg += "and ENDING";
+		if (coldStorage.IsOn()) CSStateStg += " and ON";
+		m_pSession->AddToInfoList(CSStateStg);
+		
 	}
 
 
@@ -1519,8 +1529,12 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	// At the beginning of cold storage all eggs are lost
 	if (coldStorage.IsStarting())
 	{
+		m_pSession->AddToInfoList("On " + today + " Cold Storage is STARTING");
 		l_DEggs.SetNumber(0);
 		l_WEggs.SetNumber(0);
+		// Kill all eggs
+		Deggs.KillAll();
+		Weggs.KillAll();
 	}
 
 	// Update stats for new eggs
@@ -1535,6 +1549,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	{
 		Weggs.GetCaboose().Reset();
 		Deggs.GetCaboose().Reset();
+
 	}
 
 	// Update stats for new larvae
@@ -1549,6 +1564,8 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	{
 		Wlarv.GetCaboose().Reset();
 		Dlarv.GetCaboose().Reset();
+		Wlarv.KillAll();
+		Dlarv.KillAll();
 	}
 
 	// Update stats for new brood

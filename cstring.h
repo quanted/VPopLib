@@ -31,6 +31,8 @@ public:
 	
 	CString& operator+=(const char& c);
 
+	char* c_str() const { return const_cast<char*>(m_data.c_str()); };
+
 	bool operator<(const CString& str) const;
 
 	const std::string& ToString() const;
@@ -83,7 +85,7 @@ public:
 
 	//CString SpanExcluding(const char* delimiter) const;
 
-protected:
+//protected:  //
 
 	std::string m_data;
 
