@@ -111,7 +111,7 @@ public:
 //	bool LoadWeatherGridDataBinaryFile(CString FileName);
 
 	//void ComputeHourlyTemperatureEstimationAndUpdateForageInc(std::vector<CEvent*>& events);  //TODO:  Will have to implement this differently in the library
-	void SetLatitude(double lat) { m_Latitude = lat; }
+	void SetLatitude(double lat);
 	double GetLatitude() { return m_Latitude; }
 	bool IsInitialized() {return m_HasBeenInitialized;}
 	void SetInitialized(bool val) { m_HasBeenInitialized = val; }

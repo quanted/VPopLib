@@ -186,6 +186,7 @@ double CEvent::GetForageInc()
 	return forageInc;
 }
 
+
 double CEvent::CalcTodayDaylightFromLatitude(double Lat)
 {
 
@@ -470,10 +471,34 @@ COleDateTime CWeatherEvents::GetCurrentTime()
 //	return event->GetLineNum();
 //}
 
+void CWeatherEvents::SetLatitude(double lat)
+{
+	if (lat != m_Latitude)
+	{
+		m_Latitude = lat;
+		//double DaylightHours = 0;
+		// Update all daylight hours and Forager Attributes for events based on updated latitude
+		int eventcount = GetTotalEvents();
+		if (eventcount > 0)  // Only do if there are actually events loaded
+		{
+			CEvent* tempEvent = GetFirstEvent();
+			for (int i = 0; i < eventcount; i++)
+			{
+				//double DaylightHours = tempEvent->CalcTodayDaylightFromLatitude(m_Latitude);
+				tempEvent->m_DaylightHours = tempEvent->CalcTodayDaylightFromLatitude(m_Latitude);
+				tempEvent->UpdateForageAttributeForEvent(m_Latitude, tempEvent->GetWindspeed());
+				tempEvent = GetNextEvent();
+			}
+		}
+	}
+}
+
+
 
 int CWeatherEvents::GetTotalEvents()
 {
-	return static_cast<int>(m_EventList.GetCount());
+	int count = (int)m_EventList.GetCount();
+	return count;
 }
 
 

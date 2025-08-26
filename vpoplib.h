@@ -84,12 +84,15 @@ extern "C"
 	bool libvpop_EXPORT ClearWeather();
 	bool libvpop_EXPORT GetErrorList(vector<string>& ErrList);
 	bool libvpop_EXPORT ClearErrorList();
+	bool libvpop_EXPORT EnableErrorReporting(int enable);  // 1 = true, 0 = false
+	bool libvpop_EXPORT EnableInfoReporting(int enable);  // 1 = true, 0 = false
 	bool libvpop_EXPORT GetInfoList(vector<string>& InfoList);
 	bool libvpop_EXPORT ClearInfoList();
 	bool libvpop_EXPORT RunSimulation();
 	bool libvpop_EXPORT GetResults(vector<string>& ResultsList);
 	bool libvpop_EXPORT ClearResultsBuffer();
 	bool libvpop_EXPORT SetLatitude(double Lat);
+	bool libvpop_EXPORT GetLatitude(double* Lat);
 	bool libvpop_EXPORT GetLibVersion(string& version);
 
 	// This is the c-sytle interface for VPopLib - no vectors or strings

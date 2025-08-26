@@ -23,3 +23,4 @@ CEgg::CEgg()
 CEgg::~CEgg()
 {
 }
+

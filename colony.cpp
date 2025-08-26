@@ -1016,7 +1016,7 @@ void CColony::InitializeColony()
 void CColony::AddEventNotification(CString DateStg, CString Msg)
 {
 	CString EventString = DateStg + ": " + Msg;
-	m_pSession->AddToInfoList(EventString);
+	if (m_pSession->IsInfoReportingEnabled()) m_pSession->AddToInfoList(EventString);
 }
 
 
@@ -1518,7 +1518,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 		if (coldStorage.IsStarting()) CSStateStg += " and STARTING";
 		if (coldStorage.IsEnding()) CSStateStg += "and ENDING";
 		if (coldStorage.IsOn()) CSStateStg += " and ON";
-		m_pSession->AddToInfoList(CSStateStg);
+		if (m_pSession->IsInfoReportingEnabled()) m_pSession->AddToInfoList(CSStateStg);
 		
 	}
 
@@ -1529,7 +1529,7 @@ void CColony::UpdateBees(CEvent* pEvent, int DayNum)
 	// At the beginning of cold storage all eggs are lost
 	if (coldStorage.IsStarting())
 	{
-		m_pSession->AddToInfoList("On " + today + " Cold Storage is STARTING");
+		if (m_pSession->IsInfoReportingEnabled()) m_pSession->AddToInfoList("On " + today + " Cold Storage is STARTING");
 		l_DEggs.SetNumber(0);
 		l_WEggs.SetNumber(0);
 		// Kill all eggs
@@ -2633,7 +2633,7 @@ void CColony::AddPollenToResources(SResourceItem theResource)
 	// If CurrentPollen/MaxPollen > 0.9, Add theResources * (1 - CurrentPollen/MaxPollen)
 	if (m_ColonyPolMaxAmount <= 0) 
 	{
-		m_pSession->AddToInfoList("Maximum Colony Pollen is <= 0.  Forcing to 5000g");
+		if (m_pSession->IsInfoReportingEnabled()) m_pSession->AddToInfoList("Maximum Colony Pollen is <= 0.  Forcing to 5000g");
 		m_ColonyPolMaxAmount = 5000;
 	}
 	double PropFull = m_Resources.GetPollenQuantity()/m_ColonyPolMaxAmount;
@@ -2652,7 +2652,7 @@ void CColony::AddNectarToResources(SResourceItem theResource)
 	// Add nectar but don't exceed the maximum amount
 	if (m_ColonyNecMaxAmount <= 0) 
 	{
-		m_pSession->AddToInfoList("Maximum Colony Nectar is <= 0.  Forcing to 5000g");
+		if (m_pSession->IsInfoReportingEnabled()) m_pSession->AddToInfoList("Maximum Colony Nectar is <= 0.  Forcing to 5000g");
 		m_ColonyNecMaxAmount = 5000;
 	}
 	double PropFull = m_Resources.GetNectarQuantity()/m_ColonyNecMaxAmount;

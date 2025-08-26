@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "weatherevents.h"
 
-#define VPOPLIB_VERSION "8/10/2022"
+#define VPOPLIB_VERSION "1/15/2025"
 
 using namespace std;
 
@@ -172,6 +172,16 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool SetLatitude(double Lat)
 	{
 		theSession.SetLatitude(Lat);
+		if (theSession.IsWeatherLoaded())
+		{
+			// Need to update the daylight hours and Forager Attribute for all weather events with new latitude
+		}
+		return true;
+	}
+
+	bool GetLatitude(double* Lat)
+	{
+		*Lat = theSession.GetLatitude();
 		return true;
 	}
 
@@ -211,15 +221,15 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		CString CSValue(Value.c_str());
 		if (theSession.UpdateColonyParameters(Name, Value))
 		{
-			//info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
-			//theSession.AddToInfoList(info);
+			info.Format("Setting Variables.   Name = %s  Value = %s", CSName, CSValue);
+			if (theSession.IsInfoReportingEnabled()) theSession.AddToInfoList(info);
 			RetVal = true;
 		}
 		else 
 		{
 			CString err;
 			err.Format("Failed to set %s to %s", Name , Value);
-			theSession.AddToErrorList(err);
+			if (theSession.IsErrorReportingEnabled()) theSession.AddToErrorList(err);
 			RetVal = false;
 		}
 		return RetVal;
@@ -284,7 +294,7 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 		else
 		{
 			delete pEvent;
-			theSession.AddToErrorList("Bad Weather String Format: " + WeatherEventString);
+			if (theSession.IsErrorReportingEnabled()) theSession.AddToErrorList("Bad Weather String Format: " + WeatherEventString);
 		}
 		return retval;
 	}
@@ -360,6 +370,18 @@ char** StringVector2CharStringArray(vector<string> stringvector)
 	bool ClearContaminationTable()
 	{
 		theSession.GetColony()->m_NutrientCT.RemoveAll();
+		return true;
+	}
+
+	bool EnableErrorReporting(int enable)
+	{
+		theSession.EnableErrorReporting(enable == 1);
+		return true;
+	}
+
+	bool EnableInfoReporting(int enable)
+	{
+		theSession.EnableInfoReporting(enable == 1);
 		return true;
 	}
 

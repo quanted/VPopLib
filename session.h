@@ -55,6 +55,8 @@ protected:
 	//  Errors, Status, etc
 	CStringList m_ErrorList;		//m_ErrorList holds all errors generated in a simulation run.  Can be cleared
 	CStringList m_InformationList;	//m_InformationList holds any commentary or info generated during a simulation run.  Does not include errors.
+	int m_EnableErrorReporting = 1;		// 0 = No Errors, 1 = Errors
+	int m_EnableInfoReporting = 1;		// 0 = No Info, 1 = Info
 
 	// Simulation Data
 	COleDateTime m_SimStartTime;
@@ -136,6 +138,10 @@ public:
 	void AddToInfoList(CString InfoStg);
 	CStringList* GetErrorList() { return &m_ErrorList; }
 	CStringList* GetInfoList() { return &m_InformationList; }
+	bool IsErrorReportingEnabled() { return m_EnableErrorReporting; }
+	bool IsInfoReportingEnabled() { return m_EnableInfoReporting; }
+	void EnableErrorReporting(bool enable) { m_EnableErrorReporting = enable ? 1:0; }
+	void EnableInfoReporting(bool enable) { m_EnableInfoReporting = enable ? 1 : 0; }
 
 	// Simulation Operations
 	COleDateTime GetSimStart() { return m_SimStartTime; }

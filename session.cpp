@@ -355,9 +355,9 @@ void CVarroaPopSession::Simulate()
 			"%6.0f", // Mites Dying
 			"%6.0f", // Prop Mites Dying
 			"%8.1f", // Colony Pollen
-			"%6.3f", // Conc Pollen Pest
+			"%7.4f", // Conc Pollen Pest
 			"%8.1f", // Colony Nectar
-			"%6.3f", // Conc Nectar Pest
+			"%7.4f", // Conc Nectar Pest
 			"%6d", // Dead DLarv
 			"%6d", // Dead WLarv
 			"%6d", // Dead DAdlt
@@ -403,10 +403,10 @@ void CVarroaPopSession::Simulate()
 		CString CurSize;
 		CurSize.Format("                                                        Capped  Capped																												              Prop           Conc            Conc                                             ");
 		m_ResultsText.AddTail(CurSize);
-		CurSize.Format("            Colony  Adult     Adult           Active    Drone   Wkr     Drone  Wkr   Drone  Wkr   Total                                                         Free   DBrood WBrood DMite  WMite  Mites  Mites  Colony  Pollen  Colony  Nectar   Dead   Dead   Dead   Dead   Dead    Queen      Ave           Min     Max      Daylight  Forage  Forage");
+		CurSize.Format("            Colony  Adult     Adult           Active    Drone   Wkr     Drone  Wkr   Drone  Wkr   Total                                                         Free   DBrood WBrood DMite  WMite  Mites  Mites  Colony  Pollen  Colony    Nectar Dead   Dead   Dead   Dead   Dead    Queen      Ave           Min     Max      Daylight  Forage  Forage");
 		m_ResultsText.AddTail(CurSize);
 
-		CurSize.Format("     Date   Size    Drones    Wkr     Forgrs  Forgrs    Brood   Brood   Larv   Larv  Eggs   Eggs  Eggs      DD      L      N      P       dd       l       n    Mites  Mites  Mites  /Cell  /Cell  Dying  Dying  Pollen  Pest    Nectar  Pest     DLarv  WLarv  DAdlt  WAdlt  Forgrs  Strength   Temp  Rain    Temp    Temp     Hours     Inc     Day");
+		CurSize.Format("     Date   Size    Drones    Wkr     Forgrs  Forgrs    Brood   Brood   Larv   Larv  Eggs   Eggs  Eggs      DD      L      N      P       dd       l       n    Mites  Mites  Mites  /Cell  /Cell  Dying  Dying  Pollen  Pest    Nectar    Pest   DLarv  WLarv  DAdlt  WAdlt  Forgrs  Strength   Temp  Rain    Temp    Temp     Hours     Inc     Day");
 		// Append additional command name if InOut statistics are required
 		//
 		

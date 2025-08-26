@@ -29,7 +29,7 @@ public:
 public:
 	virtual ~CBee();
 	CBee operator = (CBee& bee);
-	CBee(CBee& bee);
+	//CBee(CBee& bee) = default;
 	CBee(int Num);
 	void SetNumber(int Num) {number = Num;}
 	int GetNumber() {return number;}

@@ -49,12 +49,12 @@ CBee::CBee(int Num)
 	Alive = true;
 }
 
-CBee::CBee(CBee& bee)
-{
-	Alive = bee.Alive;
-	number = bee.number;
-	age = bee.age;
-}
+//CBee::CBee(CBee& bee)
+//{
+//	Alive = bee.Alive;
+//	number = bee.number;
+//	age = bee.age;
+//}
 
 
 
